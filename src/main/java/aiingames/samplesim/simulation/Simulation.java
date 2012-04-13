@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import aiingames.samplesim.Config;
-import aiingames.samplesim.agents.Agent;
+import aiingames.samplesim.agents.Moveable;
+import aiingames.samplesim.agents.PointLight;
 import aiingames.samplesim.gui.Gui;
 import aiingames.samplesim.spatial.Coordinate;
 
 public class Simulation {
 	
-	List<Agent> agents = new ArrayList<Agent>();
+	List<Moveable> agents = new ArrayList<Moveable>();
+	List<Moveable> lights = new ArrayList<Moveable>();
 	
 	Environment e;
 
@@ -26,8 +28,7 @@ public class Simulation {
 		while (time < Config.getStopTime()) {
 			doSimStep(time);
 			
-			
-			time += Config.getSimStepSize();;
+			time += Config.getSimStepSize();
 		}
 		
 		
@@ -41,33 +42,42 @@ public class Simulation {
 
 	private void updateGui() {
 		if (this.gui != null) {
-			this.gui.update(this.agents, this.e);
+			this.gui.update(this.agents, this.lights, this.e);
 		}
 	}
 
 	private void moveAgents() {
-		for (Agent agent : this.agents) {
+		for (Moveable agent : this.agents) {
 			this.e.moveAgent(agent);
 		}
 		
 	}
 
 	private void updateAgents() {
-		for(Agent agent : this.agents){
+		for(Moveable agent : this.agents){
 			agent.update(e);
 		}
 		
 	}
 	
-	public void addAgent(Agent agent,Coordinate c){
+	public void addAgent(Moveable agent,Coordinate c){
 		this.agents.add(agent);
 		this.e.createAndAddPhysicalAgentRepresentation(agent,c);
 	}
+	
+// --- ADDED
+	public void addLight(Moveable light, Coordinate c) {
+		this.lights.add(light);
+		this.e.createAndAddPhysicalLightRepresentation(light, c);
+	}
+// --- ADDED END	
 
 	public void setGui(Gui gui) {
 		this.gui = gui;
 		
 	}
+
+
 
 	
 }

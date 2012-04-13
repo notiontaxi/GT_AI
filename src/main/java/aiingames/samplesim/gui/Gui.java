@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +14,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import aiingames.samplesim.Config;
-import aiingames.samplesim.agents.Agent;
+import aiingames.samplesim.agents.Moveable;
+import aiingames.samplesim.agents.PointLight;
 import aiingames.samplesim.simulation.Environment;
+import aiingames.samplesim.spatial.Coordinate;
+import aiingames.samplesim.spatial.Object2D;
 
 public class Gui {
 	private JFrame f;
@@ -59,11 +63,17 @@ public class Gui {
 		this.area.setTransformation(scale, minX, minY);
 
 	}
-
-	public void update(Collection<Agent> agents,Environment e) {
-		for (Agent agent : agents) {
+	// --- MODIFIED
+	public void update(Collection<Moveable> agents, Collection<Moveable> lights, Environment e) {
+		for (Moveable agent : agents) {
 			this.area.updateAgent(agent,e);
 		}
+		
+
+		for(Moveable light : lights)
+			this.area.updateLight(light, e);
+// --- MODIFIED		
+		
         long current = System.currentTimeMillis();
         long diff = current - this.lastUpdate;
         long wait = (long) (Config.getSimStepSize() * 1000) -diff;
@@ -85,7 +95,8 @@ public class Gui {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		private Map<Agent,DrawAgent> agents = new HashMap<Agent,DrawAgent>();
+		private Map<Moveable,DrawAgent> agents = new HashMap<Moveable,DrawAgent>();
+		private Map<Moveable,DrawLight> lights = new HashMap<Moveable,DrawLight>();
 		private double scale;
 		private double minX;
 		private double minY;
@@ -94,34 +105,55 @@ public class Gui {
 			setBorder(BorderFactory.createLineBorder(Color.black));
 		}
 
+
 		public void setTransformation(double scale, double minX, double minY) {
 			this.scale = scale;
 			this.minX = minX;
 			this.minY = minY;
 		}
 		
-		public void updateAgent(Agent agent, Environment e) {
+		public void updateAgent(Moveable agent, Environment e) {
 			DrawAgent da = this.agents.get(agent);
 			if (da == null) {
 				da = new DrawAgent(Color.BLUE);
 				da.setRadius((int)(0.5+.5*this.scale));
 				this.agents.put(agent, da);
 			}
-            int x = (int) (0.5+(e.getAgentLocation(agent.getId()).getX() - this.minX) * this.scale);
-            int y = (int) (0.5+(e.getAgentLocation(agent.getId()).getY() - this.minY) * this.scale);
+			
+			Object2D agent2D = e.getAgent(agent.getId());
+			
+            int x = (int) (0.5+(agent2D.getPosition().getX() - this.minX) * this.scale);
+            int y = (int) (0.5+(agent2D.getPosition().getY() - this.minY) * this.scale);
             da.setLocation(x,y);
-            double norm = 2 *Math.sqrt(Math.pow(e.getVx(agent.getId()), 2)+ Math.pow(e.getVy(agent.getId()), 2));
-            da.setDirection((int)(e.getVx(agent.getId())*this.scale/norm+0.5),(int) (e.getVy(agent.getId())*this.scale/norm+0.5));
-
-
+            double norm = 2 *Math.sqrt(Math.pow(agent2D.getDirection().getX(), 2)+ Math.pow(agent2D.getDirection().getY(), 2));
+            da.setDirection((int)(agent2D.getDirection().getX()*this.scale/norm+0.5),(int) (agent2D.getDirection().getY()*this.scale/norm+0.5));
 		}
+		
+		public void updateLight(Moveable light, Environment e) {
+			DrawLight dl = this.lights.get(light);
+			if (dl == null) {
+				dl = new DrawLight(Color.YELLOW);
+				dl.setRadius((int)(0.5+.2*this.scale));
+				this.lights.put(light, dl);
+			}
+			
+			Object2D light2D = e.getLight(light.getId());
+			
+            int x = (int) (0.5+(light2D.getPosition().getX() - this.minX) * this.scale);
+            int y = (int) (0.5+(light2D.getPosition().getY() - this.minY) * this.scale);
+            dl.setLocation(x,y);
+		}		
 		
         @Override
         public void paint(Graphics arg0) {
                 super.paint(arg0);
-
+                
+                for (DrawLight light : this.lights.values()) {
+                    light.paint(arg0);
+                }
+                
                 for (DrawAgent agent : this.agents.values()) {
-                        agent.paintAgent(arg0);
+                    agent.paintAgent(arg0);
                 }
         }
 
@@ -165,5 +197,45 @@ public class Gui {
 			this.dy = dy;
 		}
 	}
+	
+	
+// --- ADDED	
+	private static class DrawLight {
+		private int radius;
+		private Color color;
+		private int y;
+		private int x;
+
+		public DrawLight(Color color) {
+			this.color = color;
+			this.radius = 1;
+		}
+
+
+		public void setLocation(int x2, int y2) {
+			this.x = x2;
+			this.y = y2;
+			
+		}
+
+
+		public void setRadius(int i) {
+			this.radius = i;
+			
+		}
+
+
+		public void paint(Graphics g) {
+			g.setColor(this.color);
+			g.fillOval(this.x-this.radius, this.y-this.radius, 2*this.radius, 2*this.radius);	
+//			System.out.println(this.x + " " + this.color);
+		}
+
+
+
+
+
+	}	
+// --- ADDED		
 
 }

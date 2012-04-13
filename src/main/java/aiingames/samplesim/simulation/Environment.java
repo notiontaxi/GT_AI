@@ -1,12 +1,15 @@
 package aiingames.samplesim.simulation;
 
-import java.awt.Component;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import aiingames.samplesim.Config;
-import aiingames.samplesim.agents.Agent;
+import aiingames.samplesim.agents.Moveable;
+import aiingames.samplesim.agents.PointLight;
 import aiingames.samplesim.spatial.Coordinate;
+import aiingames.samplesim.spatial.Object2D;
+import aiingames.samplesim.spatial.Vector2D;
 
 public class Environment {
 	
@@ -15,51 +18,51 @@ public class Environment {
 	private double maxX = 12;
 	private double maxY = 12;
 
-	Map<String,PhysicalAgent> physicalAgents = new HashMap<String,PhysicalAgent>();
+	Map<String, Object2D> physicalAgents = new HashMap<String, Object2D>();
 	
-	protected void createAndAddPhysicalAgentRepresentation(Agent agent,Coordinate c) {
-		PhysicalAgent pa = new PhysicalAgent();
-		pa.c = c;
-		pa.vx = 0;
-		pa.vy = 0;
-		
+	// --- ADDED		
+	Map<String, Object2D> physicalLights = new HashMap<String, Object2D>();
+	// --- END ADDED	
+	
+	protected void createAndAddPhysicalAgentRepresentation(Moveable agent,Coordinate c) {
+		Object2D pa = new Object2D(c);
+		pa.setDirection(new Vector2D(2.0, 2.0));
 		this.physicalAgents.put(agent.getId(), pa);
 		
 	}
 	
+// --- ADDED	
+	public void createAndAddPhysicalLightRepresentation(Moveable light, Coordinate c) {
+		Object2D pl = new Object2D(c);
+		this.physicalLights.put(light.getId(),pl);
+		
+	}	
 	
-	private static class PhysicalAgent {
-		Coordinate c;
-		double vx;
-		double vy;
-		
-	}
 
 
-	public void moveAgent(Agent a) {
-		PhysicalAgent pa = this.physicalAgents.get(a.getId());
+
+	public void moveAgent(Moveable a) {
+		Object2D pa = this.physicalAgents.get(a.getId());
 		
-		double dx = Config.getSimStepSize()*(pa.vx - a.getDesiredVx())/Config.TAU;
-		double dy = Config.getSimStepSize()*(pa.vy - a.getDesiredVy())/Config.TAU;
-		double nVx = pa.vx + dx;
-		double nVy = pa.vy + dy;
+		double dx = Config.getSimStepSize()*(pa.getDirection().getX() - a.getDesiredVx())/Config.TAU;
+		double dy = Config.getSimStepSize()*(pa.getDirection().getY() - a.getDesiredVy())/Config.TAU;
+		double nVx = pa.getDirection().getX() + dx;
+		double nVy = pa.getDirection().getY() + dy;
 		
 		double scale = validateV(nVx, nVy);
 		
 		double mvX = scale * nVx * Config.getSimStepSize();
 		double mvY = scale * nVy * Config.getSimStepSize();
 		
-		double nx = pa.c.getX() + mvX;
-		double ny = pa.c.getY() + mvY;
+		double nx = pa.getPosition().getX() + mvX;
+		double ny = pa.getPosition().getY() + mvY;
 		Coordinate nc = new Coordinate(nx, ny);
 		
-		if (!checkCollision(pa.c,nc)) {
-			pa.c = nc;
-			pa.vx = nVx;
-			pa.vy = nVy;
+		if (!checkCollision(pa.getPosition(),nc)) {
+			pa.setPosition(nc);
+			pa.setDirection(new Vector2D(nVx,nVy));
 		} else {
-			pa.vx = 0;
-			pa.vy = 0;
+			pa.setDirection(new Vector2D(0.0,0.0));
 		}
 		
 		
@@ -93,16 +96,6 @@ public class Environment {
 	}
 
 
-	public Coordinate getAgentLocation(String id) {
-		return this.physicalAgents.get(id).c;
-	}
-	
-	public double getVx(String id) {
-		return this.physicalAgents.get(id).vx;
-	}
-	public double getVy(String id) {
-		return this.physicalAgents.get(id).vy;
-	}
 
 
 	public double getMinX() {
@@ -143,6 +136,24 @@ public class Environment {
 	public void setMaxY(double maxY) {
 		this.maxY = maxY;
 	}
+
+
+
+	public Object2D getAgent(String _id){
+		
+		return this.physicalAgents.get(_id);
+	}
+
+	public Map<String, Object2D> getLights() {
+		return this.physicalLights;
+	}
+
+	public Object2D getLight(String string){
+		
+		return this.physicalLights.get(string);
+	}
+
+	
 	
 
 }
