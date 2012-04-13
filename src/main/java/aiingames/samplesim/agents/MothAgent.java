@@ -46,7 +46,7 @@ public class MothAgent implements Moveable {
 //			System.out.println("Angle between agent and light: \t"	+ angle);
 //			System.out.println("Angle between agent and light: \t"	+ angle);
 			if(angle <= 1.0 && angle >= 0.31){
-				System.out.println("See ya! "+angle);
+				//System.out.println("See ya! "+angle);
 //				System.out.println("desired VX: " + this.desiredVx+ "   desired VY: " + this.desiredVy);
 				this.desiredVx = v1.getX() * -Config.MAX_V;
 				this.desiredVy = v1.getY() * Config.MAX_V;
