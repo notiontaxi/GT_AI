@@ -117,12 +117,12 @@ public class Vector2D {
 //	}
 	
 	
-//	public Vector2D divEquals(double s) {
-//		if (s == 0) s = 0.0001;
-//		x /= s;
-//		y /= s;
-//		return this;
-//	}
+	public Vector2D divEquals(double s) {
+		if (s == 0) s = 0.0001;
+		this.c.setX(this.c.getX() / s);
+		this.c.setY(this.c.getY() / s);
+		return this;
+	}
 	
 	
 	public double length() {

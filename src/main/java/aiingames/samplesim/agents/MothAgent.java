@@ -32,8 +32,7 @@ public class MothAgent implements Moveable {
 		Vector2D newDir = new Vector2D(0.0, 0.0);
 		
 		for( Object2D light : e.getLights().values()){
-			
-			
+
 			Vector2D v1,v2;
 			v1 = (new Vector2D(light.getPosition().getX() - my2Drep.getPosition().getX(), my2Drep.getPosition().getY() - light.getPosition().getY())).normalize();
 			v2 = my2Drep.getDirection().normalize();
@@ -42,17 +41,14 @@ public class MothAgent implements Moveable {
 			double angle = v1.dot(v2); 
 
 			if(angle <= 1.0 && angle >= 0.31){
-				//System.out.println("See ya! "+angle);
-//				System.out.println("desired VX: " + this.desiredVx+ "   desired VY: " + this.desiredVy);
 				double distance = light.getPosition().getDistanceTo(my2Drep.getPosition());
-				if(distance < 4){
-//					newDir.plusEquals(v1);
-					newDir = v1;
-					//System.out.println(distance + " " + light);
+				if(distance < 5){
+					v1 = v1.mult(12/distance);
+					newDir.plusEquals(v1);
 				}
 			}
 		}
-		
+		newDir = newDir.normalize();
 		this.desiredVx = newDir.getX();
 		this.desiredVy = -newDir.getY();
 		

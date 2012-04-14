@@ -119,16 +119,15 @@ public class Gui {
 			DrawAgent da = this.agents.get(agent);
 			if (da == null) {
 				da = new DrawAgent(Color.BLUE);
-				da.setRadius((int)(0.5+.5*this.scale));
+				da.setRadius((int)(0.5+.3*this.scale));
 				this.agents.put(agent, da);
 			}
-			
 			
             int x = (int) (0.5+(agent.getPosition().getX() - this.minX) * this.scale);
             int y = (int) (0.5+(agent.getPosition().getY() - this.minY) * this.scale);
             da.setLocation(x,y);
-            double norm = 2 *Math.sqrt(Math.pow(agent.getDirection().getX(), 2)+ Math.pow(agent.getDirection().getY(), 2));
-            da.setDirection((int)(agent.getDirection().getX()*this.scale/norm+0.5),(int) (agent.getDirection().getY()*this.scale/norm+0.5));
+            
+            da.setDirection((agent.getDirection().getX()), (agent.getDirection().getY()));
 		}
 		
 		public void updateLight(Object2D light) {
@@ -167,8 +166,8 @@ public class Gui {
 		private Color color;
 		private int y;
 		private int x;
-		private int dx;
-		private int dy;
+		private double dx;
+		private double dy;
 
 		public DrawAgent(Color color) {
 			this.color = color;
@@ -179,7 +178,8 @@ public class Gui {
 			g.setColor(this.color);
 			g.fillOval(this.x-this.radius, this.y-this.radius, 2*this.radius, 2*this.radius);
 			g.setColor(Color.BLACK);
-			g.drawLine(this.x, this.y, this.x + this.dx, this.y + this.dy);
+			g.drawLine(this.x, this.y, this.x + (int)(this.dx*(this.radius)), this.y + (int)(this.dy*(this.radius)));
+			System.out.println(dx);
 		}
 
 
@@ -194,9 +194,9 @@ public class Gui {
 
 		}
 
-		public void setDirection(int dx, int dy) {
-			this.dx = dx;
-			this.dy = dy;
+		public void setDirection(double d, double e) {
+			this.dx = d;
+			this.dy = e;
 		}
 	}
 	
