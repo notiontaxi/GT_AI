@@ -46,23 +46,26 @@ public class Environment {
 		Object2D pa = this.physicalAgents.get(a.getId());
 //		pa.setDirection(new Vector2D(-0.5, 0.1));
 		
-		double dx = Config.getSimStepSize()*(pa.getDirection().getX() - a.getDesiredVx())/Config.TAU;
-		double dy = Config.getSimStepSize()*(pa.getDirection().getY() - a.getDesiredVy())/Config.TAU;
+		double dx = Config.getSimStepSize()*(pa.getDirection().getX() + a.getDesiredVx())/Config.TAU;
+		double dy = Config.getSimStepSize()*(pa.getDirection().getY() + a.getDesiredVy())/Config.TAU;
 		double nVx = pa.getDirection().getX() + dx;
 		double nVy = pa.getDirection().getY() + dy;
 		
-		double scale = validateV(nVx, nVy);
+		double scale = validateV(nVx, nVy); // value between 0 and 1
 		
-		double mvX = scale * nVx * Config.getSimStepSize();
-		double mvY = scale * nVy * Config.getSimStepSize();
+		//double mvX = scale * nVx * Config.getSimStepSize();
+		//double mvY = scale * nVy * Config.getSimStepSize();
 		
-		double nx = pa.getPosition().getX() + mvX;
-		double ny = pa.getPosition().getY() + mvY;
+		double nx = (pa.getPosition().getX() + nVx*scale* Config.getSimStepSize() );
+		double ny = (pa.getPosition().getY() + nVy*scale* Config.getSimStepSize() );
+		
 		Coordinate nc = new Coordinate(nx, ny);
-		System.out.println(mvX);
+		//System.out.println(pa.getDirection().getX() +"  "+pa.getPosition().getX());
+		Vector2D vec = new Vector2D(nVx,nVy).normalize();
+		
 		if (!checkCollision(pa.getPosition(),nc)) {
 			pa.setPosition(nc);
-			pa.setDirection(new Vector2D(nVx,nVy));
+			pa.setDirection(vec);
 		} else {
 			pa.setDirection(new Vector2D(0.0,0.0));
 		}

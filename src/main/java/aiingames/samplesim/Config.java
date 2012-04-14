@@ -4,7 +4,7 @@ public abstract class Config {
 
 	public static final double TAU = 0.5;
 
-	public static final double MAX_V = 1;
+	public static final double MAX_V = 3;
 
 	private static double SIM_STEP_SIZE = 0.04;
 	

@@ -53,8 +53,8 @@ public class MothAgent implements Moveable {
 			}
 		}
 		
-		this.desiredVx = newDir.getX() * -Config.MAX_V;
-		this.desiredVy = newDir.getY() * Config.MAX_V;
+		this.desiredVx = newDir.getX();
+		this.desiredVy = -newDir.getY();
 		
 		
 //		ArrayList<Coordinate> lights =  e.getLightCoordinates();
