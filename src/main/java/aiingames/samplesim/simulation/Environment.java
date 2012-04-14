@@ -1,6 +1,7 @@
 package aiingames.samplesim.simulation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -144,13 +145,18 @@ public class Environment {
 		return this.physicalAgents.get(_id);
 	}
 
-	public Map<String, Object2D> getLights() {
-		return this.physicalLights;
+
+
+	public Object2D getLight(String string){		
+		return this.physicalLights.get(string);
 	}
 
-	public Object2D getLight(String string){
-		
-		return this.physicalLights.get(string);
+	public Map<String, Object2D> getLights() {
+		return this.physicalLights;
+	}	
+	
+	public Map<String, Object2D> getAgents() {
+		return this.physicalAgents;
 	}
 
 	

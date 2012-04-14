@@ -27,7 +27,7 @@ public class Simulation {
 		double time = 0;
 		while (time < Config.getStopTime()) {
 			doSimStep(time);
-			
+
 			time += Config.getSimStepSize();
 		}
 		
@@ -42,7 +42,7 @@ public class Simulation {
 
 	private void updateGui() {
 		if (this.gui != null) {
-			this.gui.update(this.agents, this.lights, this.e);
+			this.gui.update(e.getAgents(), e.getLights());
 		}
 	}
 

@@ -63,15 +63,18 @@ public class Gui {
 		this.area.setTransformation(scale, minX, minY);
 
 	}
-	// --- MODIFIED
-	public void update(Collection<Moveable> agents, Collection<Moveable> lights, Environment e) {
-		for (Moveable agent : agents) {
-			this.area.updateAgent(agent,e);
+
+// --- MODIFIED
+	public void update(Map<String, Object2D> map, Map<String, Object2D> map2) {
+		
+		for (Object2D agent : map.values()) {
+			this.area.updateAgent(agent);
 		}
 		
-
-		for(Moveable light : lights)
-			this.area.updateLight(light, e);
+		for(Object2D light : map2.values()){
+			this.area.updateLight(light);
+			//System.out.println(light);
+		}
 // --- MODIFIED		
 		
         long current = System.currentTimeMillis();
@@ -95,8 +98,8 @@ public class Gui {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		private Map<Moveable,DrawAgent> agents = new HashMap<Moveable,DrawAgent>();
-		private Map<Moveable,DrawLight> lights = new HashMap<Moveable,DrawLight>();
+		private Map<Object2D,DrawAgent> agents = new HashMap<Object2D,DrawAgent>();
+		private Map<Object2D,DrawLight> lights = new HashMap<Object2D,DrawLight>();
 		private double scale;
 		private double minX;
 		private double minY;
@@ -112,7 +115,7 @@ public class Gui {
 			this.minY = minY;
 		}
 		
-		public void updateAgent(Moveable agent, Environment e) {
+		public void updateAgent(Object2D agent) {
 			DrawAgent da = this.agents.get(agent);
 			if (da == null) {
 				da = new DrawAgent(Color.BLUE);
@@ -120,16 +123,15 @@ public class Gui {
 				this.agents.put(agent, da);
 			}
 			
-			Object2D agent2D = e.getAgent(agent.getId());
 			
-            int x = (int) (0.5+(agent2D.getPosition().getX() - this.minX) * this.scale);
-            int y = (int) (0.5+(agent2D.getPosition().getY() - this.minY) * this.scale);
+            int x = (int) (0.5+(agent.getPosition().getX() - this.minX) * this.scale);
+            int y = (int) (0.5+(agent.getPosition().getY() - this.minY) * this.scale);
             da.setLocation(x,y);
-            double norm = 2 *Math.sqrt(Math.pow(agent2D.getDirection().getX(), 2)+ Math.pow(agent2D.getDirection().getY(), 2));
-            da.setDirection((int)(agent2D.getDirection().getX()*this.scale/norm+0.5),(int) (agent2D.getDirection().getY()*this.scale/norm+0.5));
+            double norm = 2 *Math.sqrt(Math.pow(agent.getDirection().getX(), 2)+ Math.pow(agent.getDirection().getY(), 2));
+            da.setDirection((int)(agent.getDirection().getX()*this.scale/norm+0.5),(int) (agent.getDirection().getY()*this.scale/norm+0.5));
 		}
 		
-		public void updateLight(Moveable light, Environment e) {
+		public void updateLight(Object2D light) {
 			DrawLight dl = this.lights.get(light);
 			if (dl == null) {
 				dl = new DrawLight(Color.YELLOW);
@@ -137,10 +139,8 @@ public class Gui {
 				this.lights.put(light, dl);
 			}
 			
-			Object2D light2D = e.getLight(light.getId());
-			
-            int x = (int) (0.5+(light2D.getPosition().getX() - this.minX) * this.scale);
-            int y = (int) (0.5+(light2D.getPosition().getY() - this.minY) * this.scale);
+            int x = (int) (0.5+(light.getPosition().getX() - this.minX) * this.scale);
+            int y = (int) (0.5+(light.getPosition().getY() - this.minY) * this.scale);
             dl.setLocation(x,y);
 		}		
 		
