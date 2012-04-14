@@ -12,7 +12,7 @@ public class PointLight implements Moveable {
 	}
 	
 
-	public void update(Environment e) {
+	public void move(Environment e) {
 		// TODO Auto-generated method stub		
 	}
 

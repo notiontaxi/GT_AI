@@ -22,7 +22,7 @@ public class MothAgent implements Moveable {
 		this.desiredVy = -0.5;
 	}
 	
-	public void update(Environment e) {
+	public void move(Environment e) {
 		
 //		a = (x, y)
 //		|a| = sqrt( x*x + y*y ) 

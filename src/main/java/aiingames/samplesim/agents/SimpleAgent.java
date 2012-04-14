@@ -15,7 +15,7 @@ public class SimpleAgent implements Moveable {
 		
 	}
 	
-	public void update(Environment e) {
+	public void move(Environment e) {
 //		double vx = e.getVx(id);
 //		double vy = e.getVy(id);
 //		

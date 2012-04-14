@@ -5,7 +5,7 @@ import aiingames.samplesim.simulation.Environment;
 
 public interface Moveable {
 	
-	void update(Environment e);
+	void move(Environment e);
 	
 	public String getId();
 	
