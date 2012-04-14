@@ -36,7 +36,7 @@ public class Simulation {
 
 	private void doSimStep(double time) {
 		updateAgents();
-		moveAgents();
+		updateEnvironment();
 		updateGui();
 	}
 
@@ -46,18 +46,16 @@ public class Simulation {
 		}
 	}
 
-	private void moveAgents() {
+	private void updateEnvironment() {
 		for (Moveable agent : this.agents) {
 			this.e.moveAgent(agent);
-		}
-		
+		}	
 	}
 
 	private void updateAgents() {
 		for(Moveable agent : this.agents){
-			agent.update(e);
+			agent.move(e);
 		}
-		
 	}
 	
 	public void addAgent(Moveable agent,Coordinate c){

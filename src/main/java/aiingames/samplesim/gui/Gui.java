@@ -133,7 +133,9 @@ public class Gui {
 		
 		public void updateLight(Object2D light) {
 			DrawLight dl = this.lights.get(light);
+			//System.out.println(light);
 			if (dl == null) {
+				System.out.println(light);
 				dl = new DrawLight(Color.YELLOW);
 				dl.setRadius((int)(0.5+.2*this.scale));
 				this.lights.put(light, dl);

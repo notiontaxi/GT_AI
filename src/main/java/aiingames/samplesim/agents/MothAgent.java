@@ -29,13 +29,10 @@ public class MothAgent implements Moveable {
 		
 		Object2D my2Drep = e.getAgent(this.id);
 		
+		Vector2D newDir = new Vector2D(0.0, 0.0);
+		
 		for( Object2D light : e.getLights().values()){
 			
-//			System.out.println("Distance to the light: \t"			+ coord.getDistanceTo(myCoord));
-
-			
-			//v1: agent to light
-			//v2: agent direction
 			
 			Vector2D v1,v2;
 			v1 = (new Vector2D(light.getPosition().getX() - my2Drep.getPosition().getX(), my2Drep.getPosition().getY() - light.getPosition().getY())).normalize();
@@ -43,16 +40,21 @@ public class MothAgent implements Moveable {
 			v2.setY(v2.getPosition().getY() * (-1));
 			
 			double angle = v1.dot(v2); 
-//			System.out.println("Angle between agent and light: \t"	+ angle);
-//			System.out.println("Angle between agent and light: \t"	+ angle);
+
 			if(angle <= 1.0 && angle >= 0.31){
 				//System.out.println("See ya! "+angle);
 //				System.out.println("desired VX: " + this.desiredVx+ "   desired VY: " + this.desiredVy);
-				this.desiredVx = v1.getX() * -Config.MAX_V;
-				this.desiredVy = v1.getY() * Config.MAX_V;
+				double distance = light.getPosition().getDistanceTo(my2Drep.getPosition());
+				if(distance < 4){
+//					newDir.plusEquals(v1);
+					newDir = v1;
+					//System.out.println(distance + " " + light);
+				}
 			}
 		}
 		
+		this.desiredVx = newDir.getX() * -Config.MAX_V;
+		this.desiredVy = newDir.getY() * Config.MAX_V;
 		
 		
 //		ArrayList<Coordinate> lights =  e.getLightCoordinates();

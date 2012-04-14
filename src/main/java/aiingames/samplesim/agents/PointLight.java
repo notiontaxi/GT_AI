@@ -17,8 +17,7 @@ public class PointLight implements Moveable {
 	}
 
 	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.id;
 	}
 
 	public double getDesiredVx() {

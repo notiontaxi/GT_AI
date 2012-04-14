@@ -44,6 +44,7 @@ public class Environment {
 
 	public void moveAgent(Moveable a) {
 		Object2D pa = this.physicalAgents.get(a.getId());
+//		pa.setDirection(new Vector2D(-0.5, 0.1));
 		
 		double dx = Config.getSimStepSize()*(pa.getDirection().getX() - a.getDesiredVx())/Config.TAU;
 		double dy = Config.getSimStepSize()*(pa.getDirection().getY() - a.getDesiredVy())/Config.TAU;
@@ -58,7 +59,7 @@ public class Environment {
 		double nx = pa.getPosition().getX() + mvX;
 		double ny = pa.getPosition().getY() + mvY;
 		Coordinate nc = new Coordinate(nx, ny);
-		
+		System.out.println(mvX);
 		if (!checkCollision(pa.getPosition(),nc)) {
 			pa.setPosition(nc);
 			pa.setDirection(new Vector2D(nVx,nVy));
@@ -147,16 +148,17 @@ public class Environment {
 
 
 
-	public Object2D getLight(String string){		
-		return this.physicalLights.get(string);
-	}
-
 	public Map<String, Object2D> getLights() {
 		return this.physicalLights;
 	}	
 	
 	public Map<String, Object2D> getAgents() {
 		return this.physicalAgents;
+	}
+
+	public void moveLight(Moveable light) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

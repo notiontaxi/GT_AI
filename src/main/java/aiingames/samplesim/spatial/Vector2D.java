@@ -135,6 +135,10 @@ public class Vector2D {
 		return delta.length();
 	}
 
+	public double distance(Coordinate _c) {
+		return this.c.getDistanceTo(_c);
+	}
+
 
 	public Vector2D normalize() {
 		 double m = length();

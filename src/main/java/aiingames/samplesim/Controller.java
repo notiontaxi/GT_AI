@@ -28,11 +28,11 @@ public class Controller {
 		 
 //		 log.info("creating agents ...");
 		 sim.addAgent( new MothAgent("moth1"), new Coordinate(6,6));
-		 sim.addAgent( new MothAgent("moth2"), new Coordinate(2,6));
+//		 sim.addAgent( new MothAgent("moth2"), new Coordinate(2,6));
 		 
 		 sim.addLight(new PointLight("pointl1"), new Coordinate(2,2));
-		 sim.addLight(new PointLight("pointl2"), new Coordinate(8,2));
-		 sim.addLight(new PointLight("pointl3"), new Coordinate(8,2));
+		 sim.addLight(new PointLight("pointl2"), new Coordinate(4,5));
+		 sim.addLight(new PointLight("pointl3"), new Coordinate(2,5));
 		 sim.addLight(new PointLight("pointl4"), new Coordinate(8,8));
 		 
 //		 log.info("starting sim ...");
