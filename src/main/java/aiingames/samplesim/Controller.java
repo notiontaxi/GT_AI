@@ -30,10 +30,15 @@ public class Controller {
 		 sim.addAgent( new MothAgent("moth1"), new Coordinate(6,6));
 //		 sim.addAgent( new MothAgent("moth2"), new Coordinate(2,6));
 		 
-		 sim.addLight(new PointLight("pointl1"), new Coordinate(2,2));
-		 sim.addLight(new PointLight("pointl2"), new Coordinate(4,5));
-		 sim.addLight(new PointLight("pointl3"), new Coordinate(2,5));
-		 sim.addLight(new PointLight("pointl4"), new Coordinate(8,8));
+		 sim.addLight(new PointLight("pointl1"), new Coordinate(2,3));
+		 sim.addLight(new PointLight("pointl2"), new Coordinate(6,1));
+		 sim.addLight(new PointLight("pointl3"), new Coordinate(8,3));
+		 sim.addLight(new PointLight("pointl4"), new Coordinate(4,7));
+		 sim.addLight(new PointLight("pointl5"), new Coordinate(4,1));
+		 sim.addLight(new PointLight("pointl6"), new Coordinate(2,5));
+		 sim.addLight(new PointLight("pointl7"), new Coordinate(6,7));
+		 sim.addLight(new PointLight("pointl8"), new Coordinate(8,5));		 
+		 
 		 
 //		 log.info("starting sim ...");
 		 sim.run();
