@@ -42,6 +42,19 @@ public class Coordinate {
 		
 		return Math.sqrt(xDist*xDist + yDist*yDist);
 	}
-
+	
+	public Coordinate clone(){
+		return new Coordinate(this.x, this.y);
+	}
+	public Coordinate sub(Coordinate _c){
+		return new Coordinate(this.x - _c.getX(), this.y - _c.getY());
+	}
+	
+    /** True if the vector represents a pair of valid, non-infinite floating point numbers. */ 
+    public boolean isValid() {
+        return x != Float.NaN && x != Float.NEGATIVE_INFINITY
+                && x != Float.POSITIVE_INFINITY && y != Float.NaN
+                && y != Float.NEGATIVE_INFINITY && y != Float.POSITIVE_INFINITY;
+    }
 
 }

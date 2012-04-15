@@ -10,6 +10,7 @@ import aiingames.samplesim.agents.Moveable;
 import aiingames.samplesim.agents.PointLight;
 import aiingames.samplesim.spatial.Coordinate;
 import aiingames.samplesim.spatial.Object2D;
+import aiingames.samplesim.spatial.PhysicObject2D;
 import aiingames.samplesim.spatial.Vector2D;
 
 public class Environment {
@@ -19,20 +20,18 @@ public class Environment {
 	private double maxX = 12;
 	private double maxY = 12;
 
-	Map<String, Object2D> physicalAgents = new HashMap<String, Object2D>();
-	
-	// --- ADDED		
+	Map<String, PhysicObject2D> physicalAgents = new HashMap<String, PhysicObject2D>();
 	Map<String, PointLight> physicalLights = new HashMap<String, PointLight>();
-	// --- END ADDED	
+	
 	
 	protected void createAndAddPhysicalAgentRepresentation(Moveable agent,Coordinate c) {
-		Object2D pa = new Object2D(c);
-		pa.setDirection(new Vector2D(2.0, 2.0));
+		PhysicObject2D pa = new PhysicObject2D(c, new Vector2D(2.0, 2.0));
+
 		this.physicalAgents.put(agent.getId(), pa);
 		
 	}
 	
-// --- ADDED	
+
 	public void createAndAddPhysicalLightRepresentation(PointLight light) {
 		this.physicalLights.put(light.getId(),light);
 		
@@ -43,7 +42,6 @@ public class Environment {
 
 	public void moveAgent(Moveable a) {
 		Object2D pa = this.physicalAgents.get(a.getId());
-//		pa.setDirection(new Vector2D(-0.5, 0.1));
 		
 		double dx = Config.getSimStepSize()*(pa.getDirection().getX() + a.getDesiredVx())/Config.TAU;
 		double dy = Config.getSimStepSize()*(pa.getDirection().getY() + a.getDesiredVy())/Config.TAU;
@@ -52,14 +50,10 @@ public class Environment {
 		
 		double scale = validateV(nVx, nVy); // value between 0 and 1
 		
-		//double mvX = scale * nVx * Config.getSimStepSize();
-		//double mvY = scale * nVy * Config.getSimStepSize();
-		
 		double nx = (pa.getPosition().getX() + nVx*scale* Config.getSimStepSize() );
 		double ny = (pa.getPosition().getY() + nVy*scale* Config.getSimStepSize() );
 		
 		Coordinate nc = new Coordinate(nx, ny);
-		//System.out.println(pa.getDirection().getX() +"  "+pa.getPosition().getX());
 		Vector2D vec = new Vector2D(nVx,nVy).normalize();
 		
 		if (!checkCollision(pa.getPosition(),nc)) {
@@ -154,7 +148,7 @@ public class Environment {
 		return this.physicalLights;
 	}	
 	
-	public Map<String, Object2D> getAgents() {
+	public Map<String, PhysicObject2D> getAgents() {
 		return this.physicalAgents;
 	}
 

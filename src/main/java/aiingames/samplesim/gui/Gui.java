@@ -19,6 +19,7 @@ import aiingames.samplesim.agents.PointLight;
 import aiingames.samplesim.simulation.Environment;
 import aiingames.samplesim.spatial.Coordinate;
 import aiingames.samplesim.spatial.Object2D;
+import aiingames.samplesim.spatial.PhysicObject2D;
 
 public class Gui {
 	private JFrame f;
@@ -64,8 +65,8 @@ public class Gui {
 
 	}
 
-// --- MODIFIED
-	public void update(Map<String, Object2D> map, Map<String, PointLight> map2) {
+
+	public void update(Map<String, PhysicObject2D> map, Map<String, PointLight> map2) {
 		
 		for (Object2D agent : map.values()) {
 			this.area.updateAgent(agent);
@@ -73,9 +74,9 @@ public class Gui {
 		
 		for(PointLight light : map2.values()){
 			this.area.updateLight(light);
-			//System.out.println(light);
+
 		}
-// --- MODIFIED		
+
 		
         long current = System.currentTimeMillis();
         long diff = current - this.lastUpdate;
