@@ -1,8 +1,8 @@
 package aiingames.samplesim.spatial;
 
 import physics.PhysicsBox;
-import aiingames.samplesim.agents.Markable;
 import aiingames.samplesim.agents.Moveable;
+import aiingames.samplesim.gui.Markable;
 
 public class PointLight extends Object2D implements Moveable, Markable {
 	
