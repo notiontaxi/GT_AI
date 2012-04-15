@@ -8,7 +8,7 @@ import aiingames.samplesim.spatial.Coordinate;
 
 import java.util.*;
 
-public class MothAgent implements Moveable {
+public class AgentMoth implements Moveable {
 
 	
 	private final String id;
@@ -16,7 +16,7 @@ public class MothAgent implements Moveable {
 	private double desiredVy;
 	
 	
-	public MothAgent(String id) {
+	public AgentMoth(String id) {
 		this.id = id;
 		this.desiredVx = -0.5;
 		this.desiredVy = -0.5;

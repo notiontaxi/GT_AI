@@ -4,7 +4,7 @@ package aiingames.samplesim;
 
 import aiingames.samplesim.agents.Moveable;
 import aiingames.samplesim.agents.PointLight;
-import aiingames.samplesim.agents.MothAgent;
+import aiingames.samplesim.agents.AgentMoth;
 import aiingames.samplesim.gui.Gui;
 import aiingames.samplesim.simulation.Environment;
 import aiingames.samplesim.simulation.Simulation;
@@ -27,7 +27,7 @@ public class Controller {
 		 sim.setGui(gui);
 		 
 //		 log.info("creating agents ...");
-		 sim.addAgent( new MothAgent("moth1"), new Coordinate(3,3));
+		 sim.addAgent( new AgentMoth("moth1"), new Coordinate(3,3));
 //		 sim.addAgent( new MothAgent("moth2"), new Coordinate(2,6));
 		 
 		 sim.addLight(new PointLight("pointl_01"), new Coordinate(2,3));
