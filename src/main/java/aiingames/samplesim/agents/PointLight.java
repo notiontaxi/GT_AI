@@ -2,12 +2,15 @@ package aiingames.samplesim.agents;
 
 import aiingames.samplesim.simulation.Environment;
 import aiingames.samplesim.spatial.Coordinate;
+import aiingames.samplesim.spatial.Object2D;
 
-public class PointLight implements Moveable {
+public class PointLight extends Object2D implements Moveable, Markable {
 	
 	final private String id;
+	private boolean marked;
 	
-	public PointLight(String _id){
+	public PointLight(String _id, Coordinate _c){
+		super(_c);
 		this.id = _id;
 	}
 	
@@ -31,9 +34,21 @@ public class PointLight implements Moveable {
 	}
 
 
-	public Coordinate getPosition() {
-		// TODO Auto-generated method stub
-		return null;
+
+
+
+	public void mark() {
+		this.marked = true;
+	}
+
+
+	public void unmark() {
+		this.marked = false;
+	}
+
+
+	public boolean isMarked() {
+		return this.marked;
 	}
 
 }

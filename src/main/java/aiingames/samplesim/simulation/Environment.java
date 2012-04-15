@@ -22,7 +22,7 @@ public class Environment {
 	Map<String, Object2D> physicalAgents = new HashMap<String, Object2D>();
 	
 	// --- ADDED		
-	Map<String, Object2D> physicalLights = new HashMap<String, Object2D>();
+	Map<String, PointLight> physicalLights = new HashMap<String, PointLight>();
 	// --- END ADDED	
 	
 	protected void createAndAddPhysicalAgentRepresentation(Moveable agent,Coordinate c) {
@@ -33,9 +33,8 @@ public class Environment {
 	}
 	
 // --- ADDED	
-	public void createAndAddPhysicalLightRepresentation(Moveable light, Coordinate c) {
-		Object2D pl = new Object2D(c);
-		this.physicalLights.put(light.getId(),pl);
+	public void createAndAddPhysicalLightRepresentation(PointLight light) {
+		this.physicalLights.put(light.getId(),light);
 		
 	}	
 	
@@ -151,7 +150,7 @@ public class Environment {
 
 
 
-	public Map<String, Object2D> getLights() {
+	public Map<String, PointLight> getLights() {
 		return this.physicalLights;
 	}	
 	

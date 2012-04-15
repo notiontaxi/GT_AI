@@ -31,7 +31,7 @@ public class AgentMoth implements Moveable {
 		
 		Vector2D newDir = new Vector2D(0.0, 0.0);
 		
-		for( Object2D light : e.getLights().values()){
+		for( PointLight light : e.getLights().values()){
 
 			Vector2D v1,v2;
 			v1 = (new Vector2D(light.getPosition().getX() - my2Drep.getPosition().getX(), my2Drep.getPosition().getY() - light.getPosition().getY())).normalize();
@@ -39,13 +39,15 @@ public class AgentMoth implements Moveable {
 			v2.setY(v2.getPosition().getY() * (-1));
 			
 			double angle = v1.dot(v2); 
-
+			light.unmark();
 			if(angle <= 1.0 && angle >= 0.31){
 				double distance = light.getPosition().getDistanceTo(my2Drep.getPosition());
-				if(distance < 5){
+				if(distance < 4){
 					v1 = v1.mult(12/distance);
 					newDir.plusEquals(v1);
+					light.mark();
 				}
+					
 			}
 		}
 		newDir = newDir.normalize();

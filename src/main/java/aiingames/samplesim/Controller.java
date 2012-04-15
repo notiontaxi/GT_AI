@@ -30,17 +30,17 @@ public class Controller {
 		 sim.addAgent( new AgentMoth("moth1"), new Coordinate(3,3));
 //		 sim.addAgent( new MothAgent("moth2"), new Coordinate(2,6));
 		 
-		 sim.addLight(new PointLight("pointl_01"), new Coordinate(2,3));
-		 sim.addLight(new PointLight("pointl_06"), new Coordinate(2,5));
-		 sim.addLight(new PointLight("pointl_04"), new Coordinate(4,7));
-		 sim.addLight(new PointLight("pointl_05"), new Coordinate(4,1));
-		 sim.addLight(new PointLight("pointl_02"), new Coordinate(6,1));
-		 sim.addLight(new PointLight("pointl_07"), new Coordinate(6,7));
-		 sim.addLight(new PointLight("pointl_03"), new Coordinate(8,3));
-		 sim.addLight(new PointLight("pointl_08"), new Coordinate(8,5));	
+		 sim.addLight(new PointLight("pointl_01", new Coordinate(2,3)));
+		 sim.addLight(new PointLight("pointl_06", new Coordinate(2,5)));
+		 sim.addLight(new PointLight("pointl_04", new Coordinate(4,7)));
+		 sim.addLight(new PointLight("pointl_05", new Coordinate(4,1)));
+		 sim.addLight(new PointLight("pointl_02", new Coordinate(6,1)));
+		 sim.addLight(new PointLight("pointl_07", new Coordinate(6,7)));
+		 sim.addLight(new PointLight("pointl_03", new Coordinate(8,3)));
+		 sim.addLight(new PointLight("pointl_08", new Coordinate(8,5)));	
 		 
-		 sim.addLight(new PointLight("pointl_09"), new Coordinate(3,2));
-		 sim.addLight(new PointLight("pointl_10"), new Coordinate(6,2));	
+		 sim.addLight(new PointLight("pointl_09", new Coordinate(3,2)));
+		 sim.addLight(new PointLight("pointl_10", new Coordinate(6,2)));	
 		 
 //		 log.info("starting sim ...");
 		 sim.run();

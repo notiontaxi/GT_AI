@@ -65,13 +65,13 @@ public class Gui {
 	}
 
 // --- MODIFIED
-	public void update(Map<String, Object2D> map, Map<String, Object2D> map2) {
+	public void update(Map<String, Object2D> map, Map<String, PointLight> map2) {
 		
 		for (Object2D agent : map.values()) {
 			this.area.updateAgent(agent);
 		}
 		
-		for(Object2D light : map2.values()){
+		for(PointLight light : map2.values()){
 			this.area.updateLight(light);
 			//System.out.println(light);
 		}
@@ -130,7 +130,7 @@ public class Gui {
             da.setDirection((agent.getDirection().getX()), (agent.getDirection().getY()));
 		}
 		
-		public void updateLight(Object2D light) {
+		public void updateLight(PointLight light) {
 			DrawLight dl = this.lights.get(light);
 			//System.out.println(light);
 			if (dl == null) {
@@ -139,6 +139,11 @@ public class Gui {
 				dl.setRadius((int)(0.5+.2*this.scale));
 				this.lights.put(light, dl);
 			}
+			
+			if(light.isMarked())
+				dl.color = Color.CYAN;
+			else
+				dl.color = Color.YELLOW;
 			
             int x = (int) (0.5+(light.getPosition().getX() - this.minX) * this.scale);
             int y = (int) (0.5+(light.getPosition().getY() - this.minY) * this.scale);

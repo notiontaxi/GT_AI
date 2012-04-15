@@ -64,9 +64,9 @@ public class Simulation {
 	}
 	
 // --- ADDED
-	public void addLight(Moveable light, Coordinate c) {
+	public void addLight(PointLight light) {
 		this.lights.add(light);
-		this.e.createAndAddPhysicalLightRepresentation(light, c);
+		this.e.createAndAddPhysicalLightRepresentation(light);
 	}
 // --- ADDED END	
 
@@ -74,6 +74,8 @@ public class Simulation {
 		this.gui = gui;
 		
 	}
+
+
 
 
 
