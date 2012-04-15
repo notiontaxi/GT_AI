@@ -1,20 +1,19 @@
-package aiingames.samplesim.simulation;
+package physics;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+
 import aiingames.samplesim.Config;
 import aiingames.samplesim.agents.Moveable;
-import aiingames.samplesim.agents.PointLight;
-import aiingames.samplesim.spatial.BoundingBoxAABB;
 import aiingames.samplesim.spatial.Coordinate;
 import aiingames.samplesim.spatial.Object2D;
-import aiingames.samplesim.spatial.PhysicObject2D;
+import aiingames.samplesim.spatial.PointLight;
 import aiingames.samplesim.spatial.Vector2D;
 
-public class Environment {
+public class PhysicsBox {
 	
 	private double minX;
 	private double minY;
@@ -26,7 +25,7 @@ public class Environment {
 	
 	ArrayList<BoundingBoxAABB> boundingboxes;
 	
-	public Environment(){
+	public PhysicsBox(){
 		minX = 0;
 		minY = 0;
 		maxX = 12;
@@ -36,13 +35,12 @@ public class Environment {
 		physicalLights = new HashMap<String, PointLight>();
 		
 		boundingboxes = new ArrayList<BoundingBoxAABB>();
-		
-		
+
 	}
 	
 	
 	
-	protected void createAndAddPhysicalAgentRepresentation(Moveable agent,Coordinate c) {
+	public void createAndAddPhysicalAgentRepresentation(Moveable agent,Coordinate c) {
 		PhysicObject2D pa = new PhysicObject2D(c, new Vector2D(2.0, 2.0));
 
 		this.physicalAgents.put(agent.getId(), pa);

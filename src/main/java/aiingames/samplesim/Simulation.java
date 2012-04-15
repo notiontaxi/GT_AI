@@ -1,24 +1,25 @@
-package aiingames.samplesim.simulation;
+package aiingames.samplesim;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import aiingames.samplesim.Config;
+import physics.PhysicsBox;
+
 import aiingames.samplesim.agents.Moveable;
-import aiingames.samplesim.agents.PointLight;
 import aiingames.samplesim.gui.Gui;
 import aiingames.samplesim.spatial.Coordinate;
+import aiingames.samplesim.spatial.PointLight;
 
 public class Simulation {
 	
 	List<Moveable> agents = new ArrayList<Moveable>();
 	List<Moveable> lights = new ArrayList<Moveable>();
 	
-	Environment e;
+	PhysicsBox e;
 
 	private Gui gui;
 	
-	public Simulation(Environment e) {
+	public Simulation(PhysicsBox e) {
 		this.e = e;
 	}
 	

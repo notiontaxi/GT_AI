@@ -1,8 +1,8 @@
-package aiingames.samplesim.agents;
+package aiingames.samplesim.spatial;
 
-import aiingames.samplesim.simulation.Environment;
-import aiingames.samplesim.spatial.Coordinate;
-import aiingames.samplesim.spatial.Object2D;
+import physics.PhysicsBox;
+import aiingames.samplesim.agents.Markable;
+import aiingames.samplesim.agents.Moveable;
 
 public class PointLight extends Object2D implements Moveable, Markable {
 	
@@ -15,7 +15,7 @@ public class PointLight extends Object2D implements Moveable, Markable {
 	}
 	
 
-	public void move(Environment e) {
+	public void move(PhysicsBox e) {
 		// TODO Auto-generated method stub		
 	}
 

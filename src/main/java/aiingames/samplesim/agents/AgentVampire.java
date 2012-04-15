@@ -1,16 +1,14 @@
 package aiingames.samplesim.agents;
 
+import physics.PhysicsBox;
 import aiingames.samplesim.Config;
 import aiingames.samplesim.spatial.Object2D;
 import aiingames.samplesim.spatial.PointLight;
 import aiingames.samplesim.spatial.Vector2D;
-import aiingames.samplesim.spatial.Coordinate;
 
-import java.util.*;
 
-import physics.PhysicsBox;
 
-public class AgentMoth implements Moveable {
+public class AgentVampire implements Moveable {
 
 	
 	private final String id;
@@ -18,7 +16,7 @@ public class AgentMoth implements Moveable {
 	private double desiredVy;
 	
 	
-	public AgentMoth(String id) {
+	public AgentVampire(String id) {
 		this.id = id;
 		this.desiredVx = -0.5;
 		this.desiredVy = -0.5;
@@ -41,7 +39,7 @@ public class AgentMoth implements Moveable {
 			light.unmark();
 			if(angle <= 1.0 && angle >= 0.31){
 				double distance = light.getPosition().getDistanceTo(my2Drep.getPosition());
-				if(distance < 4){
+				if(distance < 1){
 					v1 = v1.mult(12/distance);
 					newDir.plusEquals(v1);
 					light.mark();
@@ -50,8 +48,8 @@ public class AgentMoth implements Moveable {
 			}
 		}
 		newDir = newDir.normalize();
-		this.desiredVx = newDir.getX();
-		this.desiredVy = -newDir.getY();
+		this.desiredVx = -newDir.getX();
+		this.desiredVy = newDir.getY();
 		
 		
 		

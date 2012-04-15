@@ -1,11 +1,11 @@
 package aiingames.samplesim.agents;
 
 
-import aiingames.samplesim.simulation.Environment;
+import physics.PhysicsBox;
 
 public interface Moveable {
 	
-	void move(Environment e);
+	void move(PhysicsBox e);
 	
 	public String getId();
 	

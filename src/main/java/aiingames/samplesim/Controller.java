@@ -2,13 +2,13 @@ package aiingames.samplesim;
 
 //import org.apache.log4j.Logger;
 
+import physics.PhysicsBox;
+import aiingames.samplesim.agents.AgentVampire;
 import aiingames.samplesim.agents.Moveable;
-import aiingames.samplesim.agents.PointLight;
 import aiingames.samplesim.agents.AgentMoth;
 import aiingames.samplesim.gui.Gui;
-import aiingames.samplesim.simulation.Environment;
-import aiingames.samplesim.simulation.Simulation;
 import aiingames.samplesim.spatial.Coordinate;
+import aiingames.samplesim.spatial.PointLight;
 
 public class Controller {
 
@@ -19,7 +19,7 @@ public class Controller {
 		 Gui gui = new Gui();
 		 
 //		 log.info("creating environment ...");
-		 Environment e = new Environment();
+		 PhysicsBox e = new PhysicsBox();
 		 gui.setEnvironmentSize(e.getMinX(), e.getMinY(), e.getMaxX(), e.getMaxY());
 		 
 //		 log.info("creating sim ...");
@@ -28,7 +28,7 @@ public class Controller {
 		 
 //		 log.info("creating agents ...");
 		 sim.addAgent( new AgentMoth("moth1"), new Coordinate(3,3));
-//		 sim.addAgent( new AgentMoth("moth2"), new Coordinate(2,6));
+		 sim.addAgent( new AgentVampire("moth2"), new Coordinate(2,6));
 //		 sim.addAgent( new AgentMoth("moth3"), new Coordinate(3,5));
 		 sim.addAgent( new AgentMoth("moth4"), new Coordinate(2,1));
 		 

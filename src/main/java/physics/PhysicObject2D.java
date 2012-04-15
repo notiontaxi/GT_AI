@@ -1,4 +1,8 @@
-package aiingames.samplesim.spatial;
+package physics;
+
+import aiingames.samplesim.spatial.Coordinate;
+import aiingames.samplesim.spatial.Object2D;
+import aiingames.samplesim.spatial.Vector2D;
 
 public class PhysicObject2D extends Object2D{
 

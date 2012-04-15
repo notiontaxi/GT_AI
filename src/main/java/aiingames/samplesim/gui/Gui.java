@@ -13,13 +13,14 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import physics.PhysicObject2D;
+import physics.PhysicsBox;
+
 import aiingames.samplesim.Config;
 import aiingames.samplesim.agents.Moveable;
-import aiingames.samplesim.agents.PointLight;
-import aiingames.samplesim.simulation.Environment;
 import aiingames.samplesim.spatial.Coordinate;
 import aiingames.samplesim.spatial.Object2D;
-import aiingames.samplesim.spatial.PhysicObject2D;
+import aiingames.samplesim.spatial.PointLight;
 
 public class Gui {
 	private JFrame f;

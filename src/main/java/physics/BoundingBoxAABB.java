@@ -1,5 +1,7 @@
 
-package aiingames.samplesim.spatial;
+package physics;
+
+import aiingames.samplesim.spatial.Coordinate;
 
 public class BoundingBoxAABB {
 
