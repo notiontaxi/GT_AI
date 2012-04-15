@@ -34,12 +34,13 @@ public class Object2D {
 	}
 
 	public void setPosition(Coordinate _nc) {
-		this.position = _nc;
+		this.position.setX(_nc.getX());
+		this.position.setY(_nc.getY());
 	}
 
 	public void setDirection(Vector2D _dir) {
-		this.direction = _dir;
-		
+		this.direction.setX(_dir.getX());
+		this.direction.setY(_dir.getY());
 	}
 
 }

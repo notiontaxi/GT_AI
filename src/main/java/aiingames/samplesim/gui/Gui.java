@@ -135,7 +135,7 @@ public class Gui {
 			DrawLight dl = this.lights.get(light);
 			//System.out.println(light);
 			if (dl == null) {
-				System.out.println(light);
+				//System.out.println(light);
 				dl = new DrawLight(Color.YELLOW);
 				dl.setRadius((int)(0.5+.2*this.scale));
 				this.lights.put(light, dl);
@@ -185,7 +185,7 @@ public class Gui {
 			g.fillOval(this.x-this.radius, this.y-this.radius, 2*this.radius, 2*this.radius);
 			g.setColor(Color.BLACK);
 			g.drawLine(this.x, this.y, this.x + (int)(this.dx*(this.radius)), this.y + (int)(this.dy*(this.radius)));
-			System.out.println(dx);
+			//System.out.println(dx);
 		}
 
 

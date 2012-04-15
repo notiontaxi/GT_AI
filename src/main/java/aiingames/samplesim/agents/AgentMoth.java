@@ -23,10 +23,7 @@ public class AgentMoth implements Moveable {
 	}
 	
 	public void move(Environment e) {
-		
-//		a = (x, y)
-//		|a| = sqrt( x*x + y*y ) 
-		
+
 		Object2D my2Drep = e.getAgent(this.id);
 		
 		Vector2D newDir = new Vector2D(0.0, 0.0);
@@ -55,10 +52,6 @@ public class AgentMoth implements Moveable {
 		this.desiredVy = -newDir.getY();
 		
 		
-//		ArrayList<Coordinate> lights =  e.getLightCoordinates();
-//				
-//		for(Coordinate lc : lights)
-//			System.out.println(lc.getX());
 		
 		double vx = my2Drep.getDirection().getX();
 		double vy = my2Drep.getDirection().getY();

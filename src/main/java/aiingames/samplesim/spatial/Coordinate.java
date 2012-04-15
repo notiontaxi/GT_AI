@@ -29,10 +29,7 @@ public class Coordinate {
 		this.y = _y;
 	}
 	
-	@Override
-	public String toString(){
-		return "X: "+this.x+"   Y: "+this.y;
-	}
+
 
 	public double getDistanceTo(Coordinate _coord) {
 			
@@ -49,6 +46,9 @@ public class Coordinate {
 	public Coordinate sub(Coordinate _c){
 		return new Coordinate(this.x - _c.getX(), this.y - _c.getY());
 	}
+	public Coordinate sub(double _x, double _y){
+		return new Coordinate(this.x - _x, this.y - _y);
+	}	
 	
     /** True if the vector represents a pair of valid, non-infinite floating point numbers. */ 
     public boolean isValid() {
@@ -56,5 +56,12 @@ public class Coordinate {
                 && x != Float.POSITIVE_INFINITY && y != Float.NaN
                 && y != Float.NEGATIVE_INFINITY && y != Float.POSITIVE_INFINITY;
     }
+    
+    
+	@Override
+	public String toString(){
+		return "X: "+this.x+"   Y: "+this.y;
+	}
+    
 
 }

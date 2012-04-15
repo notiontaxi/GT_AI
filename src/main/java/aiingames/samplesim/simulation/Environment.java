@@ -8,6 +8,7 @@ import java.util.Map;
 import aiingames.samplesim.Config;
 import aiingames.samplesim.agents.Moveable;
 import aiingames.samplesim.agents.PointLight;
+import aiingames.samplesim.spatial.BoundingBoxAABB;
 import aiingames.samplesim.spatial.Coordinate;
 import aiingames.samplesim.spatial.Object2D;
 import aiingames.samplesim.spatial.PhysicObject2D;
@@ -15,13 +16,30 @@ import aiingames.samplesim.spatial.Vector2D;
 
 public class Environment {
 	
-	private double minX = 0;
-	private double minY = 0;
-	private double maxX = 12;
-	private double maxY = 12;
+	private double minX;
+	private double minY;
+	private double maxX;
+	private double maxY;
 
-	Map<String, PhysicObject2D> physicalAgents = new HashMap<String, PhysicObject2D>();
-	Map<String, PointLight> physicalLights = new HashMap<String, PointLight>();
+	Map<String, PhysicObject2D> physicalAgents;
+	Map<String, PointLight> physicalLights;
+	
+	ArrayList<BoundingBoxAABB> boundingboxes;
+	
+	public Environment(){
+		minX = 0;
+		minY = 0;
+		maxX = 12;
+		maxY = 12;
+
+		physicalAgents = new HashMap<String, PhysicObject2D>();
+		physicalLights = new HashMap<String, PointLight>();
+		
+		boundingboxes = new ArrayList<BoundingBoxAABB>();
+		
+		
+	}
+	
 	
 	
 	protected void createAndAddPhysicalAgentRepresentation(Moveable agent,Coordinate c) {
@@ -41,7 +59,7 @@ public class Environment {
 
 
 	public void moveAgent(Moveable a) {
-		Object2D pa = this.physicalAgents.get(a.getId());
+		PhysicObject2D pa = this.physicalAgents.get(a.getId());
 		
 		double dx = Config.getSimStepSize()*(pa.getDirection().getX() + a.getDesiredVx())/Config.TAU;
 		double dy = Config.getSimStepSize()*(pa.getDirection().getY() + a.getDesiredVy())/Config.TAU;
@@ -53,14 +71,18 @@ public class Environment {
 		double nx = (pa.getPosition().getX() + nVx*scale* Config.getSimStepSize() );
 		double ny = (pa.getPosition().getY() + nVy*scale* Config.getSimStepSize() );
 		
+		Coordinate oc = pa.getPosition();
 		Coordinate nc = new Coordinate(nx, ny);
 		Vector2D vec = new Vector2D(nVx,nVy).normalize();
 		
-		if (!checkCollision(pa.getPosition(),nc)) {
-			pa.setPosition(nc);
+		pa.setPosition(nc);
+		if (!checkCollision(pa)) {
 			pa.setDirection(vec);
 		} else {
-			pa.setDirection(new Vector2D(0.0,0.0));
+			pa.setPosition(oc);
+			pa.setDirection(vec.multEquals(-1.0));
+			
+			System.out.println("Collision!");
 		}
 		
 		
@@ -77,17 +99,22 @@ public class Environment {
 	}
 
 
-	private boolean checkCollision(Coordinate c, Coordinate nc) {
-		if (nc.getX() < this.getMinX()) {
+	private boolean checkCollision(PhysicObject2D _obj) {
+		
+		for(PhysicObject2D obj : this.physicalAgents.values())
+			if(_obj.collidesWith(obj))
+				return true;
+		
+		if (_obj.getPosition().getX() < this.getMinX()) {
 			return true;
 		}
-		if (nc.getY() < this.getMinY()) {
+		if (_obj.getPosition().getY() < this.getMinY()) {
 			return true;
 		}
-		if (nc.getX() > this.getMaxX()) {
+		if (_obj.getPosition().getX() > this.getMaxX()) {
 			return true;
 		}
-		if (nc.getY() > this.getMaxY()) {
+		if (_obj.getPosition().getY() > this.getMaxY()) {
 			return true;
 		}
 		return false;

@@ -1,70 +1,47 @@
-	/*
-	 * JBox2D - A Java Port of Erin Catto's Box2D
-	 * 
-	 * JBox2D homepage: http://jbox2d.sourceforge.net/ 
-	 * Box2D homepage: http://www.box2d.org
-	 * 
-	 * This software is provided 'as-is', without any express or implied
-	 * warranty.  In no event will the authors be held liable for any damages
-	 * arising from the use of this software.
-	 * 
-	 * Permission is granted to anyone to use this software for any purpose,
-	 * including commercial applications, and to alter it and redistribute it
-	 * freely, subject to the following restrictions:
-	 * 
-	 * 1. The origin of this software must not be misrepresented; you must not
-	 * claim that you wrote the original software. If you use this software
-	 * in a product, an acknowledgment in the product documentation would be
-	 * appreciated but is not required.
-	 * 2. Altered source versions must be plainly marked as such, and must not be
-	 * misrepresented as being the original software.
-	 * 3. This notice may not be removed or altered from any source distribution.
-	 */
 
 package aiingames.samplesim.spatial;
 
 public class BoundingBoxAABB {
 
-
-
-	    public Coordinate lowerBound, upperBound;
+	    private Coordinate pivot;
+	    private double size;
 	    
 	    public String toString() {
-	    	String s = ""+lowerBound+" -> "+upperBound;
+	    	String s = "Pivot: "+this.pivot+" size: "+this.size;
 	    	return s;
 	    }
 
-	    public BoundingBoxAABB(Coordinate minVertex, Coordinate maxVertex) {
-	        this.lowerBound = minVertex.clone(); // clone to be safe
-	        this.upperBound = maxVertex.clone();
-	    }
-
-	    public BoundingBoxAABB(BoundingBoxAABB copy) {
-	        this(copy.lowerBound, copy.upperBound); // relies on cloning in AABB(Vec2, Vec2) constructor
+	    public BoundingBoxAABB(Coordinate _pivot, double _size) {
+	    	this.pivot = _pivot;
+	    	this.size = _size;
 	    }
 
 
 
-	    /** Verify that the bounds are sorted. */
-	    public boolean isValid() {
-	    	Coordinate d = upperBound.sub(lowerBound);
-	    	boolean valid = (d.getX() >= 0.0f && d.getY() >= 0);
-	    	valid = valid && lowerBound.isValid() && upperBound.isValid();
-	    	return valid;
-	    }
-
-	    /** Check if AABBs overlap. */
 	    public boolean testOverlap(BoundingBoxAABB box) {
-	        Coordinate d1 = box.lowerBound.sub(upperBound);
-	        Coordinate d2 = lowerBound.sub(box.upperBound);
-
-	        if (d1.getX() > 0.0f || d1.getY() > 0.0f || d2.getX() > 0.0f || d2.getY() > 0.0f) {
-	            return false;
-	        }
-	        else {
-	            return true;
-	        }
+	    	if(box != this ){
+	    		
+		        Coordinate d1 = box.getLowerBound().sub(this.getUpperBound());
+		        Coordinate d2 = this.getLowerBound().sub(box.getUpperBound());
+	  
+		        if (d1.getX() > 0.0f || d1.getY() > 0.0f || d2.getX() > 0.0f || d2.getY() > 0.0f) {
+		            return false;
+		        }
+		        else {
+		            return true;
+		        }
+	    	}
+	    	return false;
 	    }
+	    
+	    
+	    
+	    public Coordinate getLowerBound(){
+	    	return this.pivot.sub(this.size, this.size);
+	    }
+	    public Coordinate getUpperBound(){
+	    	return this.pivot.sub(-this.size, -this.size);
+	    }	    
 	    
 }
 	
