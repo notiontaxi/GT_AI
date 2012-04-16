@@ -42,17 +42,16 @@ public class PhysicsBox {
 	
 	public void createAndAddPhysicalAgentRepresentation(Moveable agent,Coordinate c) {
 		PhysicObject2D pa = new PhysicObject2D(c, new Vector2D(2.0, 2.0));
-
 		this.physicalAgents.put(agent.getId(), pa);
 		
 	}
 	
-
+// --- ADDED	
 	public void createAndAddPhysicalLightRepresentation(PointLight light) {
-		this.physicalLights.put(light.getId(),light);
-		
+		this.physicalLights.put(light.getId(),light);		
 	}	
 	
+
 
 
 
@@ -181,6 +180,10 @@ public class PhysicsBox {
 		// TODO Auto-generated method stub
 		
 	}
+
+
+
+
 
 	
 	

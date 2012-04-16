@@ -7,6 +7,7 @@ import aiingames.samplesim.agents.AgentVampire;
 import aiingames.samplesim.agents.Moveable;
 import aiingames.samplesim.agents.AgentMoth;
 import aiingames.samplesim.gui.Gui;
+import aiingames.samplesim.simulation.Simulation;
 import aiingames.samplesim.spatial.Coordinate;
 import aiingames.samplesim.spatial.PointLight;
 

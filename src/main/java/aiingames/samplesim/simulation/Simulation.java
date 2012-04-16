@@ -3,22 +3,24 @@ package aiingames.samplesim.simulation;
 import java.util.ArrayList;
 import java.util.List;
 
+import physics.PhysicsBox;
+
 import aiingames.samplesim.Config;
 import aiingames.samplesim.agents.Moveable;
-import aiingames.samplesim.agents.PointLight;
 import aiingames.samplesim.gui.Gui;
 import aiingames.samplesim.spatial.Coordinate;
+import aiingames.samplesim.spatial.PointLight;
 
 public class Simulation {
 	
 	List<Moveable> agents = new ArrayList<Moveable>();
 	List<Moveable> lights = new ArrayList<Moveable>();
 	
-	Environment e;
+	PhysicsBox e;
 
 	private Gui gui;
 	
-	public Simulation(Environment e) {
+	public Simulation(PhysicsBox e) {
 		this.e = e;
 	}
 	
@@ -64,9 +66,9 @@ public class Simulation {
 	}
 	
 // --- ADDED
-	public void addLight(Moveable light, Coordinate c) {
+	public void addLight(PointLight light) {
 		this.lights.add(light);
-		this.e.createAndAddPhysicalLightRepresentation(light, c);
+		this.e.createAndAddPhysicalLightRepresentation(light);
 	}
 // --- ADDED END	
 
@@ -74,6 +76,7 @@ public class Simulation {
 		this.gui = gui;
 		
 	}
+
 
 
 
