@@ -14,9 +14,13 @@ import spatial.Vector2D;
 public class AgentVampire implements Moveable {
 
 	
+	
 	private final String id;
 	private double desiredVx;
 	private double desiredVy;
+	
+	private Object2D my2DRepresentation;	
+	private Vector2D newDirection;
 	
 	
 	public AgentVampire(String id) {
@@ -25,46 +29,40 @@ public class AgentVampire implements Moveable {
 		this.desiredVy = -0.5;
 	}
 	
-	public void move(PhysicsBox e) {
+	public void move(PhysicsBox _box) {
 
-		Object2D my2Drep = e.getAgent(this.id);
+		my2DRepresentation = _box.getAgent(this.id);		
+		newDirection = new Vector2D(0.0, 0.0);
+		double distance;
 		
-		Vector2D newDir = new Vector2D(0.0, 0.0);
-		
-		for( PointLight light : e.getLights().values()){
+		// iterate over all existing lights in the scene
+		for( PointLight light : _box.getLights().values()){
 
-			Vector2D v1,v2;
-			v1 = (new Vector2D(light.getPosition().getX() - my2Drep.getPosition().getX(), my2Drep.getPosition().getY() - light.getPosition().getY())).normalize();
-			v2 = my2Drep.getDirection().normalize();
-			v2.setY(v2.getPosition().getY() * (-1));
+			Vector2D directionToTheLight = (new Vector2D(	light.getPosition().getX() - my2DRepresentation.getPosition().getX(), 
+															my2DRepresentation.getPosition().getY() - light.getPosition().getY())
+														).normalize();
+
+			double angle = my2DRepresentation.getDirection().dot(directionToTheLight); 
 			
-			double angle = v1.dot(v2); 
-			light.unmark();
+//			light.unmark();
+			
+			// if angle between -90 and +90 degree
 			if(angle <= 1.0 && angle >= 0.31){
-				double distance = light.getPosition().getDistanceTo(my2Drep.getPosition());
-				if(distance < 1){
-					v1 = v1.mult(12/distance);
-					newDir.plusEquals(v1);
-					light.mark();
+				distance = light.getPosition().getDistanceTo(my2DRepresentation.getPosition());
+				if(distance < 3){
+					directionToTheLight = directionToTheLight.multEquals(12/distance);
+					newDirection.plusEquals(directionToTheLight);
+//					light.mark();				
 				}
 					
 			}
 		}
-		newDir = newDir.normalize();
-		this.desiredVx = -newDir.getX();
-		this.desiredVy = newDir.getY();
 		
-		
-		
-		double vx = my2Drep.getDirection().getX();
-		double vy = my2Drep.getDirection().getY();
-		
-		if (vx == 0 && vy == 0) {
-			this.desiredVx = Config.MAX_V * 2 * (Math.random()-0.5);
-			this.desiredVy = Config.MAX_V * 2* (Math.random()-0.5);
-		}
-
+		newDirection = newDirection.normalize();
+		this.desiredVx = -newDirection.getX();
+		this.desiredVy = -newDirection.getY();	
 	}
+
 
 	public String getId() {
 		return this.id;

@@ -82,8 +82,7 @@ public class PhysicsBox {
 			physicalObject.setDirection(newDirection);
 		} else {
 			physicalObject.setPosition(oldCoordinate);
-			physicalObject.setDirection(newDirection.multEquals(-1.0));
-			
+			physicalObject.setDirection(newDirection.multEquals(-1.0));;
 			System.out.println("Collision!");
 		}		
 	}

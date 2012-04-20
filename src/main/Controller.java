@@ -29,9 +29,9 @@ public class Controller {
 		 
 //		 log.info("creating agents ...");
 //		 sim.addAgent( new AgentMoth("moth1"), new Coordinate(3,3));
-//		 sim.addAgent( new AgentVampire("moth2"), new Coordinate(2,6));
+		 sim.addAgent( new AgentVampire("moth2"), new Coordinate(4,4));
 //		 sim.addAgent( new AgentMoth("moth3"), new Coordinate(3,5));
-		 sim.addAgent( new AgentMoth("moth4"), new Coordinate(2,1));
+//		 sim.addAgent( new AgentMoth("moth4"), new Coordinate(2,1));
 		 
 		 sim.addLight(new PointLight("pointl_01", new Coordinate(2,3)));
 		 sim.addLight(new PointLight("pointl_06", new Coordinate(2,5)));

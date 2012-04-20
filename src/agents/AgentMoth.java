@@ -49,7 +49,7 @@ public class AgentMoth implements Moveable {
 			if(angle <= 1.0 && angle >= 0.31){
 				distance = light.getPosition().getDistanceTo(my2DRepresentation.getPosition());
 				if(distance < 4){
-					directionToTheLight = directionToTheLight.mult(4/distance);
+					directionToTheLight = directionToTheLight.mult(1/(distance*2));
 					newDirection.plusEquals(directionToTheLight);
 					light.mark();				
 				}
