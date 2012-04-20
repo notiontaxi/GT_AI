@@ -184,7 +184,7 @@ public class Gui {
 			g.setColor(this.color);
 			g.fillOval(this.x-this.radius, this.y-this.radius, 2*this.radius, 2*this.radius);
 			g.setColor(Color.BLACK);
-			g.drawLine(this.x, this.y, this.x + (int)(this.dx*(this.radius)), this.y + (int)(this.dy*(this.radius)));
+			g.drawLine(this.x, this.y, this.x + (int)(this.dx*(this.radius)), this.y - (int)(this.dy*(this.radius)));
 			//System.out.println(dx);
 		}
 

@@ -3,7 +3,7 @@ package main;
 
 public abstract class Config {
 
-	public static final double TAU = 0.5;
+	public static final double TAU = 0.9;
 
 	public static final double MAX_V = 3;
 

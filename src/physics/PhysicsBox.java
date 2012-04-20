@@ -43,16 +43,13 @@ public class PhysicsBox {
 		boundingboxes = new ArrayList<BoundingBoxAABB>();
 
 	}
-	
-	
+		
 	
 	public void createAndAddPhysicalAgentRepresentation(Moveable agent,Coordinate c) {
 		PhysicObject2D pa = new PhysicObject2D(c, new Vector2D(2.0, 2.0));
 		this.physicalAgents.put(agent.getId(), pa);
 		
 	}
-	
-// --- ADDED	
 	public void createAndAddPhysicalLightRepresentation(PointLight light) {
 		this.physicalLights.put(light.getId(),light);		
 	}	
@@ -62,52 +59,54 @@ public class PhysicsBox {
 
 
 	public void moveAgent(Moveable a) {
-		PhysicObject2D pa = this.physicalAgents.get(a.getId());
+		PhysicObject2D physicalObject = this.physicalAgents.get(a.getId());
+		Coordinate oldCoordinate = physicalObject.getPosition(); // remember old position
 		
-		double dx = Config.getSimStepSize()*(pa.getDirection().getX() + a.getDesiredVx())/Config.TAU;
-		double dy = Config.getSimStepSize()*(pa.getDirection().getY() + a.getDesiredVy())/Config.TAU;
-		double nVx = pa.getDirection().getX() + dx;
-		double nVy = pa.getDirection().getY() + dy;
+		// compute new direction vector
+		double dx = Config.getSimStepSize()*(physicalObject.getDirection().getX() + a.getDesiredVx())/Config.TAU;
+		double dy = Config.getSimStepSize()*(physicalObject.getDirection().getY() + a.getDesiredVy())/Config.TAU;
+		double nVx = physicalObject.getDirection().getX() + dx;
+		double nVy = physicalObject.getDirection().getY() + dy;
+		Vector2D newDirection = new Vector2D(nVx,nVy).normalize();
 		
-		double scale = validateV(nVx, nVy); // value between 0 and 1
 		
-		double nx = (pa.getPosition().getX() + nVx*scale* Config.getSimStepSize() );
-		double ny = (pa.getPosition().getY() + nVy*scale* Config.getSimStepSize() );
-		
-		Coordinate oc = pa.getPosition();
-		Coordinate nc = new Coordinate(nx, ny);
-		Vector2D vec = new Vector2D(nVx,nVy).normalize();
-		
-		pa.setPosition(nc);
-		if (!checkCollision(pa)) {
-			pa.setDirection(vec);
+		// add delta to old position => new position 
+		double nx = (physicalObject.getPosition().getX() + newDirection.getX()* Config.getSimStepSize() );
+		double ny = (physicalObject.getPosition().getY() - newDirection.getY()* Config.getSimStepSize() );
+		Coordinate newCoordinate = new Coordinate(nx, ny);				
+
+		System.out.println(newDirection);
+		// set to new position and check for collisions
+		physicalObject.setPosition(newCoordinate);
+		if (!checkCollision(physicalObject)) {
+			physicalObject.setDirection(newDirection);
 		} else {
-			pa.setPosition(oc);
-			pa.setDirection(vec.multEquals(-1.0));
+			physicalObject.setPosition(oldCoordinate);
+			physicalObject.setDirection(newDirection.multEquals(-1.0));
 			
 			System.out.println("Collision!");
-		}
-		
-		
+		}		
 	}
 
 
-	private double validateV(double nVx, double nVy) {
-
-		double v = Math.hypot(nVx, nVy);
-		if (v > Config.MAX_V) {
-			return Config.MAX_V / v;
-		}
-		return 1;
-	}
+//	private double validateV(double nVx, double nVy) {
+//
+//		double v = Math.hypot(nVx, nVy);
+//		if (v > Config.MAX_V) {
+//			return Config.MAX_V / v;
+//		}
+//		return 1;
+//	}
 
 
 	private boolean checkCollision(PhysicObject2D _obj) {
 		
+		// check for collision with other PhysicObject2Ds
 		for(PhysicObject2D obj : this.physicalAgents.values())
 			if(_obj.collidesWith(obj))
 				return true;
 		
+		// check for sollision with borders
 		if (_obj.getPosition().getX() < this.getMinX()) {
 			return true;
 		}
