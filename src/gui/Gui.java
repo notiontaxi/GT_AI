@@ -68,7 +68,7 @@ public class Gui {
 
 	public void update(Map<String, PhysicObject2D> map, Map<String, PointLight> map2) {
 		
-		for (Object2D agent : map.values()) {
+		for (PhysicObject2D agent : map.values()) {
 			this.area.updateAgent(agent);
 		}
 		
@@ -116,13 +116,16 @@ public class Gui {
 			this.minY = minY;
 		}
 		
-		public void updateAgent(Object2D agent) {
+		public void updateAgent(PhysicObject2D agent) {
 			DrawAgent da = this.agents.get(agent);
 			if (da == null) {
 				da = new DrawAgent(Color.BLUE);
 				da.setRadius((int)(0.5+.3*this.scale));
 				this.agents.put(agent, da);
 			}
+
+			da.setDesiredDirection(agent.getDesiredDirection().getX(), agent.getDesiredDirection().getY());
+			
 			
             int x = (int) (0.5+(agent.getPosition().getX() - this.minX) * this.scale);
             int y = (int) (0.5+(agent.getPosition().getY() - this.minY) * this.scale);
@@ -175,6 +178,9 @@ public class Gui {
 		private double dx;
 		private double dy;
 
+		private double desx;
+		private double desy;
+
 		public DrawAgent(Color color) {
 			this.color = color;
 		}
@@ -185,6 +191,9 @@ public class Gui {
 			g.fillOval(this.x-this.radius, this.y-this.radius, 2*this.radius, 2*this.radius);
 			g.setColor(Color.BLACK);
 			g.drawLine(this.x, this.y, this.x + (int)(this.dx*(this.radius)), this.y - (int)(this.dy*(this.radius)));
+			
+			g.setColor(Color.RED);
+			g.drawLine(this.x, this.y, this.x + (int)(this.desx * 50), this.y - (int)(this.desy * 50));
 			//System.out.println(dx);
 		}
 
@@ -203,6 +212,11 @@ public class Gui {
 		public void setDirection(double d, double e) {
 			this.dx = d;
 			this.dy = e;
+		}
+		
+		public void setDesiredDirection(double x, double y) {
+			this.desx = x;
+			this.desy = y;
 		}
 	}
 	

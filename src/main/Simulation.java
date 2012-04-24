@@ -4,7 +4,9 @@ package main;
 import gui.Gui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import agents.Moveable;
 
@@ -16,7 +18,7 @@ import spatial.PointLight;
 
 public class Simulation {
 	
-	List<Moveable> agents = new ArrayList<Moveable>();
+	Map<String, Moveable> agents = new HashMap<String, Moveable>();
 	List<Moveable> lights = new ArrayList<Moveable>();
 	
 	PhysicsBox e;
@@ -52,19 +54,19 @@ public class Simulation {
 	}
 
 	private void updateEnvironment() {
-		for (Moveable agent : this.agents) {
+		for (Moveable agent : this.agents.values()) {
 			this.e.moveAgent(agent);
 		}	
 	}
 
 	private void updateAgents() {
-		for(Moveable agent : this.agents){
+		for(Moveable agent : this.agents.values()){
 			agent.move(e);
 		}
 	}
 	
 	public void addAgent(Moveable agent,Coordinate c){
-		this.agents.add(agent);
+		this.agents.put(agent.getId(), agent);
 		this.e.createAndAddPhysicalAgentRepresentation(agent,c);
 	}
 	

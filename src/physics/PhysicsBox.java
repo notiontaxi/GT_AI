@@ -62,6 +62,8 @@ public class PhysicsBox {
 		PhysicObject2D physicalObject = this.physicalAgents.get(a.getId());
 		Coordinate oldCoordinate = physicalObject.getPosition(); // remember old position
 		
+		physicalObject.setDesiredDirection(new Vector2D(a.getDesiredVx(), a.getDesiredVy()));
+		
 		// compute new direction vector
 		double dx = Config.getSimStepSize()*(physicalObject.getDirection().getX() + a.getDesiredVx())/Config.TAU;
 		double dy = Config.getSimStepSize()*(physicalObject.getDirection().getY() + a.getDesiredVy())/Config.TAU;

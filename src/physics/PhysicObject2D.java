@@ -13,6 +13,8 @@ public class PhysicObject2D extends Object2D{
 	
 	private float speed;
 	private BoundingBoxAABB boundingBox;
+
+	Vector2D desiredDirection;
 	
 	
 	public PhysicObject2D(Coordinate _position, Vector2D _direction) {
@@ -31,6 +33,14 @@ public class PhysicObject2D extends Object2D{
 
 	public BoundingBoxAABB getBoundingBox(){
 		return this.boundingBox;
+	}
+	
+	public void setDesiredDirection(Vector2D desiredDiVector) {
+		this.desiredDirection = desiredDiVector;
+	}
+	
+	public Vector2D getDesiredDirection() {
+		return this.desiredDirection;
 	}
 
 }

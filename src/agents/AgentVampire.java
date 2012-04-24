@@ -40,7 +40,7 @@ public class AgentVampire implements Moveable {
 
 			Vector2D directionToTheLight = (new Vector2D(	light.getPosition().getX() - my2DRepresentation.getPosition().getX(), 
 															my2DRepresentation.getPosition().getY() - light.getPosition().getY())
-														).normalize();
+														);
 
 			double angle = my2DRepresentation.getDirection().dot(directionToTheLight); 
 			
