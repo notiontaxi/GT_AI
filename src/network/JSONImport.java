@@ -76,7 +76,11 @@ public class JSONImport {
 	public static void main(String[] args) {
 		JSONImport jsonImport = new JSONImport();
 		try {
-			jsonImport.parseFile(args[0]);
+			Network network = jsonImport.parseFile(args[0]);
+			
+			if(args.length > 1 && args[1].equals("3d")) {
+				new gui.Network(network);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
