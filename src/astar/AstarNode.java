@@ -1,11 +1,10 @@
 package astar;
 
-import java.util.HashMap;
-import java.util.Map;
+import network.Node;
 
-public class AstarNode extends Node2D {
+public class AstarNode extends Node {
 
-	private Node2D previous;
+	private Node previous;
 	private double totalDistance;
 	
 	private double euclideanDistanceToTarget;
@@ -14,11 +13,19 @@ public class AstarNode extends Node2D {
 		super(id, x, y);
 	}
 	
-	public void setTarget(Node2D target) {
+	public void setTarget(Node target) {
 		this.euclideanDistanceToTarget = this.getDistanceTo(target);
 	}
 	
 	public double getEuclideanDistanceToTarget() {
 		return euclideanDistanceToTarget;
+	}
+	
+	public Node getPrevious() {
+		return previous;
+	}
+	
+	public double getTotalDistance() {
+		return totalDistance;
 	}
 }
