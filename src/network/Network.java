@@ -3,6 +3,9 @@ package network;
 import java.util.HashMap;
 import java.util.Map;
 
+import spatial.BoundingBox;
+import spatial.Coordinate;
+
 public class Network {
 
 	private Map<Integer, Node> nodes;
@@ -34,5 +37,33 @@ public class Network {
 
 	public Link getLink(int id) {
 		return this.links.get(id);
+	}
+	
+	public BoundingBox getBoundingBox() {
+		Double minX = null;
+		Double minY = null;
+		Double maxX = null;
+		Double maxY = null;
+		
+		for (Node node : this.nodes.values()) {
+			if(minX == null || node.getX() < minX) {
+				minX = node.getX();
+			}
+			
+			if(maxX == null || node.getX() > maxX) {
+				maxX = node.getX();
+			}
+
+			if(minY == null || node.getY() < minY) {
+				minY = node.getY();
+			}
+			
+			if(maxY == null || node.getY() > maxY) {
+				maxY = node.getY();
+			}
+		}
+		
+		BoundingBox boundingBox = new BoundingBox(new Coordinate(minX, minY), new Coordinate(maxX, maxY));
+		return boundingBox;
 	}
 }
