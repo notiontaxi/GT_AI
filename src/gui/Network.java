@@ -1,5 +1,10 @@
 package gui;
 
+import java.util.Stack;
+
+import astar.Astar;
+import astar.AstarNode;
+
 import com.sun.j3d.utils.geometry.*;
 
 import com.sun.j3d.utils.universe.*;
@@ -45,6 +50,26 @@ public class Network {
 			group.addChild(tg);
 		}
 
+
+		Astar astar = new Astar(network, network.getNode(1322517741), network.getNode(1322811485));
+		Stack<AstarNode> path = astar.getPath();
+		do {
+			AstarNode node = path.pop();
+
+			float x = new Float(((node.getX() - minX) * 2 / width) - 1);
+			float y = new Float(((node.getY() - minY) * 2 / height) - 1);
+
+			Cone sphere = new Cone(0.05f, 0.05f);
+			
+			TransformGroup tg = new TransformGroup();
+			Transform3D transform = new Transform3D();
+			Vector3f vector = new Vector3f(x, y, .0f);
+			transform.setTranslation(vector);
+			tg.setTransform(transform);
+			tg.addChild(sphere);
+			group.addChild(tg);
+		} while (!path.empty());
+		
 		// for (float x = -1.0f; x <= 1.0f; x = x + 0.1f)
 		// {
 		// Sphere sphere = new Sphere(0.05f);

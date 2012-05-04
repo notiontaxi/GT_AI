@@ -16,6 +16,10 @@ public class Link {
 		this.to = to;
 		this.capacity = capacity;
 		this.length = length;
+		
+		this.from.addNeighbor(this);
+		this.to.addNeighbor(this);
+		
 	}
 	
 	public int getId() {

@@ -4,13 +4,18 @@ import network.Node;
 
 public class AstarNode extends Node {
 
-	private Node previous;
-	private double totalDistance;
+	private AstarNode previous;
+	private Double totalDistance = null;
 	
 	private double euclideanDistanceToTarget;
 	
 	public AstarNode(int id, float x, float y) {
 		super(id, x, y);
+	}
+	
+	public AstarNode(Node node) {
+		super(node.getId(), node.getX(), node.getY());
+		this.setNeighbours(node.getNeighbours());
 	}
 	
 	public void setTarget(Node target) {
@@ -21,11 +26,19 @@ public class AstarNode extends Node {
 		return euclideanDistanceToTarget;
 	}
 	
-	public Node getPrevious() {
+	public AstarNode getPrevious() {
 		return previous;
 	}
+	public void setPrevious(AstarNode previous) {
+		this.previous = previous;
+	}
 	
-	public double getTotalDistance() {
+	public Double getTotalDistance() {
 		return totalDistance;
 	}
+	
+	public void setTotalDistance(Double totalDistance) {
+		this.totalDistance = totalDistance;
+	}
+	
 }

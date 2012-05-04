@@ -20,13 +20,15 @@ public class Node extends Coordinate {
 		return id;
 	}
 	public Map<Integer, Link> getNeighbours() {
-		return neighbours;
+		return this.neighbours;
 	}
 	public void setNeighbours(Map<Integer, Link> neighbours) {
 		this.neighbours = neighbours;
 	}
 	public void addNeighbor(Link link) {
-		this.neighbours.put(link.getId(), link);
+		
+		Node neighbour = link.getFrom() != this ? link.getFrom() : link.getTo();
+		this.neighbours.put(neighbour.getId(), link);
 	}
 	public Link getNeighbour(int id) {
 		return this.neighbours.get(id);

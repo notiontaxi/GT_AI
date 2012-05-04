@@ -3,10 +3,14 @@ package network;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.Stack;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import astar.Astar;
+import astar.AstarNode;
 
 
 public class JSONImport {
@@ -30,7 +34,6 @@ public class JSONImport {
 		    	JSONObject jsonNode = jsonNodes.getJSONObject(i).getJSONObject("node");
 		    	
 		    	Node node = new Node(jsonNode.getInt("id"), jsonNode.getDouble("x"), jsonNode.getDouble("y"));
-		    	
 		    	network.addNode(node);
 		    }
 
