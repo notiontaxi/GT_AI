@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import network.Link;
-import network.Network;
+import network.NetworkGraph;
 import network.Node;
 
 /**
@@ -18,7 +18,7 @@ public class Astar {
 	private Map<Integer, AstarNode> available;
 	private Map<Integer, AstarNode> closed;
 	
-	private Network network;
+	private NetworkGraph networkGraph;
 	private AstarNode start;
 	private AstarNode target;
 	
@@ -28,8 +28,8 @@ public class Astar {
 	 * @param start - where to start
 	 * @param target - where to end
 	 */
-	public Astar(Network network, Node start, Node target) {
-		this.network = network;
+	public Astar(NetworkGraph networkGraph, Node start, Node target) {
+		this.networkGraph = networkGraph;
 		
 		// all available nodes in the network
 		this.available = new HashMap<Integer, AstarNode>();
@@ -129,6 +129,7 @@ public class Astar {
 		while(currentNode.getPrevious() != null) {
 			result.push(currentNode);
 			currentNode = currentNode.getPrevious();
+			System.out.println(currentNode.getId());
 		}
 		return result;
 	}
@@ -137,7 +138,7 @@ public class Astar {
 	 * initialize astar and calculate the euclidean distance to the target
 	 */
 	private void initAstarNodes() {
-		for(Node node : network.getNodes().values()) {
+		for(Node node : networkGraph.getNodes()) {
 			AstarNode astarNode = new AstarNode(node);
 			astarNode.setTarget(this.target);
 			this.available.put(astarNode.getId(), astarNode);

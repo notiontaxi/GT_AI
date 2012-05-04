@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import astar.Astar;
 import astar.AstarNode;
+import gui.JUNG;
 
 
 public class JSONImport {
@@ -20,8 +21,8 @@ public class JSONImport {
 	 * @return Network
 	 * @throws IOException
 	 */
-	public Network parseFile(String path) throws IOException {
-		Network network = new Network();
+	public NetworkGraph parseFile(String path) throws IOException {
+		NetworkGraph networkGraph = new NetworkGraph();
 		
 		JSONObject json;
 		try {
@@ -34,7 +35,7 @@ public class JSONImport {
 		    	JSONObject jsonNode = jsonNodes.getJSONObject(i).getJSONObject("node");
 		    	
 		    	Node node = new Node(jsonNode.getInt("id"), jsonNode.getDouble("x"), jsonNode.getDouble("y"));
-		    	network.addNode(node);
+		    	networkGraph.addNode(node);
 		    }
 
 		    for (int i = 0; i < jsonLinks.length(); i++) {
@@ -46,15 +47,15 @@ public class JSONImport {
 		    	double length = jsonLink.getDouble("length");
 		    	double capacity = jsonLink.getDouble("capacity");
 		    	
-		    	Link link= new Link(id, network.getNode(from), network.getNode(to), capacity, length);
-		    	network.addLink(link);
+		    	Link link= new Link(id, networkGraph.getNode(from), networkGraph.getNode(to), capacity, length);
+		    	networkGraph.addLink(link);
 		    }
 		    
 		} catch (JSONException e) {
 			System.out.println("Error while parsing document!");
 			e.printStackTrace();
 		}
-		return network;
+		return networkGraph;
 	  }
 	
 	/**
@@ -78,12 +79,19 @@ public class JSONImport {
 	
 	public static void main(String[] args) {
 		JSONImport jsonImport = new JSONImport();
+                JUNG jung = new JUNG();
 		try {
-			Network network = jsonImport.parseFile(args[0]);
+			NetworkGraph networkGraph = jsonImport.parseFile(args[0]);
 			
-			if(args.length > 1 && args[1].equals("3d")) {
+			Astar astar = new Astar(networkGraph, networkGraph.getNode(1322517741), networkGraph.getNode(1322811485));
+			Stack<AstarNode> path = astar.getPath();
+			
+			/*if(args.length > 1 && args[1].equals("3d")) {
 				new gui.Network(network);
-			}
+			}*/
+			jung.createLayout(networkGraph);
+			jung.setAstarPath(path, 1322517741, 1322811485);
+			jung.draw();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
