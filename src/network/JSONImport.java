@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import astar.Astar;
 import astar.AstarNode;
 import gui.JUNG;
+import java.util.List;
 
 
 public class JSONImport {
@@ -83,15 +84,32 @@ public class JSONImport {
 		try {
 			NetworkGraph networkGraph = jsonImport.parseFile(args[0]);
 			
-			Astar astar = new Astar(networkGraph, networkGraph.getNode(1322517741), networkGraph.getNode(1322811485));
+			Astar astar = new Astar(networkGraph, networkGraph.getNode(1322811485), networkGraph.getNode(1328453500));
 			Stack<AstarNode> path = astar.getPath();
+			Stack<AstarNode> pathdummy = astar.getPath();
+			
+			networkGraph.calcDijkstra();
+			List<Link> dijList = networkGraph.getDijkstraPath(networkGraph.getNode(1322811485), networkGraph.getNode(1328453500));
+			
+			jung.createLayout(networkGraph);
+			jung.setDijkstra(dijList);
+			jung.setAstarPath(path, 1322811485, 1328453500);
+			jung.draw();
+			
 			
 			/*if(args.length > 1 && args[1].equals("3d")) {
 				new gui.Network(network);
 			}*/
-			jung.createLayout(networkGraph);
-			jung.setAstarPath(path, 1322517741, 1322811485);
-			jung.draw();
+			double dist = 0;
+			int ownListSize = 0;
+			while (!pathdummy.empty()){
+				AstarNode anode1 = pathdummy.pop();
+				AstarNode anode2 = anode1.getPrevious();
+				dist += anode1.getDistanceTo(anode2);
+				ownListSize++;
+			}	
+			System.out.println("dist: " + dist + " count: " +ownListSize);
+			System.out.println("dij dist: " + networkGraph.getDijkstraLength(networkGraph.getNode(1322811485), networkGraph.getNode(1328453500)) + " count:" + dijList.size());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

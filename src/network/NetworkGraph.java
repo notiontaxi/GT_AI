@@ -5,11 +5,14 @@
 package network;
 
 import com.sun.org.apache.bcel.internal.generic.AALOAD;
+import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
 import edu.uci.ics.jung.graph.Graph;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections15.Transformer;
 import spatial.BoundingBox;
 import spatial.Coordinate;
 
@@ -21,15 +24,32 @@ public class NetworkGraph {
     
     private Graph<Node, Link> graph;
     private Map<Integer, Node> nodes;
-    
+    private DijkstraShortestPath<Node,Link> dij;
     
     public NetworkGraph(){
         graph = new DirectedSparseMultigraph(); 
         nodes = new HashMap<Integer, Node>();
     }
+	
+	public void calcDijkstra(){
+		Transformer<Link, Double> wtTransformer = new Transformer<Link,Double>() {
+			public Double transform(Link link) {
+				return link.getLength();
+				}
+			};
+		dij = new DijkstraShortestPath(graph, wtTransformer);
+	}
     
+	public List<Link> getDijkstraPath(Node start, Node end){
+		return dij.getPath(start, end);
+	}
+	
+	public double getDijkstraLength(Node start, Node end){
+		return dij.getDistance(start, end).doubleValue();
+	}
+		
     public Graph<Node, Link> getGraph(){
-        return this.graph;
+		return this.graph;
     }
     
     public Collection<network.Link> getLinks() {

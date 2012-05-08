@@ -97,18 +97,20 @@ public class Astar {
 			AstarNode neighbour = this.available.get(nodeId);
 			
 			Double newDistance = link.getLength() + neighbour.getEuclideanDistanceToTarget() + currentNode.getTotalDistance();
+			//Double newDistance = link.getLength() +  currentNode.getTotalDistance();
 			
-			if(neighbour.getTotalDistance() != null && (this.available.containsKey(neighbour.getId()) && newDistance.compareTo(neighbour.getTotalDistance()) > 0)) {
+			if(neighbour.getTotalDistance() != null && (this.available.containsKey(neighbour.getId()) && newDistance.compareTo(neighbour.getTotalDistance()) >= 0.0)) {
 				continue;
 			}
-
-
+//
 //			System.out.print("+++ to: "+neighbour.getId());
 //			System.out.print(" -> length: "+link.getLength());
 //			System.out.print(" -> euk: "+neighbour.getEuclideanDistanceToTarget());
 //			System.out.print(" -> new Distance: "+newDistance);
 //			System.out.println();
+//			
 			
+			newDistance = link.getLength() + currentNode.getTotalDistance();
 			neighbour.setTotalDistance(newDistance);
 			neighbour.setPrevious(currentNode);
 			if(!this.available.containsKey(neighbour.getId())) {
@@ -129,7 +131,7 @@ public class Astar {
 		while(currentNode.getPrevious() != null) {
 			result.push(currentNode);
 			currentNode = currentNode.getPrevious();
-			System.out.println(currentNode.getId());
+//			System.out.println(currentNode.getId());
 		}
 		return result;
 	}
