@@ -15,27 +15,34 @@ public class AgentPathwalker {
 
 	Stack<AstarNode> path;
 	Coordinate position;
-	Coordinate lastNode;
-	Coordinate nextNode;
+	Coordinate lastPosition;
+	Coordinate nextPosition;
 	
 	Node startNode;
+	Node nextNode;
 	
-	
-	public AgentPathwalker(Stack<AstarNode> path) {
+	public AgentPathwalker(Stack<AstarNode> path, Node start) {
 		this.path = path;
-
-		this.startNode = path.pop();
-		Node nextNode = path.pop();
+		this.startNode = start;
+		nextNode = path.pop();
 		
 		this.position = new Coordinate(startNode.getX(), startNode.getY());
-		this.lastNode = new Coordinate(startNode.getX(), startNode.getY());
-		this.nextNode = new Coordinate(nextNode.getX(),  nextNode.getY());
+		this.lastPosition = new Coordinate(startNode.getX(), startNode.getY());
+		this.nextPosition = new Coordinate(nextNode.getX(),  nextNode.getY());
 	}
 
 
 	public void update() {
-		// TODO Auto-generated method stub
+		if(!path.empty()){
+		nextNode = path.pop();
 		
+		this.lastPosition.setX(this.position.getX());
+		this.lastPosition.setY(this.position.getY());
+				
+	//	this.nextPosition = new Coordinate(nextNode.getX(),  nextNode.getY());
+		this.position = new Coordinate(nextNode.getX(), nextNode.getY());
+		}
+				
 	}
 
 
@@ -46,14 +53,12 @@ public class AgentPathwalker {
 
 
 	public double getX() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.position.getX();
 	}
 
 
 	public double getY() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.position.getY();
 	}
 
 }

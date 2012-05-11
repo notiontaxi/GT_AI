@@ -52,7 +52,8 @@ public class JUNG {
 	private int startID;
 	private int endID;
 	private Node agent;
-
+	private JFrame jf;
+	
 	private static final class LayoutChooser implements ActionListener {
 
 		private final JComboBox jcb;
@@ -98,7 +99,8 @@ public class JUNG {
 	public void updateAgent(double _x, double _y){
 		this.agent.setX(_x);
 		this.agent.setY(_y);
-		layout.setLocation(this.agent, scaleToFrame(_x, _y));
+		layout.setLocation(this.agent, scaleToFrame(_x+1, _y+1));
+		//jf.update(jf.getGraphics());
 	}
 	public Node getAgent(){
 		return this.agent;
@@ -131,8 +133,7 @@ public class JUNG {
 
 		minX = boundingBox.getTopLeft().getX();
 		minY = boundingBox.getTopLeft().getY();
-
-		
+	
 		layout = new StaticLayout<Node, Link>(networkGraph.getGraph());
 
 		for (Node node : networkGraph.getNodes()) {
@@ -292,11 +293,11 @@ public class JUNG {
 		JPanel jp = getGraphPanel();
 
 		
-		
-		JFrame jf = new JFrame();
+		jf = new JFrame();
 		jf.getContentPane().add(jp);
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jf.pack();
 		jf.setVisible(true);
+		
 	}
 }

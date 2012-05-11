@@ -99,10 +99,8 @@ public class JSONImport {
 			List<Link> dijList = networkGraph.getDijkstraPath(start, destination);
 			
 			// ---
-			
-			AgentPathwalker agent = new AgentPathwalker(path);
+			AgentPathwalker agent = new AgentPathwalker(astar.getPath(), start);
 			astarSimulation astarSimulation = new astarSimulation(agent, jung);
-			
 			// ---
 			
 			jung.addAgent(new Node(4711, start.getX(), start.getY()));
@@ -111,6 +109,7 @@ public class JSONImport {
 			jung.setAstarPath(path, 1322811485, 1328453500);
 			
 			jung.draw();
+			astarSimulation.run();
 			
 			
 			

@@ -29,6 +29,7 @@ public class astarSimulation {
 	
 	public astarSimulation(AgentPathwalker _agent, JUNG gui) {
 		this.agent = _agent;
+		this.gui = gui;
 	}
 	
 	public void run() {	
@@ -40,9 +41,11 @@ public class astarSimulation {
 	}
 
 	private void doSimStep(double time) {
-        long current = System.currentTimeMillis();
+        
+		long current = System.currentTimeMillis();
         long diff = current - this.lastUpdate;
         long wait = (long) (Config.getSimStepSize() * 1000) -diff;
+        //System.out.println(wait);
         if (wait > 0) {
                 try {
                         Thread.sleep(wait);
@@ -53,6 +56,7 @@ public class astarSimulation {
         this.lastUpdate = System.currentTimeMillis();
 		
         // UPDATES
+        System.out.println("UPDATE");
 		this.agent.update();
 		gui.updateAgent(this.agent.getX(), this.agent.getY());
 	}
