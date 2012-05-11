@@ -21,6 +21,9 @@ public class AgentPathwalker {
 	Node startNode;
 	Node nextNode;
 	
+	double vx;
+	double vy;
+	
 	public AgentPathwalker(Stack<AstarNode> path, Node start) {
 		this.path = path;
 		this.startNode = start;
@@ -29,6 +32,10 @@ public class AgentPathwalker {
 		this.position = new Coordinate(startNode.getX(), startNode.getY());
 		this.lastPosition = new Coordinate(startNode.getX(), startNode.getY());
 		this.nextPosition = new Coordinate(nextNode.getX(),  nextNode.getY());
+		
+		vx = 0.5;
+		vy = 0.5;
+		
 	}
 
 

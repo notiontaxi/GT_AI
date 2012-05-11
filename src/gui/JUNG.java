@@ -46,7 +46,7 @@ public class JUNG {
 	private double minX = 0;
 	private double minY = 0;
 	private int frameSizeX = 900;
-	private int frameSizeY = 900;
+	private int frameSizeY = 700;
 	private Stack<AstarNode> astarPath;
 	private List<Link> dijkstraPath;
 	private int startID;
@@ -104,13 +104,8 @@ public class JUNG {
 		else{
 			this.agent.setX(_x);
 			this.agent.setY(_y);
-			layout.setLocation(this.agent, scaleToFrame(_x+1, _y+1));
-//			vv.getRenderContext().getVertexFillPaintTransformer().transform(agent);
-//			
-//			Shape s = vv.getRenderContext().getVertexShapeTransformer().transform(agent);
-			
-			jp.paint(jp.getGraphics());
-			
+			layout.setLocation(this.agent, scaleToFrame(_x+0.5, _y+0.5));
+			jp.getComponents()[0].repaint();
 		}
 	}
 	public Node getAgent(){
@@ -305,8 +300,7 @@ public class JUNG {
 	
 	public void draw() {
 		jp = getGraphPanel();
-		
-		
+
 		JFrame jf = new JFrame();
 		
 		jf.getContentPane().add(jp);
