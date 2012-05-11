@@ -51,6 +51,7 @@ public class JUNG {
 	private List<Link> dijkstraPath;
 	private int startID;
 	private int endID;
+	private Node agent;
 
 	private static final class LayoutChooser implements ActionListener {
 
@@ -90,6 +91,21 @@ public class JUNG {
 		}
 	}
 	
+	// call before createLayout!!
+	public void addAgent(Node agent){
+		this.agent = agent;
+	}
+	public void updateAgent(double _x, double _y){
+		this.agent.setX(_x);
+		this.agent.setY(_y);
+		layout.setLocation(this.agent, scaleToFrame(_x, _y));
+	}
+	public Node getAgent(){
+		return this.agent;
+	}
+
+	
+	
 	public void setDijkstra(List<Link> dijkstraPath){
 		this.dijkstraPath = dijkstraPath;
 	}
@@ -102,6 +118,11 @@ public class JUNG {
 
 	public void createLayout(NetworkGraph networkGraph) {
 
+		if(this.agent == null)
+			System.err.println("no agent was added until now");
+		else
+			networkGraph.getGraph().addVertex(this.agent);
+		
 		BoundingBox boundingBox = networkGraph.getBoundingBox();
 		width = boundingBox.getBottomRight().getX()
 				- boundingBox.getTopLeft().getX();
@@ -111,6 +132,7 @@ public class JUNG {
 		minX = boundingBox.getTopLeft().getX();
 		minY = boundingBox.getTopLeft().getY();
 
+		
 		layout = new StaticLayout<Node, Link>(networkGraph.getGraph());
 
 		for (Node node : networkGraph.getNodes()) {
@@ -156,7 +178,9 @@ public class JUNG {
 					return Color.WHITE;
 				} else if (node.getId() == endID) {
 					return Color.BLACK;
-				} else if (astarPath != null && astarPathContains(node.getId())) {
+				} else if(node.getId() == 4711){
+					return Color.BLUE;
+				}else if (astarPath != null && astarPathContains(node.getId())) {
 					return Color.GREEN;
 				} else {
 					return Color.RED;
@@ -260,12 +284,15 @@ public class JUNG {
 		bottomControls.add(minus);
 		bottomControls.add(modeBox);
 		bottomControls.add(reset);
+		
 		return jp;
 	}
 	
 	public void draw() {
 		JPanel jp = getGraphPanel();
 
+		
+		
 		JFrame jf = new JFrame();
 		jf.getContentPane().add(jp);
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

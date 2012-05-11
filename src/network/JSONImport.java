@@ -5,10 +5,13 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.Stack;
 
+import main.astarSimulation;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import agents.AgentPathwalker;
 import astar.Astar;
 import astar.AstarNode;
 import gui.JUNG;
@@ -80,21 +83,35 @@ public class JSONImport {
 	
 	public static void main(String[] args) {
 		JSONImport jsonImport = new JSONImport();
-                JUNG jung = new JUNG();
+        JUNG jung = new JUNG();
 		try {
 			NetworkGraph networkGraph = jsonImport.parseFile(args[0]);
+			Node start = networkGraph.getNode(1322811485);
+			Node destination = networkGraph.getNode(1328453500);
 			
-			Astar astar = new Astar(networkGraph, networkGraph.getNode(1322811485), networkGraph.getNode(1328453500));
+			Astar astar = new Astar(networkGraph, start, destination);
 			Stack<AstarNode> path = astar.getPath();
 			Stack<AstarNode> pathdummy = astar.getPath();
 			
 			networkGraph.calcDijkstra();
-			List<Link> dijList = networkGraph.getDijkstraPath(networkGraph.getNode(1322811485), networkGraph.getNode(1328453500));
 			
+			
+			List<Link> dijList = networkGraph.getDijkstraPath(start, destination);
+			
+			// ---
+			
+			AgentPathwalker agent = new AgentPathwalker(path);
+			astarSimulation astarSimulation = new astarSimulation(agent, jung);
+			
+			// ---
+			
+			jung.addAgent(new Node(4711, start.getX(), start.getY()));
 			jung.createLayout(networkGraph);
 			jung.setDijkstra(dijList);
 			jung.setAstarPath(path, 1322811485, 1328453500);
+			
 			jung.draw();
+			
 			
 			
 			/*if(args.length > 1 && args[1].equals("3d")) {

@@ -34,7 +34,6 @@ public class Simulation {
 		double time = 0;
 		while (time < Config.getStopTime()) {
 			doSimStep(time);
-
 			time += Config.getSimStepSize();
 		}
 		
