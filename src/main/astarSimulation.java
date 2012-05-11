@@ -56,7 +56,6 @@ public class astarSimulation {
         this.lastUpdate = System.currentTimeMillis();
 		
         // UPDATES
-        System.out.println("UPDATE");
 		this.agent.update();
 		gui.updateAgent(this.agent.getX(), this.agent.getY());
 	}

@@ -9,6 +9,7 @@ import network.Link;
 import network.Node;
 import physics.PhysicsBox;
 import spatial.Coordinate;
+import spatial.Vector2D;
 
 public class AgentPathwalker {
 
@@ -17,6 +18,11 @@ public class AgentPathwalker {
 	Coordinate position;
 	Coordinate lastPosition;
 	Coordinate nextPosition;
+	
+	double deltaX;
+	double deltaY;
+	
+	Vector2D direction;
 	
 	Node startNode;
 	Node nextNode;
@@ -33,23 +39,49 @@ public class AgentPathwalker {
 		this.lastPosition = new Coordinate(startNode.getX(), startNode.getY());
 		this.nextPosition = new Coordinate(nextNode.getX(),  nextNode.getY());
 		
-		vx = 0.5;
-		vy = 0.5;
+		this.direction = new Vector2D(10.0,10.0);
+		
+		vx = 0.01;
+		vy = 0.01;
 		
 	}
 
 
 	public void update() {
 		if(!path.empty()){
-		nextNode = path.pop();
-		
-		this.lastPosition.setX(this.position.getX());
-		this.lastPosition.setY(this.position.getY());
-				
-	//	this.nextPosition = new Coordinate(nextNode.getX(),  nextNode.getY());
-		this.position = new Coordinate(nextNode.getX(), nextNode.getY());
+			// check for new direction
+			if(updateDirection()){
+				deltaX = direction.getX() * this.vx;
+				deltaY = direction.getY() * this.vy;
+			}			
+			// position += (normalized direction vector * v)
+			this.position.setX(this.position.getX() + deltaX);
+			this.position.setY(this.position.getY() + deltaY);
+		}				
+	}
+
+
+	private boolean updateDirection() {
+		if(nextPositionReached()){
+			double xDir = this.position.getX() - this.nextPosition.getX();
+			double yDir = this.position.getY() - this.nextPosition.getY();
+ 		
+			this.direction.setX(xDir); 
+			this.direction.setY(yDir); 
+			 
+			return true;
 		}
-				
+		return false;
+	}
+	
+	private boolean nextPositionReached(){
+		if(this.position == this.nextPosition){
+			this.nextNode = this.path.pop();
+			this.nextPosition.setX(this.nextNode.getX());
+			this.nextPosition.setY(this.nextNode.getY());
+			return true;
+		}
+		return false;
 	}
 
 

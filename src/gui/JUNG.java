@@ -125,11 +125,6 @@ public class JUNG {
 	}
 
 	public void createLayout(NetworkGraph networkGraph) {
-
-		if(this.agent == null)
-			System.err.println("no agent was added until now");
-		else
-			networkGraph.getGraph().addVertex(this.agent);
 		
 		BoundingBox boundingBox = networkGraph.getBoundingBox();
 		width = boundingBox.getBottomRight().getX()
@@ -146,6 +141,14 @@ public class JUNG {
 			layout.setLocation(node, scaleToFrame(node.getX(), node.getY()));
 			
 		}
+		
+		// -- ---------------
+		if(this.agent == null)
+			System.err.println("no agent was added until now");
+		else
+			networkGraph.getGraph().addVertex(this.agent);
+		// -- ---------------		
+		
 		// The Layout<V, E> is parameterized by the vertex and edge types
 		layout.setSize(new Dimension(frameSizeX, frameSizeY)); // sets the initial size of the space		
 	}
