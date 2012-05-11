@@ -52,7 +52,9 @@ public class JUNG {
 	private int startID;
 	private int endID;
 	private Node agent;
-	private JFrame jf;
+	private JPanel jp;
+	private VisualizationViewer<Node, Link> vv;
+	
 	
 	private static final class LayoutChooser implements ActionListener {
 
@@ -97,10 +99,19 @@ public class JUNG {
 		this.agent = agent;
 	}
 	public void updateAgent(double _x, double _y){
-		this.agent.setX(_x);
-		this.agent.setY(_y);
-		layout.setLocation(this.agent, scaleToFrame(_x+1, _y+1));
-		//jf.update(jf.getGraphics());
+		if(this.agent == null)
+			System.err.println("no agent was added until now");
+		else{
+			this.agent.setX(_x);
+			this.agent.setY(_y);
+			layout.setLocation(this.agent, scaleToFrame(_x+1, _y+1));
+//			vv.getRenderContext().getVertexFillPaintTransformer().transform(agent);
+//			
+//			Shape s = vv.getRenderContext().getVertexShapeTransformer().transform(agent);
+			
+			jp.paint(jp.getGraphics());
+			
+		}
 	}
 	public Node getAgent(){
 		return this.agent;
@@ -138,6 +149,7 @@ public class JUNG {
 
 		for (Node node : networkGraph.getNodes()) {
 			layout.setLocation(node, scaleToFrame(node.getX(), node.getY()));
+			
 		}
 		// The Layout<V, E> is parameterized by the vertex and edge types
 		layout.setSize(new Dimension(frameSizeX, frameSizeY)); // sets the initial size of the space		
@@ -166,7 +178,7 @@ public class JUNG {
 		
 		float scale = 1;
 
-		final VisualizationViewer<Node, Link> vv =
+		vv =
 				new VisualizationViewer<Node, Link>(layout);
 		
 
@@ -203,13 +215,13 @@ public class JUNG {
 		Transformer<Node, Shape> vertexShape = new Transformer<Node, Shape>() {
 
 			private double size = 10;
-
+			
 			public Shape transform(Node node) {
 				return new Ellipse2D.Double(size * (-0.5), size * (-0.5), size, size);
 			}
 		};
 
-
+		
 		// Set up a new stroke Transformer for the edges
 		float dash[] = {10.0f};
 		final Stroke edgeStroke = new BasicStroke(1.0f, BasicStroke.CAP_BUTT,
@@ -225,10 +237,11 @@ public class JUNG {
 		
 		//vv.getRenderContext().setEdgeStrokeTransformer(edgeStrokeTransformer);
 
-		vv.getRenderContext().setVertexFillPaintTransformer(new PickableVertexPaintTransformer<Node>(vv.getPickedVertexState(), Color.red, Color.yellow));
+		//vv.getRenderContext().setVertexFillPaintTransformer(new PickableVertexPaintTransformer<Node>(vv.getPickedVertexState(), Color.red, Color.yellow));
 		vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
 		vv.getRenderContext().setEdgeDrawPaintTransformer(vertexPaintEdge);
 		
+		vv.getRenderContext().getVertexFillPaintTransformer().transform(agent);
 		
 		final DefaultModalGraphMouse<Integer, Number> graphMouse = new DefaultModalGraphMouse<Integer, Number>();
 		vv.setGraphMouse(graphMouse);
@@ -272,7 +285,8 @@ public class JUNG {
 		jp.setBackground(Color.WHITE);
 		jp.setLayout(new BorderLayout());
 		jp.add(vv, BorderLayout.CENTER);
-
+		
+		
 		JPanel control_panel = new JPanel(new GridLayout(2, 1));
 		JPanel topControls = new JPanel();
 		JPanel bottomControls = new JPanel();
@@ -290,10 +304,11 @@ public class JUNG {
 	}
 	
 	public void draw() {
-		JPanel jp = getGraphPanel();
-
+		jp = getGraphPanel();
 		
-		jf = new JFrame();
+		
+		JFrame jf = new JFrame();
+		
 		jf.getContentPane().add(jp);
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jf.pack();
