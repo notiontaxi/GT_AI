@@ -5,6 +5,7 @@ import java.util.Stack;
 
 import astar.AstarNode;
 
+import main.Config;
 import network.Link;
 import network.Node;
 import physics.PhysicsBox;
@@ -27,9 +28,6 @@ public class AgentPathwalker {
 	Node startNode;
 	Node nextNode;
 	
-	double vx;
-	double vy;
-	
 	public AgentPathwalker(Stack<AstarNode> path, Node start) {
 		this.path = path;
 		this.startNode = start;
@@ -39,10 +37,10 @@ public class AgentPathwalker {
 		this.lastPosition = new Coordinate(startNode.getX(), startNode.getY());
 		this.nextPosition = new Coordinate(nextNode.getX(),  nextNode.getY());
 		
-		this.direction = new Vector2D(10.0,10.0);
-		
-		vx = 0.01;
-		vy = 0.01;
+		this.direction = new Vector2D(0.0,0.0);
+
+		calcDirection();
+		setDelta();
 		
 	}
 
@@ -51,31 +49,43 @@ public class AgentPathwalker {
 		if(!path.empty()){
 			// check for new direction
 			if(updateDirection()){
-				deltaX = direction.getX() * this.vx;
-				deltaY = direction.getY() * this.vy;
-			}			
-			// position += (normalized direction vector * v)
+				setDelta();
+			}						
 			this.position.setX(this.position.getX() + deltaX);
 			this.position.setY(this.position.getY() + deltaY);
 		}				
 	}
 
 
+	private void setDelta() {
+		deltaX = direction.getX() * Config.MAX_V;
+		deltaY = direction.getY() * Config.MAX_V;
+		System.out.println("direction changed");
+	}
+
+
 	private boolean updateDirection() {
 		if(nextPositionReached()){
-			double xDir = this.position.getX() - this.nextPosition.getX();
-			double yDir = this.position.getY() - this.nextPosition.getY();
- 		
-			this.direction.setX(xDir); 
-			this.direction.setY(yDir); 
-			 
+			calcDirection();
 			return true;
 		}
 		return false;
 	}
 	
+	private void calcDirection() {
+		double xDir = this.nextPosition.getX() - this.position.getX();
+		double yDir = this.nextPosition.getY() - this.position.getY();
+		
+		this.direction.setX(xDir); 
+		this.direction.setY(yDir); 
+		this.direction = this.direction.normalize();
+		
+		System.out.println("new direction: " + this.direction);
+	}
+
+
 	private boolean nextPositionReached(){
-		if(this.position == this.nextPosition){
+		if((this.position.equals(this.nextPosition))){
 			this.nextNode = this.path.pop();
 			this.nextPosition.setX(this.nextNode.getX());
 			this.nextPosition.setY(this.nextNode.getY());

@@ -104,7 +104,7 @@ public class JUNG {
 		else{
 			this.agent.setX(_x);
 			this.agent.setY(_y);
-			layout.setLocation(this.agent, scaleToFrame(_x+0.5, _y+0.5));
+			layout.setLocation(this.agent, scaleToFrame(_x, _y));
 			jp.getComponents()[0].repaint();
 		}
 	}

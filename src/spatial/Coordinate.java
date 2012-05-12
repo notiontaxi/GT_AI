@@ -30,6 +30,17 @@ public class Coordinate {
 		this.y = _y;
 	}
 	
+	public boolean equals(Coordinate _c){
+		double offset = 0.5;
+		double deltaX = this.x - _c.getX();
+		double deltaY = this.y - _c.getY();
+		
+		if( (deltaX < offset && deltaX > -offset) &&
+		    (deltaY < offset && deltaY > -offset))
+			return true;
+		else
+			return false;
+	}
 
 
 	public double getDistanceTo(Coordinate _coord) {
