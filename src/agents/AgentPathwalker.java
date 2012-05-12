@@ -67,12 +67,12 @@ public class AgentPathwalker {
 
 
 	public void update() {
-			// check for new direction
-			if(updateDirection()){
-				if(AgentPathwalker.reset){
-					init();
-					AgentPathwalker.reset = false;
-				}else	
+			if(AgentPathwalker.reset){
+				init();
+				AgentPathwalker.reset = false;
+			}	
+			// check for new direction			
+			if(updateDirection()){				
 				setDelta();
 			}						
 			this.position.setX(this.position.getX() + deltaX);
