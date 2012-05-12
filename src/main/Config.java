@@ -9,7 +9,7 @@ public abstract class Config {
 
 	private static double SIM_STEP_SIZE = 0.04;
 	
-	private static double  STOP_TIME = 100;
+	private static double  STOP_TIME = 1000;
 	
 	public static void setSimStepSize(double simStepSize) {
 		SIM_STEP_SIZE = simStepSize;

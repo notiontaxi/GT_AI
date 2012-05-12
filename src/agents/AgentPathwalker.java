@@ -7,6 +7,7 @@ import java.util.Stack;
 import astar.AstarNode;
 
 import main.Config;
+import main.astarSimulation;
 import network.Link;
 import network.Node;
 import physics.PhysicsBox;
@@ -48,6 +49,7 @@ public class AgentPathwalker {
 	private void init() {
 		
 		Iterator<AstarNode> iter = pathBackup.listIterator();
+		this.path = new Stack<AstarNode>();	
 		
 		while(iter.hasNext()){
 			AstarNode next = iter.next();
@@ -65,7 +67,6 @@ public class AgentPathwalker {
 
 
 	public void update() {
-		if(destinationNotReached){
 			// check for new direction
 			if(updateDirection()){
 				if(AgentPathwalker.reset){
@@ -76,7 +77,6 @@ public class AgentPathwalker {
 			}						
 			this.position.setX(this.position.getX() + deltaX);
 			this.position.setY(this.position.getY() + deltaY);
-		}				
 	}
 
 
@@ -110,7 +110,8 @@ public class AgentPathwalker {
 	private boolean nextPositionReached(){
 		if((this.position.equals(this.nextPosition))){
 			if(this.path.isEmpty()){
-				this.destinationNotReached = false;
+				astarSimulation.pause = true;
+				init();
 			}else{
 			this.nextNode = this.path.pop();
 			this.nextPosition.setX(this.nextNode.getX());

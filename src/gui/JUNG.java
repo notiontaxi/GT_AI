@@ -44,6 +44,7 @@ import spatial.BoundingBox;
 
 public class JUNG {
 
+	private static boolean paintPath = false;
 	private Layout<Node, Link> layout;
 	private double width = 0;
 	private double height = 0;
@@ -112,16 +113,18 @@ public class JUNG {
 			this.agent.setX(_x);
 			this.agent.setY(_y);
 			Point2D p = scaleToFrame(_x, _y);
+			
 			layout.setLocation(this.agent, p);
-//			jp.getComponents()[0].getGraphics().fillOval((int)p.getX()-radius, (int)p.getY()-radius, 2*radius, 2*radius);
-			jp.getComponents()[0].repaint();
+			
+			if(JUNG.paintPath)			
+				jp.getComponents()[0].getGraphics().fillOval((int)p.getX()-radius, (int)p.getY()-radius, 2*radius, 2*radius);
+			else
+				jp.getComponents()[0].repaint();
+			
+						
 		}
 	}
-	public Node getAgent(){
-		return this.agent;
-	}
 
-	
 	
 	public void setDijkstra(List<Link> dijkstraPath){
 		this.dijkstraPath = dijkstraPath;
@@ -292,6 +295,7 @@ public class JUNG {
 
 			public void actionPerformed(ActionEvent e) {
 				AgentPathwalker.reset = true;
+				JUNG.paintPath = false;
 			}
 		});		
 		
@@ -302,6 +306,14 @@ public class JUNG {
 				astarSimulation.pause = !astarSimulation.pause;
 			}
 		});			
+		
+		JButton togglePath = new JButton("Toggle path paint");
+		togglePath.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				JUNG.paintPath = !JUNG.paintPath;
+			}
+		});		
 		
 		
 		
@@ -332,6 +344,8 @@ public class JUNG {
 		bottomControls.add(reset);
 		bottomControls.add(goToStart);
 		bottomControls.add(togglePause);
+		bottomControls.add(togglePath);
+		
 		
 		return jp;
 	}
