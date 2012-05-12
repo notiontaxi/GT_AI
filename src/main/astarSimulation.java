@@ -20,12 +20,11 @@ import spatial.PointLight;
 
 public class astarSimulation {
 	
+	public static boolean pause = true;
 	AgentPathwalker agent;
 	long lastUpdate;
 	JUNG gui;
 	
-
-
 	
 	public astarSimulation(AgentPathwalker _agent, JUNG gui) {
 		this.agent = _agent;
@@ -56,11 +55,11 @@ public class astarSimulation {
         this.lastUpdate = System.currentTimeMillis();
 		
         // UPDATES
-		this.agent.update();
-		gui.updateAgent(this.agent.getX(), this.agent.getY());
+		if(!pause){
+	        this.agent.update();
+			gui.updateAgent(this.agent.getX(),this.agent.getY());
+		}
 	}
-
-
 	
 
 }

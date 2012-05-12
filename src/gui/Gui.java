@@ -37,7 +37,7 @@ public class Gui {
 		this.f = new JFrame("Swing Paint Demo");
 		this.f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.area = new DrawArea();
-		this.f.add(area);
+		this.f.add(area);		
 		this.f.setSize(250,250);
 		this.f.setVisible(true);
 	}

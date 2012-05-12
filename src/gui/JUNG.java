@@ -1,5 +1,6 @@
 package gui;
 
+import agents.AgentPathwalker;
 import astar.AstarNode;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import java.awt.Dimension;
@@ -8,6 +9,7 @@ import javax.swing.JFrame;
 
 import org.apache.commons.collections15.Transformer;
 
+import main.astarSimulation;
 import network.Link;
 import network.Node;
 import network.NetworkGraph;
@@ -26,6 +28,8 @@ import edu.uci.ics.jung.visualization.control.ScalingControl;
 import edu.uci.ics.jung.visualization.decorators.PickableVertexPaintTransformer;
 import edu.uci.ics.jung.visualization.layout.LayoutTransition;
 import edu.uci.ics.jung.visualization.util.Animator;
+
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -51,9 +55,11 @@ public class JUNG {
 	private List<Link> dijkstraPath;
 	private int startID;
 	private int endID;
+
 	private Node agent;
 	private JPanel jp;
 	private VisualizationViewer<Node, Link> vv;
+	private JPanel area;
 	
 	
 	private static final class LayoutChooser implements ActionListener {
@@ -102,9 +108,12 @@ public class JUNG {
 		if(this.agent == null)
 			System.err.println("no agent was added until now");
 		else{
+			int radius = 5;
 			this.agent.setX(_x);
 			this.agent.setY(_y);
-			layout.setLocation(this.agent, scaleToFrame(_x, _y));
+			Point2D p = scaleToFrame(_x, _y);
+			layout.setLocation(this.agent, p);
+//			jp.getComponents()[0].getGraphics().fillOval((int)p.getX()-radius, (int)p.getY()-radius, 2*radius, 2*radius);
 			jp.getComponents()[0].repaint();
 		}
 	}
@@ -124,6 +133,9 @@ public class JUNG {
 		this.endID = endID;
 	}
 
+	
+	
+	
 	public void createLayout(NetworkGraph networkGraph) {
 		
 		BoundingBox boundingBox = networkGraph.getBoundingBox();
@@ -167,7 +179,7 @@ public class JUNG {
 		return false;
 	}
 
-	private JPanel getGraphPanel() {
+	private JPanel getGraphPanel(Layout<Node, Link> _layout) {
 		// The BasicVisualizationServer<V,E> is parameterized by the edge types
 		/*
 		 * BasicVisualizationServer<Node, Link> vv = new
@@ -176,8 +188,7 @@ public class JUNG {
 		
 		float scale = 1;
 
-		vv =
-				new VisualizationViewer<Node, Link>(layout);
+		vv = new VisualizationViewer<Node, Link>(_layout);
 		
 
 		vv.setPreferredSize(new Dimension(frameSizeX + 50, frameSizeY + 50)); //Sets the viewing area size
@@ -276,6 +287,24 @@ public class JUNG {
 			}
 		});
 
+		JButton goToStart = new JButton("Go to start");
+		goToStart.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				AgentPathwalker.reset = true;
+			}
+		});		
+		
+		JButton togglePause = new JButton("Toggle pause");
+		togglePause.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				astarSimulation.pause = !astarSimulation.pause;
+			}
+		});			
+		
+		
+		
 		JComboBox modeBox = graphMouse.getModeComboBox();
 		modeBox.addItemListener(((DefaultModalGraphMouse<Node, Link>) vv.getGraphMouse()).getModeListener());
 
@@ -285,31 +314,59 @@ public class JUNG {
 		jp.add(vv, BorderLayout.CENTER);
 		
 		
+		
+
+		
 		JPanel control_panel = new JPanel(new GridLayout(2, 1));
 		JPanel topControls = new JPanel();
 		JPanel bottomControls = new JPanel();
 		control_panel.add(topControls);
 		control_panel.add(bottomControls);
 		jp.add(control_panel, BorderLayout.NORTH);
-
+		
+		
 
 		bottomControls.add(plus);
 		bottomControls.add(minus);
 		bottomControls.add(modeBox);
 		bottomControls.add(reset);
+		bottomControls.add(goToStart);
+		bottomControls.add(togglePause);
 		
 		return jp;
 	}
 	
 	public void draw() {
-		jp = getGraphPanel();
-
-		JFrame jf = new JFrame();
+		jp = getGraphPanel(this.layout);
+		jp.setOpaque(false);
 		
+
+		
+		
+		this.area = new JPanel();
+		
+//		area.setBackground(new Color(0,255,255,255));
+//		area.setOpaque(false);
+//		this.area.setVisible(true);
+		
+		
+		JFrame jf = new JFrame();		
+		
+//		jf.getContentPane().add(area);
 		jf.getContentPane().add(jp);
+		
+		
+
+		
 		jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jf.pack();
 		jf.setVisible(true);
+		
+		
+		Graphics2D g = (Graphics2D)jp.getComponents()[0].getGraphics();
+		System.out.println(g);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);		
+		
 		
 	}
 }

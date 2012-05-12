@@ -1,5 +1,6 @@
 package agents;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
@@ -15,10 +16,15 @@ import spatial.Vector2D;
 public class AgentPathwalker {
 
 
+	public static boolean reset;
+	
 	Stack<AstarNode> path;
+	Stack<AstarNode> pathBackup;
+	
 	Coordinate position;
 	Coordinate lastPosition;
 	Coordinate nextPosition;
+	boolean destinationNotReached;
 	
 	double deltaX;
 	double deltaY;
@@ -29,26 +35,43 @@ public class AgentPathwalker {
 	Node nextNode;
 	
 	public AgentPathwalker(Stack<AstarNode> path, Node start) {
-		this.path = path;
-		this.startNode = start;
-		nextNode = path.pop();
+		destinationNotReached = true;
+		pathBackup = path;		
+		this.path = new Stack<AstarNode>();				
+		this.startNode = start;		
+		this.direction = new Vector2D(0.0,0.0);
 		
+		init();
+	}
+
+
+	private void init() {
+		
+		Iterator<AstarNode> iter = pathBackup.listIterator();
+		
+		while(iter.hasNext()){
+			AstarNode next = iter.next();
+			path.push(next);
+		}	
+		
+		nextNode = path.pop();		
 		this.position = new Coordinate(startNode.getX(), startNode.getY());
 		this.lastPosition = new Coordinate(startNode.getX(), startNode.getY());
 		this.nextPosition = new Coordinate(nextNode.getX(),  nextNode.getY());
-		
-		this.direction = new Vector2D(0.0,0.0);
 
 		calcDirection();
 		setDelta();
-		
 	}
 
 
 	public void update() {
-		if(!path.empty()){
+		if(destinationNotReached){
 			// check for new direction
 			if(updateDirection()){
+				if(AgentPathwalker.reset){
+					init();
+					AgentPathwalker.reset = false;
+				}else	
 				setDelta();
 			}						
 			this.position.setX(this.position.getX() + deltaX);
@@ -60,7 +83,7 @@ public class AgentPathwalker {
 	private void setDelta() {
 		deltaX = direction.getX() * Config.MAX_V;
 		deltaY = direction.getY() * Config.MAX_V;
-		System.out.println("direction changed");
+		//System.out.println("direction changed");
 	}
 
 
@@ -80,16 +103,20 @@ public class AgentPathwalker {
 		this.direction.setY(yDir); 
 		this.direction = this.direction.normalize();
 		
-		System.out.println("new direction: " + this.direction);
+		//System.out.println("new direction: " + this.direction);
 	}
 
 
 	private boolean nextPositionReached(){
 		if((this.position.equals(this.nextPosition))){
+			if(this.path.isEmpty()){
+				this.destinationNotReached = false;
+			}else{
 			this.nextNode = this.path.pop();
 			this.nextPosition.setX(this.nextNode.getX());
 			this.nextPosition.setY(this.nextNode.getY());
 			return true;
+			}
 		}
 		return false;
 	}
@@ -109,5 +136,6 @@ public class AgentPathwalker {
 	public double getY() {
 		return this.position.getY();
 	}
+
 
 }
