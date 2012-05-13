@@ -1,6 +1,7 @@
 package gui;
 
 import agents.AgentPathwalker;
+import astar.Astar;
 import astar.AstarNode;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import java.awt.Dimension;
@@ -22,9 +23,9 @@ import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.samples.ShowLayouts.GraphChooser;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
-import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
-import edu.uci.ics.jung.visualization.control.ScalingControl;
+import edu.uci.ics.jung.visualization.annotations.AnnotationControls;
+import edu.uci.ics.jung.visualization.control.*;
+import edu.uci.ics.jung.visualization.decorators.EdgeShape;
 import edu.uci.ics.jung.visualization.decorators.PickableVertexPaintTransformer;
 import edu.uci.ics.jung.visualization.layout.LayoutTransition;
 import edu.uci.ics.jung.visualization.util.Animator;
@@ -33,6 +34,7 @@ import edu.uci.ics.jung.visualization.util.Animator;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.lang.reflect.Constructor;
@@ -58,48 +60,11 @@ public class JUNG {
 	private int endID;
 
 	private Node agent;
+	private Astar astar;
 	private JPanel jp;
 	private VisualizationViewer<Node, Link> vv;
-	private JPanel area;
+	private NetworkGraph networkGraph;
 	
-	
-	private static final class LayoutChooser implements ActionListener {
-
-		private final JComboBox jcb;
-		private final VisualizationViewer<Node, Link> vv;
-		private static Graph<? extends Object, ? extends Object>[] g_array;
-
-		private LayoutChooser(JComboBox jcb, VisualizationViewer<Node, Link> vv) {
-			super();
-			this.jcb = jcb;
-			this.vv = vv;
-		}
-
-		public void actionPerformed(ActionEvent arg0) {
-			Object[] constructorArgs = {g_array[0]};
-
-			Class<? extends Layout<Node, Link>> layoutC =
-					(Class<? extends Layout<Node, Link>>) jcb.getSelectedItem();
-//            Class lay = layoutC;
-			try {
-				Constructor<? extends Layout<Node, Link>> constructor = layoutC.getConstructor(new Class[]{Graph.class});
-				Object o = constructor.newInstance(constructorArgs);
-				Layout<Node, Link> l = (Layout<Node, Link>) o;
-				l.setInitializer(vv.getGraphLayout());
-				l.setSize(vv.getSize());
-
-				LayoutTransition<Node, Link> lt =
-						new LayoutTransition<Node, Link>(vv, vv.getGraphLayout(), l);
-				Animator animator = new Animator(lt);
-				animator.start();
-				vv.getRenderContext().getMultiLayerTransformer().setToIdentity();
-				vv.repaint();
-
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
 	
 	// call before createLayout!!
 	public void addAgent(Node agent){
@@ -119,28 +84,34 @@ public class JUNG {
 			if(JUNG.paintPath)			
 				jp.getComponents()[0].getGraphics().fillOval((int)p.getX()-radius, (int)p.getY()-radius, 2*radius, 2*radius);
 			else
-				jp.getComponents()[0].repaint();
-			
-						
+				jp.getComponents()[0].repaint();		
 		}
 	}
 
+	public VisualizationViewer getVV(){
+		return vv;
+	}
+	
+	public NetworkGraph getNetworkGraph(){
+		return networkGraph;
+	}
 	
 	public void setDijkstra(List<Link> dijkstraPath){
 		this.dijkstraPath = dijkstraPath;
 	}
 
+	public void addAstar(Astar astar){
+		this.astar = astar;
+	}
+	
 	public void setAstarPath(Stack<AstarNode> astarPath, int startID, int endID) {
 		this.astarPath = astarPath;
 		this.startID = startID;
 		this.endID = endID;
 	}
 
-	
-	
-	
 	public void createLayout(NetworkGraph networkGraph) {
-		
+		this.networkGraph = networkGraph;
 		BoundingBox boundingBox = networkGraph.getBoundingBox();
 		width = boundingBox.getBottomRight().getX()
 				- boundingBox.getTopLeft().getX();
@@ -170,6 +141,14 @@ public class JUNG {
 
 	private Point2D.Double scaleToFrame(double x, double y) {
 		return new Point2D.Double((x - minX) / width * frameSizeX + 25, ((y - minY) / height * frameSizeY - frameSizeY) * (-1) + 25);
+	}
+	
+	private boolean dijkstraPathContains(int id){
+		for (Iterator<Link> it = dijkstraPath.iterator(); it.hasNext();) {
+			Link link = it.next();
+			if (link.getFrom().getId() == id || link.getTo().getId() ==id) return true;
+		}
+		return false;
 	}
 
 	private boolean astarPathContains(int id) {
@@ -205,24 +184,17 @@ public class JUNG {
 					return Color.BLACK;
 				} else if(node.getId() == 4711){
 					return Color.BLUE;
-				}else if (astarPath != null && astarPathContains(node.getId())) {
+				} else if (astarPath != null &&  dijkstraPath != null && astarPathContains(node.getId()) && dijkstraPathContains(node.getId())) {
+					return Color.MAGENTA;
+				} else if (astarPath != null && astarPathContains(node.getId())) {
 					return Color.GREEN;
+				} else if (astarPath != null && dijkstraPathContains(node.getId())) {
+					return Color.PINK;
 				} else {
 					return Color.RED;
 				}
 			}
-		};
-
-		Transformer<Link, Paint> vertexPaintEdge = new Transformer<Link, Paint>() {
-
-			public Paint transform(Link link) {
-				if (dijkstraPath.contains(link)){
-					return Color.ORANGE;
-				}
-				return Color.BLACK;
-			}
-		};
-		
+		};		
 
 		Transformer<Node, Shape> vertexShape = new Transformer<Node, Shape>() {
 
@@ -251,13 +223,20 @@ public class JUNG {
 
 		//vv.getRenderContext().setVertexFillPaintTransformer(new PickableVertexPaintTransformer<Node>(vv.getPickedVertexState(), Color.red, Color.yellow));
 		vv.getRenderContext().setVertexFillPaintTransformer(vertexPaint);
-		vv.getRenderContext().setEdgeDrawPaintTransformer(vertexPaintEdge);
+		vv.getRenderContext().setEdgeShapeTransformer(new EdgeShape.Line<Node, Link>());
 		
 		vv.getRenderContext().getVertexFillPaintTransformer().transform(agent);
 		
-		final DefaultModalGraphMouse<Integer, Number> graphMouse = new DefaultModalGraphMouse<Integer, Number>();
-		vv.setGraphMouse(graphMouse);
-
+//		final DefaultModalGraphMouse<Node, Link> graphMouse = new DefaultModalGraphMouse<Node, Link>();
+//		vv.setGraphMouse(graphMouse);
+//		vv.addKeyListener(graphMouse.getModeKeyListener());
+		
+		PluggableGraphMouse gm = new PluggableGraphMouse(); 				
+		gm.add(new OwnPickingGraphMousePlugin(MouseEvent.BUTTON1_MASK, MouseEvent.BUTTON1_DOWN_MASK, this.astar, this));
+		gm.add(new TranslatingGraphMousePlugin(MouseEvent.BUTTON3_MASK));
+		gm.add(new ScalingGraphMousePlugin(new CrossoverScalingControl(), 0, 1.1f, 0.9f));
+		vv.setGraphMouse(gm);
+		
 		final ScalingControl scaler = new CrossoverScalingControl();
 
 		JButton plus = new JButton("+");
@@ -272,21 +251,6 @@ public class JUNG {
 
 			public void actionPerformed(ActionEvent e) {
 				scaler.scale(vv, 1 / 1.1f, vv.getCenter());
-			}
-		});
-		JButton reset = new JButton("reset");
-		reset.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				Layout<Node, Link> layout = vv.getGraphLayout();
-				layout.initialize();
-				Relaxer relaxer = vv.getModel().getRelaxer();
-				if (relaxer != null) {
-//				if(layout instanceof IterativeContext) {
-					relaxer.stop();
-					relaxer.prerelax();
-					relaxer.relax();
-				}
 			}
 		});
 
@@ -317,8 +281,8 @@ public class JUNG {
 		
 		
 		
-		JComboBox modeBox = graphMouse.getModeComboBox();
-		modeBox.addItemListener(((DefaultModalGraphMouse<Node, Link>) vv.getGraphMouse()).getModeListener());
+		//JComboBox modeBox = graphMouse.getModeComboBox();
+		//modeBox.addItemListener(((DefaultModalGraphMouse<Node, Link>) vv.getGraphMouse()).getModeListener());
 
 		JPanel jp = new JPanel();
 		jp.setBackground(Color.WHITE);
@@ -340,8 +304,7 @@ public class JUNG {
 
 		bottomControls.add(plus);
 		bottomControls.add(minus);
-		bottomControls.add(modeBox);
-		bottomControls.add(reset);
+		//bottomControls.add(modeBox);
 		bottomControls.add(goToStart);
 		bottomControls.add(togglePause);
 		bottomControls.add(togglePath);
@@ -350,19 +313,13 @@ public class JUNG {
 		return jp;
 	}
 	
+	public void repaint(){
+		jp.repaint();
+	}
+	
 	public void draw() {
 		jp = getGraphPanel(this.layout);
-		jp.setOpaque(false);
-		
-
-		
-		
-		this.area = new JPanel();
-		
-//		area.setBackground(new Color(0,255,255,255));
-//		area.setOpaque(false);
-//		this.area.setVisible(true);
-		
+		jp.setOpaque(false);	
 		
 		JFrame jf = new JFrame();		
 		

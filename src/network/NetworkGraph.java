@@ -31,9 +31,16 @@ public class NetworkGraph {
         nodes = new HashMap<Integer, Node>();
     }
 	
+	public void setGraph(Graph<Node, Link> graph){
+		this.graph = graph;
+	}
+	
 	public void calcDijkstra(){
 		Transformer<Link, Double> wtTransformer = new Transformer<Link,Double>() {
 			public Double transform(Link link) {
+				if (link.getLength() != link.getFrom().getDistanceTo(link.getTo())){
+					System.out.println("foooo.");
+				}
 				return link.getLength();
 				}
 			};
@@ -46,6 +53,18 @@ public class NetworkGraph {
 	
 	public double getDijkstraLength(Node start, Node end){
 		return dij.getDistance(start, end).doubleValue();
+	}
+	
+	public Collection<network.Link> getInLinks(Node node) {
+        return graph.getInEdges(node);
+    }
+	
+	public Collection<network.Link> getOutLinks(Node node) {
+        return graph.getOutEdges(node);
+    }
+	
+	public Link getLink(Node from, Node to){
+		return this.graph.findEdge(from, to);
 	}
 		
     public Graph<Node, Link> getGraph(){

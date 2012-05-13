@@ -22,7 +22,12 @@ public class Astar {
 	private AstarNode start;
 	private AstarNode target;
 	
+	public Astar(){
+		
+	}
+	
 	/**
+	 * 
 	 * constructor
 	 * @param network - containing all links and nodes
 	 * @param start - where to start
@@ -30,27 +35,27 @@ public class Astar {
 	 */
 	public Astar(NetworkGraph networkGraph, Node start, Node target) {
 		this.networkGraph = networkGraph;
-		
+		this.start = new AstarNode(start);
+		this.target = new AstarNode(target);
+		calculate();
+	}
+	
+	public void calculate(){
+		if (networkGraph != null){
+			this.initAstar();
+			this.initAstarNodes();
+			this.findRoute();
+		}
+	}
+	
+	private void initAstar(){
 		// all available nodes in the network
 		this.available = new HashMap<Integer, AstarNode>();
 		// all finished nodes
 		this.closed = new HashMap<Integer, AstarNode>();
 		// possible next nodes
 
-		this.target = new AstarNode(target);
-		
-		this.initAstarNodes();
-		
-		// get start and set distance to 0
-		this.start = this.available.get(start.getId());
-		this.start.setTotalDistance(0.0);
-		// remove start from available
-		
-		this.target = this.available.get(target.getId());
-		
 		System.out.println(this.start.getId() +" -> "+this.target.getId());
-		
-		this.findRoute();
 	}
 	
 	private void findRoute() {
@@ -86,37 +91,29 @@ public class Astar {
 	 * @return Node - closest Node
 	 */
 	private void expandNode(AstarNode currentNode) {
-
-		for(int nodeId : currentNode.getNeighbours().keySet()) {
-			// in case the node has already been cloased -> no need to check it again
-			if(this.closed.containsKey(nodeId)) {
+		Double newDistance;
+		Double euclideanDistance;
+		int nodeId;
+		for (Link link : networkGraph.getOutLinks(currentNode.getOrigNode())) {
+			nodeId = link.getTo().getId();
+			if (this.closed.containsKey(nodeId)){
 				continue;
 			}
 			
-			Link link = currentNode.getNeighbours().get(nodeId);
-			AstarNode neighbour = this.available.get(nodeId);
+			AstarNode neighbour = this.available.get(link.getTo().getId());
 			
-			Double newDistance = link.getLength() + neighbour.getEuclideanDistanceToTarget() + currentNode.getTotalDistance();
-			//Double newDistance = link.getLength() +  currentNode.getTotalDistance();
+			euclideanDistance = neighbour.getEuclideanDistanceToTarget();
+			newDistance = link.getLength() + euclideanDistance + currentNode.getTotalDistance();
 			
-			if(neighbour.getTotalDistance() != null && (this.available.containsKey(neighbour.getId()) && newDistance.compareTo(neighbour.getTotalDistance()) >= 0.0)) {
+			if(neighbour.getTotalDistance() != null && (this.available.containsKey(nodeId) && newDistance.compareTo(neighbour.getTotalDistance() + euclideanDistance) >= 0.0)) {
 				continue;
 			}
-//
-//			System.out.print("+++ to: "+neighbour.getId());
-//			System.out.print(" -> length: "+link.getLength());
-//			System.out.print(" -> euk: "+neighbour.getEuclideanDistanceToTarget());
-//			System.out.print(" -> new Distance: "+newDistance);
-//			System.out.println();
-//			
 			
-			newDistance = link.getLength() + currentNode.getTotalDistance();
-			neighbour.setTotalDistance(newDistance);
+			neighbour.setTotalDistance(newDistance - euclideanDistance);
 			neighbour.setPrevious(currentNode);
 			if(!this.available.containsKey(neighbour.getId())) {
 				this.available.put(neighbour.getId(), neighbour);
 			}
-			
 		}
 	}
 	
@@ -145,6 +142,20 @@ public class Astar {
 			astarNode.setTarget(this.target);
 			this.available.put(astarNode.getId(), astarNode);
 		}
+				// get start and set distance to 0
+		this.start = this.available.get(start.getId());
+		this.start.setTotalDistance(0.0);
+		// remove start from available
+		
+		this.target = this.available.get(target.getId());
+	}
+	
+	public AstarNode getStart(){
+		return start;
+	}
+	
+	public AstarNode getTarget(){
+		return target;
 	}
 	
 }

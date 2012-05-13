@@ -89,7 +89,12 @@ public class JSONImport {
 			Node start = networkGraph.getNode(1322811485);
 			Node destination = networkGraph.getNode(1328453500);
 			
+			long starttime = System.currentTimeMillis();
+			
 			Astar astar = new Astar(networkGraph, start, destination);
+			jung.addAstar(astar);
+			
+			System.out.println("duration: " + (System.currentTimeMillis() - starttime));
 			Stack<AstarNode> path = astar.getPath();
 			Stack<AstarNode> pathdummy = astar.getPath();
 			
@@ -106,7 +111,7 @@ public class JSONImport {
 			jung.addAgent(new Node(4711, start.getX(), start.getY()));
 			jung.createLayout(networkGraph);
 			jung.setDijkstra(dijList);
-			jung.setAstarPath(path, 1322811485, 1328453500);
+			jung.setAstarPath(path, start.getId(), destination.getId());
 			
 			jung.draw();
 			astarSimulation.run();
