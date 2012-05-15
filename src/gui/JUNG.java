@@ -3,7 +3,6 @@ package gui;
 import agents.AgentPathwalker;
 import astar.Astar;
 import astar.AstarNode;
-import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
@@ -17,18 +16,9 @@ import network.NetworkGraph;
 
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.layout.StaticLayout;
-import edu.uci.ics.jung.algorithms.layout.util.Relaxer;
-import edu.uci.ics.jung.graph.DirectedSparseMultigraph;
-import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.util.EdgeType;
-import edu.uci.ics.jung.samples.ShowLayouts.GraphChooser;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
-import edu.uci.ics.jung.visualization.annotations.AnnotationControls;
 import edu.uci.ics.jung.visualization.control.*;
 import edu.uci.ics.jung.visualization.decorators.EdgeShape;
-import edu.uci.ics.jung.visualization.decorators.PickableVertexPaintTransformer;
-import edu.uci.ics.jung.visualization.layout.LayoutTransition;
-import edu.uci.ics.jung.visualization.util.Animator;
 
 
 import java.awt.*;
@@ -37,7 +27,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
-import java.lang.reflect.Constructor;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
@@ -47,7 +36,7 @@ import spatial.BoundingBox;
 public class JUNG {
 
 	private static boolean paintPath = false;
-	private Layout<Node, Link> layout;
+	private StaticLayout<Node, Link> layout;
 	private double width = 0;
 	private double height = 0;
 	private double minX = 0;
@@ -122,7 +111,7 @@ public class JUNG {
 		minY = boundingBox.getTopLeft().getY();
 	
 		layout = new StaticLayout<Node, Link>(networkGraph.getGraph());
-
+		
 		for (Node node : networkGraph.getNodes()) {
 			layout.setLocation(node, scaleToFrame(node.getX(), node.getY()));
 			
@@ -154,7 +143,7 @@ public class JUNG {
 	private boolean astarPathContains(int id) {
 		for (Iterator<AstarNode> it = astarPath.iterator(); it.hasNext();) {
 			AstarNode astarNode = it.next();
-			if (astarNode.getId() == id) {
+			if (astarNode.getId() == id){
 				return true;
 			}
 		}
@@ -167,8 +156,6 @@ public class JUNG {
 		 * BasicVisualizationServer<Node, Link> vv = new
 		 * BasicVisualizationServer<Node, Link>(layout);
 		 */
-		
-		float scale = 1;
 
 		vv = new VisualizationViewer<Node, Link>(_layout);
 		
@@ -232,11 +219,12 @@ public class JUNG {
 //		vv.addKeyListener(graphMouse.getModeKeyListener());
 		
 		PluggableGraphMouse gm = new PluggableGraphMouse(); 				
-		gm.add(new OwnPickingGraphMousePlugin(MouseEvent.BUTTON1_MASK, MouseEvent.BUTTON1_DOWN_MASK, this.astar, this));
+		gm.add(new PickingGraphMousePlugin(MouseEvent.BUTTON1_MASK, MouseEvent.BUTTON1_DOWN_MASK));
 		gm.add(new TranslatingGraphMousePlugin(MouseEvent.BUTTON3_MASK));
 		gm.add(new ScalingGraphMousePlugin(new CrossoverScalingControl(), 0, 1.1f, 0.9f));
 		vv.setGraphMouse(gm);
 		
+
 		final ScalingControl scaler = new CrossoverScalingControl();
 
 		JButton plus = new JButton("+");
@@ -269,7 +257,7 @@ public class JUNG {
 			public void actionPerformed(ActionEvent e) {
 				astarSimulation.pause = !astarSimulation.pause;
 			}
-		});			
+		});		
 		
 		JButton togglePath = new JButton("Toggle path paint");
 		togglePath.addActionListener(new ActionListener() {
@@ -304,7 +292,6 @@ public class JUNG {
 
 		bottomControls.add(plus);
 		bottomControls.add(minus);
-		//bottomControls.add(modeBox);
 		bottomControls.add(goToStart);
 		bottomControls.add(togglePause);
 		bottomControls.add(togglePath);
@@ -337,7 +324,5 @@ public class JUNG {
 		Graphics2D g = (Graphics2D)jp.getComponents()[0].getGraphics();
 		System.out.println(g);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);		
-		
-		
 	}
 }
