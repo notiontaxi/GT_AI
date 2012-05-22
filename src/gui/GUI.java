@@ -2,19 +2,18 @@ package gui;
 
 import javax.swing.JFrame;
 
-public class Main extends JFrame {
+import logic.Logic;
+
+public class GUI extends JFrame {
+	private static final long serialVersionUID = 1L;
 	
-	public Main() {
+	private Logic logic;
+
+	public GUI(Logic logic) {
+		this.logic = logic;
 		this.add(new Board());
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setSize(420,440);
 		this.setVisible(true);
-	}
-
-	
-	public static void main(String[] args) {
-		Main main = new Main();
-		main.setVisible(true);
-	}
-	
+	}	
 }
