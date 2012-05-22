@@ -13,7 +13,13 @@ import logic.Logic;
  */
 public class Main {
 	public static void main(String[] args) {
-		Logic logic = new Logic();
+		Config config;
+		if(args.length != 0){
+			config = new Config(args[0]);
+		} else {
+			config = new Config();
+		}
+		Logic logic = new Logic(config);
 		GUI gui = new GUI(logic);
 		gui.setVisible(true);
 	}
