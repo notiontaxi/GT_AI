@@ -3,15 +3,22 @@ package gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.*;
+import logic.Logic;
+import logic.Player;
 
 @SuppressWarnings("serial")
 public class Board extends JPanel {
 
 	private List<Coin> coins = new ArrayList<Coin>();
-
+	private Map<Integer , Color> colorPlayerMapping;
+	
 //	// Animation thread
 //	private Thread runner = null;
 //	private boolean running = true;
@@ -24,11 +31,16 @@ public class Board extends JPanel {
 	
 	private int padding = 20;
 	
-    public Board() {
+	private Logic logic;
+	
+    public Board(Logic logic) {
 //    	// initialize Animation thread
 //    	this.runner = new Thread(this);
 //    	this.runner.start();
-    	
+    	this.logic = logic; 
+		this.colorPlayerMapping = new HashMap<Integer, Color>();
+		initColorPlayerMapping();		
+		
     	this.initListeners();
         
         this.setPreferredSize(this.dimension);
@@ -96,22 +108,39 @@ public class Board extends JPanel {
 //		}
 //	}
 	
+	private void initColorPlayerMapping(){
+		colorPlayerMapping.put(0, Color.blue);
+		colorPlayerMapping.put(1, Color.red);
+	}
+	
 	
 	private void initListeners() {
 		this.addMouseListener(new MouseAdapter() {          
 			public void mousePressed(MouseEvent me) { 
-
+				
 				if(me.getX() > padding && me.getX() < dimension.getWidth() - padding && 
 						me.getY() > padding && me.getY() < dimension.getHeight() - padding) {
 					
 					int wx = (dimension.width - (2*padding)) / size_x;
 					int wy = (dimension.height - (2*padding)) / size_y;
 
-					int x = ((int) (me.getX()-padding) / wx) * wx + padding;
-					int y = ((int) (me.getY()-padding) / wy) * wy + padding;
-
-					coins.add(new Coin(x, y, wx, wy, Color.RED)); 
-					repaint();
+					int xIndex = (int) (me.getX()-padding) / wx;
+					int yIndex = (int) (me.getY()-padding) / wy;
+					
+					int x = xIndex * wx + padding;
+					int y = yIndex * wy + padding;
+					
+					try {
+						logic.performMove(xIndex, yIndex);
+						coins.add(new Coin(x, y, wx, wy, colorPlayerMapping.get(logic.getActivePlayer())));
+						Player winner = logic.getWinner();
+						if (winner != null){
+							System.out.println("Winner!!!!!! Congratulations " + winner.getName() + ".");
+						}
+						repaint();
+					} catch (IllegalAccessException ex) {
+						Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
+					}
 				}
           } 
 		});
