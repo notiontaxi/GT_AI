@@ -35,8 +35,13 @@ public class Logic {
 		initLineArray();
 	}	
 	
-	public void performMove(int x, int y) throws IllegalAccessException {
-		board.performMove(activePlayerID, new Coordinate(x,y));
+	public boolean performMove(int x, int y) {
+		try {
+			board.performMove(activePlayerID, new Coordinate(x,y));
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			return false;
+		}
 		moveCount++;
 		if (moveCount >= (2 * config.getRowLengthToWin()) - 1){
 			calculateWinner(x,y);
@@ -45,6 +50,7 @@ public class Logic {
 		if (winnerID == -1){
 			switchPlayer();
 		}
+		return true;
 	}
 
 	public void undoMove(int x, int y) throws IllegalAccessException {

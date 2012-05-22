@@ -48,8 +48,7 @@ public class MinMax {
 				
 				for(int y = 0; y < fields[x].length; y++) {
 				
-					if(this.logicClone.isMovePossible(x, y)) {
-						this.logicClone.performMove(x, y);
+					if(this.logicClone.performMove(x, y)) {
 						int tmp = maxValue(state);
 						utility = Math.min(tmp, utility);
 					}
@@ -70,8 +69,7 @@ public class MinMax {
 			Integer[][] fields = new Integer[4][4]; // this.logic.getFields();
 			for(int x = 0; x < fields.length; x++) {
 				for(int y = 0; y < fields[x].length; y++) {
-					if(this.logicClone.isMovePossible(x, y)) {
-						this.logicClone.performMove(x, y);
+					if(this.logicClone.performMove(x, y)) {
 						int tmp = minValue(state);
 						utility = Math.max(tmp, utility);
 					}
