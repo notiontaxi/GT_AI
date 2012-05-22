@@ -18,6 +18,17 @@ public class Board {
 		initFields();
 	}
 	
+	private Board() {
+		
+	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		Board board = new Board();
+		board.fields = this.fields.clone();
+		return board;
+	}
+	
 	public void performMove(int playerID, Coordinate coordinate) throws IllegalAccessException{
 		if (fields[coordinate.getX()][coordinate.getY()] == emptyValue){
 			fields[coordinate.getX()][coordinate.getY()] = playerID;
@@ -26,12 +37,8 @@ public class Board {
 		}
 	}
 	
-	public void undoMove(int playerID, Coordinate coordinate) throws IllegalAccessException{
-		if (fields[coordinate.getX()][coordinate.getY()] == playerID){
-			fields[coordinate.getX()][coordinate.getY()] = emptyValue;
-		} else {
-			throw new IllegalAccessException("Field isn't marked by player[" + playerID + "].");
-		}
+	public void undoMove(int playerID, Coordinate coordinate) {
+		fields[coordinate.getX()][coordinate.getY()] = emptyValue;
 	}
 
 	public Integer[][] getFields() {

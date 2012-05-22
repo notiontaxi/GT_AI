@@ -10,7 +10,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.*;
+
+import logic.Coordinate;
 import logic.Logic;
+import logic.MinMax;
 import logic.Player;
 
 @SuppressWarnings("serial")
@@ -130,17 +133,27 @@ public class Board extends JPanel {
 					int x = xIndex * wx + padding;
 					int y = yIndex * wy + padding;
 					
-					try {
-						logic.performMove(xIndex, yIndex);
+					if(logic.performMove(xIndex, yIndex)) {
 						coins.add(new Coin(x, y, wx, wy, colorPlayerMapping.get(logic.getActivePlayer())));
 						Player winner = logic.getWinner();
 						if (winner != null){
 							System.out.println("Winner!!!!!! Congratulations " + winner.getName() + ".");
 						}
-						repaint();
-					} catch (IllegalAccessException ex) {
-						Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
 					}
+					
+					
+					MinMax minMax;
+					try {
+						minMax = new MinMax(logic);
+						Coordinate c = minMax.minmaxDecision(0);
+						if(c != null && logic.performMove(c.getX(), c.getY())) {
+							coins.add(new Coin(c.getX()*wx+padding, c.getY()*wy+padding, wx, wy, colorPlayerMapping.get(logic.getActivePlayer())));
+						}
+						repaint();
+					} catch (CloneNotSupportedException e) {
+						e.printStackTrace();
+					}
+
 				}
           } 
 		});

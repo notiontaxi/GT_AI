@@ -39,7 +39,6 @@ public class Logic {
 		try {
 			board.performMove(activePlayerID, new Coordinate(x,y));
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
 			return false;
 		}
 		moveCount++;
@@ -53,7 +52,7 @@ public class Logic {
 		return true;
 	}
 
-	public void undoMove(int x, int y) throws IllegalAccessException {
+	public void undoMove(int x, int y) {
 		board.undoMove(activePlayerID, new Coordinate(x,y));
 	}
 
@@ -102,7 +101,6 @@ public class Logic {
 			currCoordinate = backUpCoordinate;
 			currDeltaCoordinate = lineArray[posInArray];
 			directionSwitches = 0;
-			System.out.println("posInArray: " + posInArray);
 			
 			while(winnerID == -1 && directionSwitches < 2){
 				try {
@@ -114,13 +112,11 @@ public class Logic {
 						currDeltaCoordinate = getInverseCoordinate(currDeltaCoordinate);
 						directionSwitches++;
 						currCoordinate = backUpCoordinate;
-						System.out.println("SwitchDir");
 					}
 				} catch (IllegalAccessException ex) {
 					currDeltaCoordinate = getInverseCoordinate(currDeltaCoordinate);
 					directionSwitches++;
 					currCoordinate = backUpCoordinate; 
-					System.out.println("SwitchDir");
 				}
 				if (fieldsInRow == config.getRowLengthToWin()){
 					winnerID = activePlayerID;
@@ -128,7 +124,6 @@ public class Logic {
 			}
 			posInArray++;
 		}
-		System.out.println("WinnerID: " + winnerID);
 	}
 	
 	private Coordinate getInverseCoordinate(Coordinate coordinate){
@@ -150,7 +145,19 @@ public class Logic {
 	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
+		
+		Logic logic = new Logic(config);
+
+		logic.players = new HashMap<Integer, Player>(this.players);
+		logic.moveCount = this.moveCount;
+		logic.config = new Config();
+		logic.winnerID = this.winnerID;
+		
+		logic.board = (Board) this.board.clone();
+		logic.activePlayerID = this.activePlayerID;
+		logic.lineArray = this.lineArray.clone();
+		
+		return logic;
 	}	
 	
 }
