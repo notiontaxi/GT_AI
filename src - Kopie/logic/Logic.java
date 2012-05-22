@@ -39,19 +39,18 @@ public class Logic {
 		try {
 			board.performMove(activePlayerID, new Coordinate(x,y));
 		} catch (IllegalAccessException e) {
+			e.printStackTrace();
 			return false;
 		}
 		moveCount++;
 		if (moveCount >= (2 * config.getRowLengthToWin()) - 1){
 			calculateWinner(x,y);
 		}
-		
 		switchPlayer();
-		
 		return true;
 	}
 
-	public void undoMove(int x, int y) {
+	public void undoMove(int x, int y) throws IllegalAccessException {
 		board.undoMove(activePlayerID, new Coordinate(x,y));
 	}
 
@@ -140,19 +139,7 @@ public class Logic {
 	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
-		
-		Logic logic = new Logic(config);
-
-		logic.players = new HashMap<Integer, Player>(this.players);
-		logic.moveCount = this.moveCount;
-		logic.config = new Config();
-		logic.winnerID = this.winnerID;
-		
-		logic.board = (Board) this.board.clone();
-		logic.activePlayerID = this.activePlayerID;
-		logic.lineArray = this.lineArray.clone();
-		
-		return logic;
+		return super.clone();
 	}	
 	
 }
