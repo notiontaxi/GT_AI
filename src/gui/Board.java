@@ -2,21 +2,19 @@ package gui;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.*;
 
 @SuppressWarnings("serial")
-public class Board extends JPanel implements Runnable {
+public class Board extends JPanel {
 
 	private List<Coin> coins = new ArrayList<Coin>();
-	private List<Field> fields = new ArrayList<Field>();
 
-	private Thread runner = null;
-	
-	private boolean running = true;
+//	// Animation thread
+//	private Thread runner = null;
+//	private boolean running = true;
 	
 	private int size_x = 4;
 
@@ -27,8 +25,9 @@ public class Board extends JPanel implements Runnable {
 	private int padding = 20;
 	
     public Board() {
-    	this.runner = new Thread(this);
-    	this.runner.start();
+//    	// initialize Animation thread
+//    	this.runner = new Thread(this);
+//    	this.runner.start();
     	
     	this.initListeners();
         
@@ -54,23 +53,7 @@ public class Board extends JPanel implements Runnable {
         this.setLayout(new BorderLayout());
 //        this.add(buttonPanel, BorderLayout.NORTH);
         
-        this.placeCoin(10, 10);
-        
-
-		int wx = (this.dimension.width - (2*this.padding)) / this.size_x;
-		int wy = (this.dimension.height - (2*this.padding)) / this.size_y;
-
-		for(int x = 0; x < this.size_x; x++) {
-			for(int y = 0; y < this.size_y; y++) {
-				this.fields.add(new Field(this.padding+x*wx, this.padding+y*wy, wx, wy));
-			}
-		}
-    }//end constructor
-	
-	public void placeCoin(int x, int y) {
-		Coin coin = new Coin(x, y, 20, 20, Color.YELLOW);
-		this.coins.add(coin);
-	}
+    }
 	
 	@Override
 	public void paint(Graphics g) {
@@ -81,16 +64,9 @@ public class Board extends JPanel implements Runnable {
 		graphics2d.setColor(Color.BLACK);
 		
 
-		graphics2d.fill(new Ellipse2D.Double(22,22,22,22));
-
 		for(Coin coin : this.coins) {
-			coin.y++;
 			coin.draw(graphics2d);
 		}
-//		for(Field field : this.fields) {
-//			field.draw(graphics2d);
-//		}
-		
 
 		int wx = (this.dimension.width - (2*this.padding)) / this.size_x;
 		int wy = (this.dimension.height - (2*this.padding)) / this.size_y;
@@ -105,23 +81,38 @@ public class Board extends JPanel implements Runnable {
 		
 	}
 	
-	@Override
-	public void run() {
-		while(running) {
-			super.repaint();
-			try {
-				Thread.sleep(40);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+//	@Override
+//	/**
+//	 *  when using animations/implementing runnable
+//	 */
+//	public void run() {
+//		while(running) {
+//			super.repaint();
+//			try {
+//				Thread.sleep(40);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//	}
 	
 	
 	private void initListeners() {
 		this.addMouseListener(new MouseAdapter() {          
 			public void mousePressed(MouseEvent me) { 
-				System.out.println(me); 
+
+				if(me.getX() > padding && me.getX() < dimension.getWidth() - padding && 
+						me.getY() > padding && me.getY() < dimension.getHeight() - padding) {
+					
+					int wx = (dimension.width - (2*padding)) / size_x;
+					int wy = (dimension.height - (2*padding)) / size_y;
+
+					int x = ((int) (me.getX()-padding) / wx) * wx + padding;
+					int y = ((int) (me.getY()-padding) / wy) * wy + padding;
+
+					coins.add(new Coin(x, y, wx, wy, Color.RED)); 
+					repaint();
+				}
           } 
 		});
 	}
