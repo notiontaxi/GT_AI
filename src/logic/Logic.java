@@ -22,6 +22,7 @@ public class Logic {
 	private Board board;
 	private int activePlayerID;
 	private Coordinate[] lineArray;
+	private int dimXdimY;
 	
 	public Logic(Config config){
 		this.config = config;
@@ -31,14 +32,17 @@ public class Logic {
 		
 		winnerID = -1;
 		activePlayerID = 0;
+		dimXdimY = config.getDimensionX() * config.getDimensionY();
 		board = new Board(config.getDimensionX(), config.getDimensionY());
 		initLineArray();
 	}	
 	
 	public boolean performMove(int x, int y) {
 		try {
+			//System.out.println("Valid move(" + x + "," + y + ")");
 			board.performMove(activePlayerID, new Coordinate(x,y));
 		} catch (IllegalAccessException e) {
+			//System.out.println("Invalid move.");
 			return false;
 		}
 		moveCount++;
@@ -53,6 +57,9 @@ public class Logic {
 
 	public void undoMove(int x, int y) {
 		board.undoMove(activePlayerID, new Coordinate(x,y));
+		this.winnerID = -1;
+		moveCount--;
+		switchPlayer();
 	}
 
 	public boolean isMovePossible(int x, int y) {
@@ -60,7 +67,7 @@ public class Logic {
 	}
 	
 	public boolean isGameOver(){
-		return (moveCount == config.getDimensionX() * config.getDimensionY()) || (winnerID != -1);
+		return (moveCount == dimXdimY) || (winnerID != -1);
 	}
 	
 	private void switchPlayer(){
@@ -68,7 +75,10 @@ public class Logic {
 	}
 
 	public Player getWinner() {
-		return players.get(winnerID);
+		if (winnerID != -1)
+			return players.get(winnerID);
+		else
+			return null;
 	}
 
 	public int getActivePlayer() {
@@ -127,10 +137,10 @@ public class Logic {
 	
 	private void initLineArray(){
 		lineArray = new Coordinate[4];
-		lineArray[0] = new Coordinate(-1,1);
+		lineArray[0] = new Coordinate(1,0);
 		lineArray[1] = new Coordinate(0,1);
 		lineArray[2] = new Coordinate(1,1);
-		lineArray[3] = new Coordinate(1,0);
+		lineArray[3] = new Coordinate(-1,1);
 	}
 
 	private Coordinate getNeighbour(Coordinate coordinate, Coordinate nextDelta){

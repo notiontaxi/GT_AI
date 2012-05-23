@@ -20,7 +20,7 @@ public class Main {
 			config = new Config();
 		}
 		Logic logic = new Logic(config);
-		GUI gui = new GUI(logic);
+		GUI gui = new GUI(config, logic);
 		gui.setVisible(true);
 	}
 }

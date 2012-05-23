@@ -7,9 +7,9 @@ public class Config {
 	private int rowLengthToWin;
 	
 	public Config(){
-		this.dimensionX = 4;
-		this.dimensionY = 4;
-		this.rowLengthToWin = 4;
+		this.dimensionX = 3;
+		this.dimensionY = 3;
+		this.rowLengthToWin = 3;
 	}
 	
 	public Config(String path){

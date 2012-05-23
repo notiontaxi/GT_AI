@@ -15,6 +15,7 @@ import logic.Coordinate;
 import logic.Logic;
 import logic.MinMax;
 import logic.Player;
+import main.Config;
 
 @SuppressWarnings("serial")
 public class Board extends JPanel {
@@ -36,13 +37,16 @@ public class Board extends JPanel {
 	
 	private Logic logic;
 	
-    public Board(Logic logic) {
+    public Board(Config config, Logic logic) {
 //    	// initialize Animation thread
 //    	this.runner = new Thread(this);
 //    	this.runner.start();
     	this.logic = logic; 
 		this.colorPlayerMapping = new HashMap<Integer, Color>();
-		initColorPlayerMapping();		
+		initColorPlayerMapping();
+		
+		this.size_x = config.getDimensionX();
+		this.size_y = config.getDimensionY();
 		
     	this.initListeners();
         
@@ -148,7 +152,9 @@ public class Board extends JPanel {
 							MinMax minMax;
 							try {
 								minMax = new MinMax(logic);
-								Coordinate c = minMax.minmaxDecision(0);
+								long startTime = System.currentTimeMillis();
+								Coordinate c = minMax.minmaxDecision();
+								System.out.println("Duration: " + (System.currentTimeMillis() - startTime));
 								if(c != null && logic.performMove(c.getX(), c.getY())) {
 									coins.add(new Coin(c.getX()*wx+padding, c.getY()*wy+padding, wx, wy, colorPlayerMapping.get(logic.getActivePlayer())));
 								}
