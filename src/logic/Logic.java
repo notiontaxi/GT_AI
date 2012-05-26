@@ -4,10 +4,6 @@
  */
 package logic;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import main.Config;
 
 /**
@@ -15,20 +11,21 @@ import main.Config;
  * @author Alex
  */
 public class Logic {
-	private Map<Integer, Player> players;
+	private Player[] players;
 	private int moveCount;
 	private Config config;
 	private int winnerID;
 	private Board board;
 	private int activePlayerID;
-	private Coordinate[] lineArray;
+	private int[] lineArrayX;
+	private int[] lineArrayY;
 	private int dimXdimY;
 	
 	public Logic(Config config){
 		this.config = config;
-		players = new HashMap<Integer, Player>();
-		addPlayer("Max");
-		addPlayer("Min");
+		players = new Player[2];
+		players[0] = new Player(0,"Max");
+		players[1] = new Player(1,"Min");
 		
 		winnerID = -1;
 		activePlayerID = 0;
@@ -40,7 +37,7 @@ public class Logic {
 	public boolean performMove(int x, int y) {
 		try {
 			//System.out.println("Valid move(" + x + "," + y + ")");
-			board.performMove(activePlayerID, new Coordinate(x,y));
+			board.performMove(activePlayerID, x,y);
 		} catch (IllegalAccessException e) {
 			//System.out.println("Invalid move.");
 			return false;
@@ -56,14 +53,14 @@ public class Logic {
 	}
 
 	public void undoMove(int x, int y) {
-		board.undoMove(activePlayerID, new Coordinate(x,y));
+		board.undoMove(x,y);
 		this.winnerID = -1;
 		moveCount--;
 		switchPlayer();
 	}
 
 	public boolean isMovePossible(int x, int y) {
-		return board.isFieldEmpty(new Coordinate(x, y));
+		return board.isFieldEmpty(x, y);
 	}
 	
 	public boolean isGameOver(){
@@ -71,14 +68,18 @@ public class Logic {
 	}
 	
 	private void switchPlayer(){
-		activePlayerID = (activePlayerID + 1) % players.size();
+		activePlayerID = (activePlayerID + 1) % 2;
 	}
 
 	public Player getWinner() {
 		if (winnerID != -1)
-			return players.get(winnerID);
+			return players[winnerID];
 		else
 			return null;
+	}
+	
+	public int getWinnerID() {
+		return winnerID;
 	}
 
 	public int getActivePlayer() {
@@ -86,43 +87,47 @@ public class Logic {
 	}
 	
 	public int getPlayerCount(){
-		return players.size();
+		return 2;
 	}
 	
 	public Board getBoard(){
 		return this.board;
 	}
 	
-	private void addPlayer(String name){
-		int playerID = players.size();
-		players.put(playerID, new Player(playerID, name));
+	public Integer[][] getBoardFields(){
+		return this.board.getFields();
 	}
 	
 	private void calculateWinner(int x, int y){
 		int posInArray = 0;
 		int fieldsInRow = 1;
 		int directionSwitches = 0;
-		Coordinate currCoordinate;
-		Coordinate backUpCoordinate = new Coordinate(x,y);
-		Coordinate currDeltaCoordinate;
+//		Coordinate currCoordinate;
+//		Coordinate backUpCoordinate = new Coordinate(x,y);
+		int xNew, xCurr, xCurrDelta;
+		int yNew, yCurr, yCurrDelta;
 		while (winnerID == -1 && posInArray <= 3){
 			fieldsInRow = 1;
-			currCoordinate = backUpCoordinate;
-			currDeltaCoordinate = lineArray[posInArray];
+			xCurr = x;
+			yCurr = y; //currCoordinate = backUpCoordinate;
+			xCurrDelta = lineArrayX[posInArray];
+			yCurrDelta = lineArrayY[posInArray];
 			directionSwitches = 0;
 			
 			while(winnerID == -1 && directionSwitches < 2){
-				try {
-					Coordinate temp = getNeighbour(currCoordinate, currDeltaCoordinate);
-					if (temp != null && board.getFieldValue(temp) == activePlayerID){
-						fieldsInRow++;
-						currCoordinate = temp; 
-					} else {
-						currDeltaCoordinate = getInverseCoordinate(currDeltaCoordinate);
-						directionSwitches++;
-						currCoordinate = backUpCoordinate;
-					}
-				} catch (IllegalAccessException ex) {}
+				xNew = xCurr + xCurrDelta;
+				yNew = yCurr + yCurrDelta;
+				if (board.isCoordinateValid(xNew, yNew) && board.unsafeGetFieldValue(xNew,yNew) == activePlayerID){
+					fieldsInRow++;
+					xCurr = xNew;
+					yCurr = yNew;
+				} else {
+					xCurrDelta *= (-1);
+					yCurrDelta *= (-1);
+					directionSwitches++;
+					xCurr = x;
+					yCurr = y;
+				}
 				if (fieldsInRow == config.getRowLengthToWin()){
 					winnerID = activePlayerID;
 				}
@@ -131,21 +136,18 @@ public class Logic {
 		}
 	}
 	
-	private Coordinate getInverseCoordinate(Coordinate coordinate){
-		return new Coordinate(coordinate.getX() * (-1),coordinate.getY() * (-1));
-	}
-	
 	private void initLineArray(){
-		lineArray = new Coordinate[4];
-		lineArray[0] = new Coordinate(1,0);
-		lineArray[1] = new Coordinate(0,1);
-		lineArray[2] = new Coordinate(1,1);
-		lineArray[3] = new Coordinate(-1,1);
-	}
-
-	private Coordinate getNeighbour(Coordinate coordinate, Coordinate nextDelta){
-		Coordinate temp = new Coordinate(coordinate.getX() + nextDelta.getX(), coordinate.getY() + nextDelta.getY());
-		return board.isCoordinateValid(temp) ? temp : null;
+		lineArrayX = new int[4];
+		lineArrayX[0] = 1;
+		lineArrayX[1] = 0;
+		lineArrayX[2] = 1;
+		lineArrayX[3] = -1;
+		
+		lineArrayY = new int[4];
+		lineArrayY[0] = 0;
+		lineArrayY[1] = 1;
+		lineArrayY[2] = 1;
+		lineArrayY[3] = 1;
 	}
 	
 	@Override
@@ -153,14 +155,15 @@ public class Logic {
 		
 		Logic logic = new Logic(config);
 
-		logic.players = new HashMap<Integer, Player>(this.players);
+		logic.players = players.clone();
 		logic.moveCount = this.moveCount;
 		logic.config = new Config();
 		logic.winnerID = this.winnerID;
 		
 		logic.board = (Board) this.board.clone();
 		logic.activePlayerID = this.activePlayerID;
-		logic.lineArray = this.lineArray.clone();
+		logic.lineArrayX = this.lineArrayX.clone();
+		logic.lineArrayY = this.lineArrayY.clone();
 		
 		return logic;
 	}	

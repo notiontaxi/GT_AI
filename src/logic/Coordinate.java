@@ -32,4 +32,9 @@ public class Coordinate {
 	public void setY(int y) {
 		this.y = y;
 	}
+	
+	public void invert(){
+		this.x *= -1;
+		this.y *= -1;
+	}
 }

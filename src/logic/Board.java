@@ -3,7 +3,6 @@
  * and open the template in the editor.
  */
 package logic;
-
 /**
  *
  * @author Alex
@@ -12,6 +11,9 @@ public class Board {
 
 	private Integer[][] fields;
 	private final int emptyValue = -1;
+	private int count0 = 0;
+	private int count1 = 0;
+	private int count2 = 0;
 	
 	public Board(int x, int y){
 		fields = new Integer[x][y];
@@ -29,46 +31,62 @@ public class Board {
 		return board;
 	}
 	
-	public void performMove(int playerID, Coordinate coordinate) throws IllegalAccessException{
-		if (fields[coordinate.getX()][coordinate.getY()] == emptyValue){
-			fields[coordinate.getX()][coordinate.getY()] = playerID;
+	public void performMove(int playerID, int x, int y) throws IllegalAccessException{
+		count0 += 1;
+		if (count0 % 100000 == 0){
+			count0 = 0;
+			count1++;
+			if (count1 % 1000 == 0){
+				count1 = 0;
+				count2++;
+				System.err.println(count2);
+			}
+		}
+		if (fields[x][y] == emptyValue){
+			fields[x][y] = playerID;
+			//emptyFields.removeElement(coordinate.getX() * fields[0].length + coordinate.getY());
 		} else {
 			throw new IllegalAccessException("Field is not empty.");
 		}
 	}
 	
-	public void undoMove(int playerID, Coordinate coordinate) {
-		fields[coordinate.getX()][coordinate.getY()] = emptyValue;
+	public void undoMove(int x,  int y) {
+		fields[x][y] = emptyValue;
 	}
 
 	public Integer[][] getFields() {
 		return fields;
 	}
 	
-	public int getFieldValue(Coordinate coordinate)throws IllegalAccessException{
-		if (coordinate != null && isCoordinateValid(coordinate)){
-			return fields[coordinate.getX()][coordinate.getY()];
+	public int getFieldValue(int x, int y) throws IllegalAccessException{
+		if (isCoordinateValid(x,y)){
+			return fields[x][y];
 		} else {
 			throw new IllegalAccessException("Coordinate is invalid");
 		}
+	}
+	
+	public int unsafeGetFieldValue(int x, int y) {
+		return fields[x][y];
 	}
 	
 	public int getEmptyValue(){
 		return emptyValue;
 	}
 	
-	public boolean isFieldEmpty(Coordinate coordinate){
-		return fields[coordinate.getX()][coordinate.getY()] == emptyValue;
+	public boolean isFieldEmpty(int x, int y){
+		return fields[x][y] == emptyValue;
 	}
 	
-	public boolean isCoordinateValid(Coordinate coordinate){
-		return coordinate.getX() >= 0 && coordinate.getX() < fields.length && coordinate.getY() >= 0 && coordinate.getY() < fields[0].length;
+	public boolean isCoordinateValid(int x, int y){
+		return x >= 0 && x < fields.length && y >= 0 && y < fields[0].length;
 	}
 	
 	private void initFields(){
 		for(int x = 0; x < fields.length; ++x){
 			for (int y = 0; y < fields[0].length; ++y){
 				fields[x][y] = emptyValue;
+				//emptyFields.add(x * fields[0].length + y);
 			}
 		}
 	}

@@ -1,17 +1,21 @@
 package logic;
 
+import java.util.List;
+import java.util.Vector;
+
 public class MinMax {
 
 	private Logic logicClone = null;
 	private int activePlayer = -1; 
-	private int comboMin = 0;
-	private int comboMax = 0;
-	private int comboMM = 0;
 	private Integer[][] currFields;
+	private int xSize;
+	private int ySize;
 	
 	public MinMax(Logic logic) throws CloneNotSupportedException {
 		this.activePlayer = logic.getActivePlayer();
 		this.logicClone = (Logic) logic.clone();
+		this.xSize = logicClone.getBoard().getFields()[0].length;
+		this.ySize = logicClone.getBoard().getFields()[0].length;
 	}
 
 	
@@ -19,11 +23,12 @@ public class MinMax {
 	public Coordinate minmaxDecision() {
 		int bestUtility = -999999;
 		Coordinate bestAction = null;
+		long startTime = System.currentTimeMillis();
 
-		currFields = this.logicClone.getBoard().getFields(); // this.logic.getFields();
+		currFields = this.logicClone.getBoardFields();
 
-		for(int x = 0; x < currFields.length; x++) {
-			for(int y = 0; y < currFields[x].length; y++) {
+		for(int x = 0; x < xSize; x++) {
+			for(int y = 0; y < ySize; y++) {
 				currFields = this.logicClone.getBoard().getFields();
 				System.out.println("(" + x + "," + y +")");
 				if(this.logicClone.performMove(x, y)) {
@@ -35,29 +40,29 @@ public class MinMax {
 					}
 					this.logicClone.undoMove(x, y);
 				}
+				System.out.println("Duration: " + (System.currentTimeMillis() - startTime));
+				startTime = System.currentTimeMillis();
 			}
 		}
-		System.out.println("ComboMin: " + comboMin);
-		System.out.println("ComboMax: " + comboMax);
-		System.out.println("ComboMM: " + comboMM);
 		return bestAction;
 	}
 	
 	public int minValue() {
 		int utility = 999999;
+		
 		if(this.logicClone.isGameOver()) {
 			utility = this.utility();
 		} else {
 
-			//Integer[][] fields = this.logicClone.getBoard().getFields(); // this.logic.getFields();
-			for(int x = 0; x < currFields.length; x++) {
-				
-				for(int y = 0; y < currFields[x].length; y++) {
-					if(this.logicClone.performMove(x, y)) {
-						currFields = this.logicClone.getBoard().getFields();
-						int tmp = maxValue();
-						utility = Math.min(tmp, utility);
-						this.logicClone.undoMove(x, y);
+			for(int x = 0; x < xSize; x++) {
+				for(int y = 0; y < ySize; y++) {
+					if (currFields[x][y] == -1){
+						if(this.logicClone.performMove(x, y)) {
+							currFields = this.logicClone.getBoardFields();
+							int tmp = maxValue();
+							utility = Math.min(tmp, utility);
+							this.logicClone.undoMove(x, y);
+						}
 					}
 				}
 			}
@@ -70,19 +75,17 @@ public class MinMax {
 		int utility = -999999;
 		
 		if(this.logicClone.isGameOver()) {
-			//System.out.println("Game over");
 			utility = this.utility();
 		} else {
-
-			//Integer[][] fields = this.logicClone.getBoard().getFields(); // this.logic.getFields();
-			for(int x = 0; x < currFields.length; x++) {
-				for(int y = 0; y < currFields[x].length; y++) {
-					if(this.logicClone.performMove(x, y)) {
-						currFields = this.logicClone.getBoard().getFields();
-						int tmp = minValue();
-						utility = Math.max(tmp, utility);
-
-						this.logicClone.undoMove(x, y);
+			for(int x = 0; x < xSize; x++) {
+				for(int y = 0; y < ySize; y++) {
+					if (currFields[x][y] == -1){
+						if(this.logicClone.performMove(x, y)) {
+							currFields = this.logicClone.getBoardFields();
+							int tmp = minValue();
+							utility = Math.max(tmp, utility);
+							this.logicClone.undoMove(x, y);
+						}
 					}
 				}
 			}
@@ -94,9 +97,9 @@ public class MinMax {
 	private int utility() {
 
 		int utility = 0;
-		Player winner = this.logicClone.getWinner();
-		if(this.logicClone.getWinner() != null) {
-			if(winner.getId() == this.activePlayer) {
+		int winnerID = this.logicClone.getWinnerID();
+		if(winnerID != -1) {
+			if(winnerID == this.activePlayer) {
 				utility = 1;
 			} else {
 				utility = -1;
