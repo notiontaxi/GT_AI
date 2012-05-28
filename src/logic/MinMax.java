@@ -3,21 +3,47 @@ package logic;
 import java.util.List;
 import java.util.Vector;
 
-public class MinMax {
+public class MinMax{
 
-	private Logic logicClone = null;
-	private int activePlayer = -1; 
-	private Integer[][] currFields;
-	private int xSize;
-	private int ySize;
+	protected Logic logicClone = null;
+	protected int activePlayer = -1; 
+	protected Integer[][] currFields;
+	protected int xSize;
+	protected int ySize;
+	protected int finalUtility;
 	
 	public MinMax(Logic logic) throws CloneNotSupportedException {
 		this.activePlayer = logic.getActivePlayer();
 		this.logicClone = (Logic) logic.clone();
-		this.xSize = logicClone.getBoard().getFields()[0].length;
+		this.xSize = logicClone.getBoard().getFields().length;
 		this.ySize = logicClone.getBoard().getFields()[0].length;
 	}
 
+	
+	public Coordinate minmaxDecision(List<Coordinate> todoCoordinates) {
+		int bestUtility = -999999;
+		Coordinate bestAction = null;
+		long startTime = System.currentTimeMillis();
+
+		for (Coordinate coordinate : todoCoordinates){
+			int x = coordinate.getX();
+			int y = coordinate.getY();
+			currFields = this.logicClone.getBoardFields();
+			System.out.println("Start (" + x + "," + y +")");
+			if(this.logicClone.performMove(x, y)) {
+				System.out.println("Performing (" + x + "," + y +")");
+				int utility = minValue();
+				if(utility > bestUtility) {
+					bestUtility = utility;
+					bestAction = coordinate;
+				}
+				this.logicClone.undoMove(x, y);
+			}
+			System.out.println("End (" + x + "," + y +")");
+		}
+		finalUtility = bestUtility;
+		return bestAction;
+	}
 	
 	
 	public Coordinate minmaxDecision() {
@@ -44,6 +70,7 @@ public class MinMax {
 				startTime = System.currentTimeMillis();
 			}
 		}
+		finalUtility = bestUtility;
 		return bestAction;
 	}
 	

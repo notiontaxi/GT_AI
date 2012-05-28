@@ -39,7 +39,7 @@ public class Logic {
 			//System.out.println("Valid move(" + x + "," + y + ")");
 			board.performMove(activePlayerID, x,y);
 		} catch (IllegalAccessException e) {
-			//System.out.println("Invalid move.");
+			System.out.println("Invalid move(" + x + "," + y + ").");
 			return false;
 		}
 		moveCount++;

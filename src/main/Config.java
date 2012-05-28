@@ -5,11 +5,13 @@ public class Config {
 	private int dimensionX;
 	private int dimensionY;
 	private int rowLengthToWin;
+	private int threadCount;
 	
 	public Config(){
 		this.dimensionX = 3;
 		this.dimensionY = 3;
 		this.rowLengthToWin = 3;
+		this.threadCount = 7;
 	}
 	
 	public Config(String path){
@@ -28,5 +30,7 @@ public class Config {
 		return dimensionY;
 	}
 	
-	
+	public int getThreadCount(){
+		return threadCount;
+	}
 }

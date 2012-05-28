@@ -3,6 +3,11 @@
  * and open the template in the editor.
  */
 package logic;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  *
  * @author Alex
@@ -89,5 +94,17 @@ public class Board {
 				//emptyFields.add(x * fields[0].length + y);
 			}
 		}
+	}
+	
+	public ArrayList<Coordinate> getEmptyFields(){
+		ArrayList<Coordinate> emptyFields = new ArrayList<Coordinate>();
+		for (int x = 0; x < fields.length; ++x){
+			for (int y = 0; y < fields[0].length; ++y){
+				if (fields[x][y] == -1){
+					emptyFields.add(new Coordinate(x,y));
+				}
+			}
+		}
+		return emptyFields;
 	}
 }

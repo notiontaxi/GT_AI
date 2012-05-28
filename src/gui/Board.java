@@ -11,10 +11,7 @@ import java.util.logging.Logger;
 
 import javax.swing.*;
 
-import logic.Coordinate;
-import logic.Logic;
-import logic.MinMax;
-import logic.Player;
+import logic.*;
 import main.Config;
 
 @SuppressWarnings("serial")
@@ -22,6 +19,7 @@ public class Board extends JPanel {
 
 	private List<Coin> coins = new ArrayList<Coin>();
 	private Map<Integer , Color> colorPlayerMapping;
+	private Config config;
 	
 //	// Animation thread
 //	private Thread runner = null;
@@ -42,6 +40,7 @@ public class Board extends JPanel {
 //    	this.runner = new Thread(this);
 //    	this.runner.start();
     	this.logic = logic; 
+		this.config = config;
 		this.colorPlayerMapping = new HashMap<Integer, Color>();
 		initColorPlayerMapping();
 		
@@ -149,12 +148,14 @@ public class Board extends JPanel {
 						}
 
 						if (logic.getWinner() == null && !logic.isGameOver()){ 
-							MinMax minMax;
+							//MiniMaxRunner minMax;
 							try {
-								minMax = new MinMax(logic);
+								MinMax minMax = new MinMax(logic);
 								long startTime = System.currentTimeMillis();
+								/*ThreadObsever to = new ThreadObsever(logic, config.getThreadCount());
+								Coordinate c = to.runMinimax();*/
 								Coordinate c = minMax.minmaxDecision();
-								System.out.println("Duration: " + (System.currentTimeMillis() - startTime));
+								System.out.println("Final Duration: " + (System.currentTimeMillis() - startTime));
 								if(c != null && logic.performMove(c.getX(), c.getY())) {
 									coins.add(new Coin(c.getX()*wx+padding, c.getY()*wy+padding, wx, wy, colorPlayerMapping.get(logic.getActivePlayer())));
 								}
