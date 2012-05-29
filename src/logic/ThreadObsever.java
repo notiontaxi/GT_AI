@@ -38,8 +38,8 @@ public class ThreadObsever extends Thread{
 		
 		ArrayList<Coordinate> emptyFields = logic.getBoard().getEmptyFields();
 		int fieldsPerThread = threadCount > 0 ? (int) (emptyFields.size() / threadCount) : 0;
-		Vector<MiniMaxRunner> runners = new Vector();
-		Vector<Thread> threads = new Vector();
+		Vector<MiniMaxRunner> runners = new Vector<MiniMaxRunner>();
+		Vector<Thread> threads = new Vector<Thread>();
 		try {
 			for (int i = 0; i < threadCount - 1 &&  i < emptyFields.size() - 1; ++i){
 				MiniMaxRunner m = new MiniMaxRunner(logic, emptyFields.subList(i * fieldsPerThread, (i+1) * fieldsPerThread), i);

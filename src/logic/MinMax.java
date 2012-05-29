@@ -1,9 +1,6 @@
 package logic;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.Vector;
 
 public class MinMax{
 
@@ -14,9 +11,6 @@ public class MinMax{
 	protected int xSize;
 	protected int ySize;
 	protected int finalUtility;
-	private int c0 = 0;
-	private int c2 = 0;
-	private int c1 = 0;
 
 	private boolean isDone = false;
 	private int itteration = 0;
@@ -66,56 +60,8 @@ public class MinMax{
 		return bestAction;
 	}
 	
-	/*public int minValue() {
-		int utility = 999999;
-		c1++;
-		if(this.logicClone.isGameOver()) {
-			utility = this.utility();
-		} else {
-
-			emptyList = this.logicClone.getBoard().getEmptyFieldsCoded();
-			int x,y;
-			for (Integer val : emptyList){
-				x = (int) (val / ySize);
-				y = val % xSize;
-						if(this.logicClone.performMove(x, y)) {
-							currFields = this.logicClone.getBoardFields();
-							int tmp = maxValue();
-							utility = Math.min(tmp, utility);
-							this.logicClone.undoMove(x, y);
-						}
-			}
-		}
-		return utility;
-	}
-	
-
-	public int maxValue() {
-		int utility = -999999;
-		c2++;
-		if(this.logicClone.isGameOver()) {
-			utility = this.utility();
-		} else {
-			
-			emptyList = this.logicClone.getBoard().getEmptyFieldsCoded();
-			int x,y;
-			for (Integer val : emptyList){
-				x = (int) (val / ySize);
-				y = val % xSize;
-						if(this.logicClone.performMove(x, y)) {
-							currFields = this.logicClone.getBoardFields();
-							int tmp = minValue();
-							utility = Math.max(tmp, utility);
-							this.logicClone.undoMove(x, y);
-						}
-			}
-		}
-		return utility;
-	}*/
-	
 	public int minValue(int depth) {
 		int utility = 999999;
-		c1++;
 		if(this.logicClone.isGameOver() || depth < 0) {
 			utility = this.utility();
 		} else {
@@ -141,7 +87,6 @@ public class MinMax{
 
 	public int maxValue(int depth) {
 		int utility = -999999;
-		c2++;
 		if(this.logicClone.isGameOver() || depth < 0) {
 			utility = this.utility();
 		} else {

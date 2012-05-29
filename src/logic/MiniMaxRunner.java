@@ -33,6 +33,9 @@ public class MiniMaxRunner extends MinMax implements Runnable{
 	public void run() {
 		this.finalCoordinate = minmaxDecision(todoCoordinates);
 	}
+	public int getId() {
+		return id;
+	}
 	
 
 }

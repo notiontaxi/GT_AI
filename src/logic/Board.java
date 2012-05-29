@@ -5,8 +5,6 @@
 package logic;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  *
@@ -17,9 +15,6 @@ public class Board {
 	private int[][] fields;
 	//private ArrayList<Integer> emptyList;
 	private final int emptyValue = -1;
-	private int count0 = 0;
-	private int count1 = 0;
-	private int count2 = 0;
 	
 	public Board(int x, int y){
 		fields = new int[x][y];
