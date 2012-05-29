@@ -17,16 +17,24 @@ public class MinMax{
 	private int c0 = 0;
 	private int c2 = 0;
 	private int c1 = 0;
+
+	private boolean isDone = false;
+	private int itteration = 0;
 	
 	public MinMax(Logic logic) throws CloneNotSupportedException {
 		this.activePlayer = logic.getActivePlayer();
 		this.logicClone = (Logic) logic.clone();
 		this.xSize = logicClone.getBoard().getFields().length;
 		this.ySize = logicClone.getBoard().getFields()[0].length;
+
+		this.itteration = 0;
 	}
 
 	
 	public Coordinate minmaxDecision(List<Coordinate> todoCoordinates) {
+		this.isDone = false;
+		this.itteration = 0;
+		
 		int bestUtility = -999999;
 		Coordinate bestAction = null;
 
@@ -42,8 +50,9 @@ public class MinMax{
 			currFields = this.logicClone.getBoardFields();
 			System.out.println("Start (" + x + "," + y +")");
 			if(this.logicClone.performMove(x, y)) {
+				this.itteration++;
 				System.out.println("Performing (" + x + "," + y +")");
-				int utility = minValue();
+				int utility = minValue(this.logicClone.getConfig().getDepth());
 				if(utility > bestUtility) {
 					bestUtility = utility;
 					bestAction = coordinate;
@@ -53,6 +62,7 @@ public class MinMax{
 			System.out.println("End (" + x + "," + y +")");
 		}
 		finalUtility = bestUtility;
+		this.isDone = true;
 		return bestAction;
 	}
 	
@@ -103,10 +113,10 @@ public class MinMax{
 		return utility;
 	}*/
 	
-	public int minValue() {
+	public int minValue(int depth) {
 		int utility = 999999;
 		c1++;
-		if(this.logicClone.isGameOver()) {
+		if(this.logicClone.isGameOver() || depth < 0) {
 			utility = this.utility();
 		} else {
 
@@ -115,8 +125,9 @@ public class MinMax{
 				for(int y = 0; y < ySize; y++) {
 					if (currFields[x][y] == -1){
 						if(this.logicClone.performMove(x, y)) {
+							this.itteration++;
 							currFields = this.logicClone.getBoardFields();
-							int tmp = maxValue();
+							int tmp = maxValue(depth-1);
 							utility = Math.min(tmp, utility);
 							this.logicClone.undoMove(x, y);
 						}
@@ -128,18 +139,19 @@ public class MinMax{
 	}
 	
 
-	public int maxValue() {
+	public int maxValue(int depth) {
 		int utility = -999999;
 		c2++;
-		if(this.logicClone.isGameOver()) {
+		if(this.logicClone.isGameOver() || depth < 0) {
 			utility = this.utility();
 		} else {
 			for(int x = 0; x < xSize; x++) {
 				for(int y = 0; y < ySize; y++) {
 					if (currFields[x][y] == -1){
 						if(this.logicClone.performMove(x, y)) {
+							this.itteration++;
 							currFields = this.logicClone.getBoardFields();
-							int tmp = minValue();
+							int tmp = minValue(depth-1);
 							utility = Math.max(tmp, utility);
 							this.logicClone.undoMove(x, y);
 						}
@@ -163,5 +175,13 @@ public class MinMax{
 			}
 		}
 		return utility;
+	}
+
+	public boolean isDone() {
+		return isDone;
+	}
+	
+	public int getItteration() {
+		return itteration;
 	}
 }

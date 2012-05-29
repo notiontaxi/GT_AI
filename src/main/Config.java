@@ -6,12 +6,15 @@ public class Config {
 	private int dimensionY;
 	private int rowLengthToWin;
 	private int threadCount;
+
+	private int depth;
 	
 	public Config(){
-		this.dimensionX = 3;
-		this.dimensionY = 3;
-		this.rowLengthToWin = 3;
+		this.dimensionX = 4;
+		this.dimensionY = 4;
+		this.rowLengthToWin = 4;
 		this.threadCount = 7;
+		this.depth = 6;
 	}
 	
 	public Config(String path){
@@ -32,5 +35,9 @@ public class Config {
 	
 	public int getThreadCount(){
 		return threadCount;
+	}
+
+	public int getDepth() {
+		return depth;
 	}
 }

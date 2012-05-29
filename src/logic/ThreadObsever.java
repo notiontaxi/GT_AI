@@ -13,17 +13,29 @@ import java.util.logging.Logger;
  *
  * @author Alex
  */
-public class ThreadObsever {
+public class ThreadObsever extends Thread{
 	
 	private int threadCount;
 	private Logic logic;
+
+	private Coordinate coordinate;
+	private boolean isDone;
+	private int totalItterations = 0;
 	
 	public ThreadObsever(Logic logic, int threadCount){
 		this.logic = logic;
 		this.threadCount = threadCount;
 	}
 	
+	@Override
+	public void run() {
+		super.run();
+		this.runMinimax();
+	}
+	
 	public Coordinate runMinimax(){
+		this.isDone = false;
+		
 		ArrayList<Coordinate> emptyFields = logic.getBoard().getEmptyFields();
 		int fieldsPerThread = threadCount > 0 ? (int) (emptyFields.size() / threadCount) : 0;
 		Vector<MiniMaxRunner> runners = new Vector();
@@ -45,23 +57,55 @@ public class ThreadObsever {
 		for (Thread t : threads){
 			t.start();
 		}
-			
-		for (Thread t : threads){
+		
+		int finishedRunners = 0;
+		int runnersSize = runners.size();
+		while(finishedRunners < runnersSize) {
+			this.totalItterations = 0;
+			finishedRunners = 0;
+			for (MiniMaxRunner runner : runners){
+				this.totalItterations += runner.getItteration();
+				if(runner.isDone()) {
+					finishedRunners++;
+				}
+			}
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// make sure every thread is done
+		for(Thread t : threads) {
 			try {
 				t.join();
 			} catch (InterruptedException ex) {
 				Logger.getLogger(ThreadObsever.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		}
+		this.isDone = true;
 		
 		int bestUtility = -9999999;
-		Coordinate bestMove = null;
+		coordinate = null;
 		for (MiniMaxRunner runner : runners){
 			if (runner.getFinalUtility() > bestUtility){
 				bestUtility = runner.getFinalUtility();
-				bestMove = runner.getFinalCoordinate();
+				coordinate = runner.getFinalCoordinate();
 			}
 		}
-		return bestMove;
+		return coordinate;
+	}
+	
+	public boolean isDone() {
+		return isDone;
+	}
+	
+	public Coordinate getCoordinate() {
+		return coordinate;
+	}
+	
+	public int getTotalItterations() {
+		return totalItterations;
 	}
 }

@@ -164,5 +164,8 @@ public class Logic {
 		
 		return logic;
 	}	
-	
+
+	public Config getConfig() {
+		return config;
+	}	
 }

@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +36,8 @@ public class Board extends JPanel {
 	private int padding = 20;
 	
 	private Logic logic;
+
+	private JLabel itterationCounterLabel;
 	
     public Board(Config config, Logic logic) {
 //    	// initialize Animation thread
@@ -66,9 +70,18 @@ public class Board extends JPanel {
 //        buttonPanel.setLayout(new FlowLayout());
 //        buttonPanel.add(startButton);
 //        buttonPanel.add(stopButton);
+
+        JPanel labelPanel = new JPanel();
+        labelPanel.setLayout(new FlowLayout());
+        itterationCounterLabel = new JLabel("000000000000000000");
+        JLabel itterationCounter = new JLabel("Generated positions: ");
+        labelPanel.add(itterationCounter);
+        labelPanel.add(itterationCounterLabel);
         
         //... Layout outer panel with button panel above bouncing ball
         this.setLayout(new BorderLayout());
+        this.add(labelPanel);
+        
 //        this.add(buttonPanel, BorderLayout.NORTH);
         
     }
@@ -148,12 +161,39 @@ public class Board extends JPanel {
 						}
 
 						if (logic.getWinner() == null && !logic.isGameOver()){ 
-							MiniMaxRunner minMax;
 							//try {
 								//MinMax minMax = new MinMax(logic);
 								long startTime = System.currentTimeMillis();
 								ThreadObsever to = new ThreadObsever(logic, config.getThreadCount());
-								Coordinate c = to.runMinimax();
+								
+
+								
+
+								Thread decisionThread = new Thread(to);
+								decisionThread.start();
+								while(!to.isDone()) {
+									NumberFormat f = new DecimalFormat();
+									itterationCounterLabel.setText(f.format(to.getTotalItterations()));
+									itterationCounterLabel.paintImmediately(itterationCounterLabel.getVisibleRect());
+									try {
+										Thread.sleep(100);
+									} catch (InterruptedException e) {
+										e.printStackTrace();
+									}
+								}
+								NumberFormat f = new DecimalFormat();
+								itterationCounterLabel.setText(f.format(to.getTotalItterations()));
+								itterationCounterLabel.paintImmediately(itterationCounterLabel.getVisibleRect());
+								
+								Coordinate c = to.getCoordinate();
+								
+								
+								
+								
+								
+								
+								
+								
 								//Coordinate c = minMax.minmaxDecision();
 								System.out.println("Final Duration: " + (System.currentTimeMillis() - startTime));
 								if(c != null && logic.performMove(c.getX(), c.getY())) {
