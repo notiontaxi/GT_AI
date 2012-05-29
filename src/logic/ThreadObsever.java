@@ -25,14 +25,15 @@ public class ThreadObsever {
 	
 	public Coordinate runMinimax(){
 		ArrayList<Coordinate> emptyFields = logic.getBoard().getEmptyFields();
-		int fieldsPerThread = (int) (emptyFields.size() / threadCount);
-		Vector<MiniMaxRunner> runners = new Vector<MiniMaxRunner>();
-		Vector<Thread> threads = new Vector<Thread>();
+		int fieldsPerThread = threadCount > 0 ? (int) (emptyFields.size() / threadCount) : 0;
+		Vector<MiniMaxRunner> runners = new Vector();
+		Vector<Thread> threads = new Vector();
 		try {
-			for (int i = 0; i < threadCount - 1 &  i < emptyFields.size() - 1; ++i){
+			for (int i = 0; i < threadCount - 1 &&  i < emptyFields.size() - 1; ++i){
 				MiniMaxRunner m = new MiniMaxRunner(logic, emptyFields.subList(i * fieldsPerThread, (i+1) * fieldsPerThread), i);
+				Thread t = new Thread(m);
 				runners.add(m);
-				threads.add(new Thread(m));
+				threads.add(t);
 			}
 			MiniMaxRunner m = new MiniMaxRunner(logic, emptyFields.subList(((threadCount - 1) * fieldsPerThread), (emptyFields.size())), threadCount - 1);
 			runners.add(m);
@@ -44,7 +45,7 @@ public class ThreadObsever {
 		for (Thread t : threads){
 			t.start();
 		}
-		
+			
 		for (Thread t : threads){
 			try {
 				t.join();

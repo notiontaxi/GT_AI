@@ -36,7 +36,6 @@ public class Logic {
 	
 	public boolean performMove(int x, int y) {
 		try {
-			//System.out.println("Valid move(" + x + "," + y + ")");
 			board.performMove(activePlayerID, x,y);
 		} catch (IllegalAccessException e) {
 			System.out.println("Invalid move(" + x + "," + y + ").");
@@ -94,7 +93,7 @@ public class Logic {
 		return this.board;
 	}
 	
-	public Integer[][] getBoardFields(){
+	public int[][] getBoardFields(){
 		return this.board.getFields();
 	}
 	
@@ -102,14 +101,12 @@ public class Logic {
 		int posInArray = 0;
 		int fieldsInRow = 1;
 		int directionSwitches = 0;
-//		Coordinate currCoordinate;
-//		Coordinate backUpCoordinate = new Coordinate(x,y);
 		int xNew, xCurr, xCurrDelta;
 		int yNew, yCurr, yCurrDelta;
 		while (winnerID == -1 && posInArray <= 3){
 			fieldsInRow = 1;
 			xCurr = x;
-			yCurr = y; //currCoordinate = backUpCoordinate;
+			yCurr = y; 
 			xCurrDelta = lineArrayX[posInArray];
 			yCurrDelta = lineArrayY[posInArray];
 			directionSwitches = 0;
@@ -151,7 +148,7 @@ public class Logic {
 	}
 	
 	@Override
-	public Object clone() throws CloneNotSupportedException {
+	public Logic clone() {
 		
 		Logic logic = new Logic(config);
 
@@ -160,7 +157,7 @@ public class Logic {
 		logic.config = new Config();
 		logic.winnerID = this.winnerID;
 		
-		logic.board = (Board) this.board.clone();
+		logic.board = this.board.clone();
 		logic.activePlayerID = this.activePlayerID;
 		logic.lineArrayX = this.lineArrayX.clone();
 		logic.lineArrayY = this.lineArrayY.clone();

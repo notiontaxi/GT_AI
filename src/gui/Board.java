@@ -148,13 +148,13 @@ public class Board extends JPanel {
 						}
 
 						if (logic.getWinner() == null && !logic.isGameOver()){ 
-							//MiniMaxRunner minMax;
-							try {
-								MinMax minMax = new MinMax(logic);
+							MiniMaxRunner minMax;
+							//try {
+								//MinMax minMax = new MinMax(logic);
 								long startTime = System.currentTimeMillis();
-								/*ThreadObsever to = new ThreadObsever(logic, config.getThreadCount());
-								Coordinate c = to.runMinimax();*/
-								Coordinate c = minMax.minmaxDecision();
+								ThreadObsever to = new ThreadObsever(logic, config.getThreadCount());
+								Coordinate c = to.runMinimax();
+								//Coordinate c = minMax.minmaxDecision();
 								System.out.println("Final Duration: " + (System.currentTimeMillis() - startTime));
 								if(c != null && logic.performMove(c.getX(), c.getY())) {
 									coins.add(new Coin(c.getX()*wx+padding, c.getY()*wy+padding, wx, wy, colorPlayerMapping.get(logic.getActivePlayer())));
@@ -168,9 +168,9 @@ public class Board extends JPanel {
 								}
 
 								repaint();
-							} catch (CloneNotSupportedException e) {
+							/*} catch (CloneNotSupportedException e) {
 								e.printStackTrace();
-							}
+							}*/
 						}
 
 					}
