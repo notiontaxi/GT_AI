@@ -147,7 +147,7 @@ public class Board extends JPanel {
 						int x = xIndex * wx + padding;
 						int y = yIndex * wy + padding;
 
-						if (logic.performMove(xIndex, yIndex)){
+						if (logic.performMove(xIndex, yIndex)){						
 							coins.add(new Coin(x, y, wx, wy, colorPlayerMapping.get(logic.getActivePlayer())));
 							Player winner = logic.getWinner();
 							if (winner != null){
@@ -163,36 +163,25 @@ public class Board extends JPanel {
 								//MinMax minMax = new MinMax(logic);
 								long startTime = System.currentTimeMillis();
 								ThreadObsever to = new ThreadObsever(logic, config.getThreadCount());
-								
 
-								
-
-								Thread decisionThread = new Thread(to);
-								decisionThread.start();
-								while(!to.isDone()) {
-									NumberFormat f = new DecimalFormat();
-									itterationCounterLabel.setText(f.format(to.getTotalItterations()));
-									itterationCounterLabel.paintImmediately(itterationCounterLabel.getVisibleRect());
-									try {
-										Thread.sleep(100);
-									} catch (InterruptedException e) {
-										e.printStackTrace();
-									}
-								}
-								NumberFormat f = new DecimalFormat();
-								itterationCounterLabel.setText(f.format(to.getTotalItterations()));
-								itterationCounterLabel.paintImmediately(itterationCounterLabel.getVisibleRect());
+//								Thread decisionThread = new Thread(to);
+//								decisionThread.start();
+//								while(!to.isDone()) {
+//									NumberFormat f = new DecimalFormat();
+//									itterationCounterLabel.setText(f.format(to.getTotalItterations()));
+//									itterationCounterLabel.paintImmediately(itterationCounterLabel.getVisibleRect());
+//									try {
+//										Thread.sleep(100);
+//									} catch (InterruptedException e) {
+//										e.printStackTrace();
+//									}
+//								}
+//								NumberFormat f = new DecimalFormat();
+//								itterationCounterLabel.setText(f.format(to.getTotalItterations()));
+//								itterationCounterLabel.paintImmediately(itterationCounterLabel.getVisibleRect());
 								
 								Coordinate c = to.getCoordinate();
 								
-								
-								
-								
-								
-								
-								
-								
-								//Coordinate c = minMax.minmaxDecision();
 								System.out.println("Final Duration: " + (System.currentTimeMillis() - startTime));
 								if(c != null && logic.performMove(c.getX(), c.getY())) {
 									coins.add(new Coin(c.getX()*wx+padding, c.getY()*wy+padding, wx, wy, colorPlayerMapping.get(logic.getActivePlayer())));
