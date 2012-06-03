@@ -71,6 +71,7 @@ public class MinMax{
 				for(int y = 0; y < ySize; y++) {
 					if (currFields[x][y] == -1){
 						if(this.logicClone.performMove(x, y)) {
+							
 							this.itteration++;
 							currFields = this.logicClone.getBoardFields();
 							int tmp = maxValue(depth-1);

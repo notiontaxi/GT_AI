@@ -15,15 +15,17 @@ import logic.*;
 import main.Config;
 
 @SuppressWarnings("serial")
-public class Board extends JPanel {
+public class Board extends JPanel implements Runnable {
 
 	private List<Coin> coins = new ArrayList<Coin>();
+	
+	private List<Field> fields = new ArrayList<Field>();
 	private Map<Integer , Color> colorPlayerMapping;
 	private Config config;
 	
-//	// Animation thread
-//	private Thread runner = null;
-//	private boolean running = true;
+	// Animation thread
+	private Thread runner = null;
+	private boolean running = true;
 	
 	private int size_x = 4;
 
@@ -38,13 +40,15 @@ public class Board extends JPanel {
 	private JLabel itterationCounterLabel;
 	
     public Board(Config config, Logic logic) {
-//    	// initialize Animation thread
-//    	this.runner = new Thread(this);
-//    	this.runner.start();
+    	// initialize Animation thread
+    	this.runner = new Thread(this);
+    	this.runner.start();
+    	
     	this.logic = logic; 
 		this.config = config;
 		this.colorPlayerMapping = new HashMap<Integer, Color>();
 		initColorPlayerMapping();
+		initFields(this.config.getDimensionX(), this.config.getDimensionY());
 		
 		this.size_x = config.getDimensionX();
 		this.size_y = config.getDimensionY();
@@ -84,6 +88,18 @@ public class Board extends JPanel {
         
     }
 	
+    private void initFields(int width, int height) {	
+		int wx = (this.dimension.width - (2*this.padding)) / width;
+		int wy = (this.dimension.height - (2*this.padding)) / height;
+
+		for(int x = 0; x < width; x++) {
+			for(int y = 0; y < height; y++) {
+				Field field = new Field(this.padding+x*wx, this.padding+y*wy, wx, wy);
+				this.fields.add(field);
+			}
+		}
+    }
+    
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
@@ -108,22 +124,26 @@ public class Board extends JPanel {
 			graphics2d.drawLine(this.padding, this.padding+y*wy, this.dimension.width-this.padding, this.padding+y*wy);
 		}
 		
+		for (Field field : this.fields) {
+			graphics2d.fillPolygon(field);
+		}
+		
 	}
 	
-//	@Override
-//	/**
-//	 *  when using animations/implementing runnable
-//	 */
-//	public void run() {
-//		while(running) {
-//			super.repaint();
-//			try {
-//				Thread.sleep(40);
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//	}
+	@Override
+	/**
+	 *  when using animations/implementing runnable
+	 */
+	public void run() {
+		while(running) {
+			super.repaint();
+			try {
+				Thread.sleep(40);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	private void initColorPlayerMapping(){
 		colorPlayerMapping.put(0, Color.blue);
@@ -148,7 +168,8 @@ public class Board extends JPanel {
 						int y = yIndex * wy + padding;
 
 						if (logic.performMove(xIndex, yIndex)){
-							coins.add(new Coin(x, y, wx, wy, colorPlayerMapping.get(logic.getActivePlayer())));
+							Coin coin = new Coin(x, y, wx, wy, colorPlayerMapping.get(logic.getActivePlayer()));
+							coins.add(coin);
 							Player winner = logic.getWinner();
 							if (winner != null){
 								System.out.println("Winner!!!!!! Congratulations " + winner.getName() + ".");
@@ -186,16 +207,11 @@ public class Board extends JPanel {
 								Coordinate c = to.getCoordinate();
 								
 								
-								
-								
-								
-								
-								
-								
 								//Coordinate c = minMax.minmaxDecision();
 								System.out.println("Final Duration: " + (System.currentTimeMillis() - startTime));
 								if(c != null && logic.performMove(c.getX(), c.getY())) {
-									coins.add(new Coin(c.getX()*wx+padding, c.getY()*wy+padding, wx, wy, colorPlayerMapping.get(logic.getActivePlayer())));
+									Coin coin = new Coin(c.getX(), c.getY(), wx, wy, colorPlayerMapping.get(logic.getActivePlayer()));
+									coins.add(coin);
 								}
 
 								Player winner = logic.getWinner();

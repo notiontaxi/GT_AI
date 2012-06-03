@@ -24,6 +24,13 @@ public class Coin extends Ellipse2D.Double {
 		return color;
 	}
 
+	public void incX(int inc){
+		this.x += inc;
+	}
+	public void incY(int inc){
+		this.y += inc;
+	}
+
 	public void draw(Graphics2D graphics2d) {
 		graphics2d.setColor(this.getColor());
 		graphics2d.setStroke(Coin.stroke);
