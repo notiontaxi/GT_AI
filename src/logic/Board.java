@@ -85,6 +85,10 @@ public class Board {
 		}
 	}
 	
+	public int getTopField(int x){
+		return topFields[x];
+	}
+	
 	public int[] getTopFields(){
 		return topFields;
 	}	

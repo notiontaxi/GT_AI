@@ -4,13 +4,15 @@
  */
 package heuristic;
 
+import logic.Board;
+
 /**
  *
  * @author Alex
  */
 public interface Heuristic {
 	
-	public int calcHeuristic(int[][] field);
-	public int calcHeuristicForColumn(int[][] field, int col);
+	public int getBestColumn(Board board, int playerID);
+	public int calcColumnScore(Board board, int x, int playerID);
 	
 }

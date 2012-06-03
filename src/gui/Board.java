@@ -1,5 +1,6 @@
 package gui;
 
+import heuristic.BlockHeuristic;
 import java.awt.*;
 import java.awt.event.*;
 import java.text.DecimalFormat;
@@ -25,9 +26,9 @@ public class Board extends JPanel {
 //	private Thread runner = null;
 //	private boolean running = true;
 	
-	private int size_x = 4;
+	private int size_x;
 
-	private int size_y = 4;
+	private int size_y;
 	
 	private Dimension dimension = new Dimension(400, 400);
 	
@@ -135,6 +136,9 @@ public class Board extends JPanel {
 		this.addMouseListener(new MouseAdapter() {          
 			public void mousePressed(MouseEvent me) { 
 				if (logic.getWinner() == null && !logic.isGameOver()){
+					
+					BlockHeuristic bH = new BlockHeuristic(config.getRowLengthToWin());
+					
 					if(me.getX() > padding && me.getX() < dimension.getWidth() - padding && 
 							me.getY() > padding && me.getY() < dimension.getHeight() - padding) {
 
@@ -157,6 +161,8 @@ public class Board extends JPanel {
 							}
 							repaint();
 						}
+						
+						System.out.println("BlockHeuristic result (best col): " + bH.getBestColumn(logic.getBoard(), logic.getActivePlayer()));
 
 						if (logic.getWinner() == null && !logic.isGameOver()){ 
 							//try {

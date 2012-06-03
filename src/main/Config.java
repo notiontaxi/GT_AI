@@ -10,8 +10,8 @@ public class Config {
 	private int depth;
 	
 	public Config(){
-		this.dimensionX = 4;
-		this.dimensionY = 4;
+		this.dimensionX = 7;
+		this.dimensionY = 6;
 		this.rowLengthToWin = 4;
 		this.threadCount = 7;
 		this.depth = 6;
