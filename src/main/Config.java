@@ -10,11 +10,11 @@ public class Config {
 	private int depth;
 	
 	public Config(){
-		this.dimensionX = 3;
-		this.dimensionY = 3;
-		this.rowLengthToWin = 3;
-		this.threadCount = 1;
-		this.depth = 20;
+		this.dimensionX = 7;
+		this.dimensionY = 6;
+		this.rowLengthToWin = 4;
+		this.threadCount = 7;
+		this.depth = 6;
 	}
 	
 	public Config(String path){
