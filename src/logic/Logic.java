@@ -43,7 +43,12 @@ public class Logic {
 		}
 		moveCount++;
 		if (moveCount >= (2 * config.getRowLengthToWin()) - 1){
-			calculateWinner(x,y);
+			//if(calculateWinner(x,y))
+			//	winnerID = activePlayerID;
+			if(haswon(board.getFields(), activePlayerID)){
+				winnerID = activePlayerID;
+			}
+			
 		}
 		
 		switchPlayer();
@@ -97,7 +102,7 @@ public class Logic {
 		return this.board.getFields();
 	}
 	
-	private void calculateWinner(int x, int y){
+	private boolean calculateWinner(int x, int y){
 		int posInArray = 0;
 		int fieldsInRow = 1;
 		int directionSwitches = 0;
@@ -126,12 +131,60 @@ public class Logic {
 					yCurr = y;
 				}
 				if (fieldsInRow == config.getRowLengthToWin()){
-					winnerID = activePlayerID;
+					return  true;
 				}
 			}
 			posInArray++;
 		}
+		return false;
 	}
+	
+/*
+ * alternative	
+ */
+	final boolean haswon(int[][] _board, int playerID)
+	{
+		
+		 long newboard = getBitboardRepresentation(_board, playerID);	
+			
+		 long y = newboard & (newboard>>Config.dimensionY);
+		 if ((y & (y >> 2*config.dimensionY)) != 0){ // check diagonal \
+			 return true;
+		 }
+		 y = newboard & (newboard>>(Config.dimensionY+1));
+		 if ((y & (y >> 2*(Config.dimensionY+1))) != 0){ // check horizontal -
+			 return true;
+		 }
+		 y = newboard & (newboard>>(Config.dimensionY+2)); // check diagonal /
+		 if ((y & (y >> 2*(Config.dimensionY+2))) != 0){
+			 return true;
+		 }
+		 y = newboard & (newboard>>1); // check vertical |
+		 
+		 
+		 return (y & (y >> 2)) != 0;
+	}
+
+
+	private long getBitboardRepresentation(int[][] _board, int playerID) {
+		long l = 0l;
+		
+		int slotCount = _board.length;
+		int rowCount = _board[0].length;
+		
+		for(short slot = 0; slot < slotCount; slot++){
+			l<<=1; // head	
+			for(short row = 0; row < rowCount; row++ ){
+				if(_board[slot][row] == playerID) ++l; // set last bit on 1
+				l<<=1; // shift
+			}
+				
+		}
+		return (l>>>=1); // remove last shift
+	}	
+	
+	
+	
 	
 	private void initLineArray(){
 		lineArrayX = new int[4];

@@ -2,16 +2,14 @@ package main;
 
 public class Config {
 
-	private int dimensionX;
-	private int dimensionY;
+	public static final int dimensionX = 7;
+	public static final int dimensionY = 6;
 	private int rowLengthToWin;
 	private int threadCount;
 
 	private int depth;
 	
 	public Config(){
-		this.dimensionX = 7;
-		this.dimensionY = 6;
 		this.rowLengthToWin = 4;
 		this.threadCount = 7;
 		this.depth = 6;
