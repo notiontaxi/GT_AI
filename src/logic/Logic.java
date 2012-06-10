@@ -43,11 +43,19 @@ public class Logic {
 		}
 		moveCount++;
 		if (moveCount >= (2 * config.getRowLengthToWin()) - 1){
-			//if(calculateWinner(x,y))
-			//	winnerID = activePlayerID;
-			if(haswon(board.getFields(), activePlayerID)){
-				winnerID = activePlayerID;
+			
+			long lasttime = System.currentTimeMillis();
+			int counts = 1;
+			
+			for(;counts > 0;counts--){
+				//if(calculateWinner(x,y))
+				//	winnerID = activePlayerID;
+				if(haswon(board.getFields(), activePlayerID))
+					winnerID = activePlayerID;
+				
 			}
+			
+			//System.out.println("elapsed time in ms: " + (System.currentTimeMillis() - lasttime));
 			
 		}
 		
@@ -167,20 +175,133 @@ public class Logic {
 
 
 	private long getBitboardRepresentation(int[][] _board, int playerID) {
+		
 		long l = 0l;
 		
+		/*
 		int slotCount = _board.length;
 		int rowCount = _board[0].length;
+		short slot = 0;
+		short row = 0;
 		
-		for(short slot = 0; slot < slotCount; slot++){
+		
+		for(; slot < slotCount; slot++){
 			l<<=1; // head	
-			for(short row = 0; row < rowCount; row++ ){
-				if(_board[slot][row] == playerID) ++l; // set last bit on 1
+			for(; row < rowCount; row++ ){
+				if(_board[slot][row] == playerID) l^=1; // set last bit on 1
 				l<<=1; // shift
 			}
-				
+			row = 0;				
 		}
+		
 		return (l>>>=1); // remove last shift
+		*/
+		
+		
+		// UGLY!!! but faster! 0o
+		
+		// first slot
+		if(_board[0][0] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[0][1] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[0][2] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[0][3] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[0][4] == playerID) l^=1;
+		l<<=1; // shift		
+		if(_board[0][5] == playerID) l^=1;
+		l<<=2; // shift
+		
+		
+		// first row
+		if(_board[1][0] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[1][1] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[1][2] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[1][3] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[1][4] == playerID) l^=1;
+		l<<=1; // shift		
+		if(_board[1][5] == playerID) l^=1;
+		l<<=2; // shift
+
+		// first row
+		if(_board[2][0] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[2][1] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[2][2] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[2][3] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[2][4] == playerID) l^=1;
+		l<<=1; // shift		
+		if(_board[2][5] == playerID) l^=1;
+		l<<=2; // shift
+		
+		// first row
+		if(_board[3][0] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[3][1] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[3][2] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[3][3] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[3][4] == playerID) l^=1;
+		l<<=1; // shift		
+		if(_board[3][5] == playerID) l^=1;
+		l<<=2; // shift
+	
+		// first row
+		if(_board[4][0] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[4][1] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[4][2] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[4][3] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[4][4] == playerID) l^=1;
+		l<<=1; // shift		
+		if(_board[4][5] == playerID) l^=1;
+		l<<=2; // shift
+		
+		// first row
+		if(_board[5][0] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[5][1] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[5][2] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[5][3] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[5][4] == playerID) l^=1;
+		l<<=1; // shift		
+		if(_board[5][5] == playerID) l^=1;
+		l<<=2; // shift
+
+		// first row
+		if(_board[6][0] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[6][1] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[6][2] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[6][3] == playerID) l^=1;
+		l<<=1; // shift
+		if(_board[6][4] == playerID) l^=1;
+		l<<=1; // shift		
+		if(_board[6][5] == playerID) l^=1;
+		l<<=2; // shift
+
+		
+		return l; // remove last shift
+		
 	}	
 	
 	
