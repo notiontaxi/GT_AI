@@ -372,13 +372,13 @@ public void testHeuristic() {
 	
 	for(;counts > 0;counts--)	
 		//h.getBestColumn(b, 1);
-		result = getBestSlot(test,free,1,2,1);
+		result = getBestSlot(test,free,1,2,2);
 	
 	System.out.println((System.currentTimeMillis() - lasttime) + " ms");
 	System.out.println("best row: "+ result);
 	
 	for(int v = 0; v < free.length; v++)
-		System.out.println("heuristic value for slot " + v + ": " + getSlotValue(test,v,free[v],1,2,1));
+		System.out.println("heuristic value for slot " + v + ": " + getSlotValue(test,v,free[v],1,2,2));
 	
 	printArrayRepresentation(test);
 	
