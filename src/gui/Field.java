@@ -10,16 +10,24 @@ public class Field extends Polygon {
 	private static final long serialVersionUID = 1L;
 
 	public Field(int x, int y, int width, int height) {
-
+		this.initFieldValues(x, y, width, height);
+	}
+	
+	public void initFieldValues(int x, int y, int width, int height) {
+		this.reset();
+		
 		int radius = (width-10)/2;
 		int c_x = x + width / 2;
 		int c_y = y + height / 2;
 		
 		int corners = 16;
-		
+
+		int currx = 0;
+		int curry = 0;
 		for (int i = 0; i < corners+1; i++) {
-		    this.addPoint( (int) (c_x + radius * Math.cos( i * 2 * Math.PI / corners )),
-	                  (int) (c_y + radius * Math.sin( i * 2 * Math.PI / corners )) );
+			currx = (int) (c_x + radius * Math.cos( i * 2 * Math.PI / corners ));
+			curry = (int) (c_y + radius * Math.sin( i * 2 * Math.PI / corners ));
+		    this.addPoint(currx, curry);
 		}
 
 		this.addPoint(x+width, y+height/2);
@@ -31,6 +39,7 @@ public class Field extends Polygon {
 		this.addPoint(x+width/2, y);
 		this.addPoint(x+width, y);
 		this.addPoint(x+width, y+height/2);
+		this.addPoint(currx, curry);
 	}
 
 	public void draw(Graphics2D graphics2d) {
