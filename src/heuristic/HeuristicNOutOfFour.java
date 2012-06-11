@@ -225,13 +225,13 @@ private long flipHorizantal(long _board) {
 
 // TESTING |/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-
 //|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\
-
+/*
 public static void main(String[] args) {
 	HeuristicNOutOfFour testMe = new HeuristicNOutOfFour();
 //	testMe.runPackingTest();
 	testMe.testHeuristic();
 	
-}
+}*/
 
 
 public void testHeuristic() {
@@ -535,7 +535,7 @@ private void printArrayRepresentation(int [][] _board){
 
 33290 =>   
 
-0 0 0 0 0 0 0    (=> eins nach links + eins nach oben -> übereinstimmung überprüfen mit &)
+0 0 0 0 0 0 0    (=> eins nach links + eins nach oben -> ï¿½bereinstimmung ï¿½berprï¿½fen mit &)
 0 0 0 0 0 0 0
 0 0 0 0 0 0 0
 1 0 0 0 0 0 0

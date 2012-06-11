@@ -1,6 +1,7 @@
 package gui;
 
 import heuristic.BlockHeuristic;
+import heuristic.HeuristicNOutOfFour;
 import java.awt.*;
 import java.awt.event.*;
 import java.text.DecimalFormat;
@@ -158,6 +159,7 @@ public class Board extends JPanel implements Runnable {
 				if (logic.getWinner() == null && !logic.isGameOver()){
 					
 					BlockHeuristic bH = new BlockHeuristic(config.getRowLengthToWin());
+					HeuristicNOutOfFour heuristicNOutOfFour = new HeuristicNOutOfFour();
 					
 					if(me.getX() > padding && me.getX() < dimension.getWidth() - padding && 
 							me.getY() > padding && me.getY() < dimension.getHeight() - padding) {
@@ -184,6 +186,9 @@ public class Board extends JPanel implements Runnable {
 						}
 						
 						System.out.println("BlockHeuristic result (best col): " + bH.getBestColumn(logic.getBoard(), logic.getActivePlayer()));
+						System.out.println("HeuristicNOutOfFour result (best col): " + heuristicNOutOfFour.getBestColumn(logic.getBoard(), logic.getActivePlayer()));
+						
+						
 
 						if (logic.getWinner() == null && !logic.isGameOver()){ 
 							//try {
