@@ -16,7 +16,7 @@ public class Field extends Polygon {
 	public void initFieldValues(int x, int y, int width, int height) {
 		this.reset();
 		
-		int radius = (width-10)/2;
+		int radius = (Math.min(width, height)-10)/2;
 		int c_x = x + width / 2;
 		int c_y = y + height / 2;
 		

@@ -51,7 +51,7 @@ public class Board extends JPanel implements Runnable, ActionListener,
 		this.config = config;
 		this.colorPlayerMapping = new HashMap<Integer, Color>();
 		initColorPlayerMapping();
-		initFields(this.config.getDimensionX(), this.config.getDimensionY());
+		resizeComponents(this.config.getDimensionX(), this.config.getDimensionY());
 
 		this.size_x = config.getDimensionX();
 		this.size_y = config.getDimensionY();
@@ -64,7 +64,7 @@ public class Board extends JPanel implements Runnable, ActionListener,
 		this.setBorder(BorderFactory.createLineBorder(Color.black));
 	}
 
-	private void initFields(int width, int height) {
+	private void resizeComponents(int width, int height) {
 		int wx = (this.getWidth() - (2 * this.padding)) / width;
 		int wy = (this.getHeight() - (2 * this.padding)) / height;
 
@@ -77,14 +77,13 @@ public class Board extends JPanel implements Runnable, ActionListener,
 				this.fields.add(field);
 			}
 		}
-	}
-	
-	private void initCoins() {
+
 		for (Coin coin : this.coins) {
-			
+			coin.setWidth(wx);
+			coin.setHeight(wy);
 		}
 	}
-
+	
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
@@ -157,7 +156,7 @@ public class Board extends JPanel implements Runnable, ActionListener,
 
 	@Override
 	public void componentResized(ComponentEvent e) {
-		this.initFields(this.config.getDimensionX(),
+		this.resizeComponents(this.config.getDimensionX(),
 				this.config.getDimensionY());
 	}
 
@@ -197,13 +196,10 @@ public class Board extends JPanel implements Runnable, ActionListener,
 				int wx = (this.getWidth() - (2 * padding)) / size_x;
 				int wy = (this.getHeight() - (2 * padding)) / size_y;
 
-				int xIndex = (int) (me.getX() - padding) / wx;
-				int yIndex = (int) (me.getY() - padding) / wy;
+				int x = (int) (me.getX() - padding) / wx;
+				int y = (int) (me.getY() - padding) / wy;
 
-				int x = xIndex * wx + padding;
-				int y = yIndex * wy + padding;
-
-				if (logic.performMove(xIndex, yIndex)) {
+				if (logic.performMove(x, y)) {
 					Coin coin = new Coin(x, y, wx, wy,
 							colorPlayerMapping.get(logic.getActivePlayer()));
 					coins.add(coin);
