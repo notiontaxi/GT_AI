@@ -5,8 +5,8 @@ public class Config {
 	public static final int dimensionX = 7;
 	public static final int dimensionY = 6;
 
-	public static final int PLAYER1 = 1;
-	public static final int PLAYER2 = 2;	
+	public static final int PLAYER1 = 0;
+	public static final int PLAYER2 = 1;	
 	
 	private int rowLengthToWin;
 	private int threadCount;

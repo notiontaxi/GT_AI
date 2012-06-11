@@ -19,11 +19,6 @@ import main.Config;
 
 public class HeuristicNOutOfFour implements Heuristic {
 	
-	public static final int EMPTY = 0;
-	public static final int COMP  = 1;
-	public static final int HUMAN = 2;	
-	
-
 	public HeuristicNOutOfFour(){
 		
 		
@@ -32,21 +27,36 @@ public class HeuristicNOutOfFour implements Heuristic {
 	
 	@Override
 	public int getBestColumn(logic.Board board, int playerID) {
-		return getBestSlot(board.getFields(), board.getTopFields(), Config.PLAYER1,Config.PLAYER2);
+		return getBestSlot(board.getFields(), board.getTopFields(), Config.PLAYER1,Config.PLAYER2, playerID);
 	}
 
 
 	@Override
 	public int calcColumnScore(logic.Board board, int x, int playerID) {
-		return getSlotValue(board.getFields(), x, board.getTopField(x), Config.PLAYER1,Config.PLAYER2);
+		return getSlotValue(board.getFields(), x, board.getTopField(x), Config.PLAYER1, Config.PLAYER2, playerID);
 	}
 	
 
 
-private int getSlotValue(int[][] test, int slot, int row, int player1, int player2){
-	Long boardforPlayer1 = getBitRepresentation(test, player1);   // 1 sec
-	Long boardforPlayer2 = getBitRepresentation(test, player2);	
-	long emptyBoard = boardforPlayer2^279258638311359l;
+private int getSlotValue(int[][] test, int slot, int row, int player1, int player2, int activePlayer){
+	
+	Long boardforPlayer1 = 0l;   // 1 sec
+	Long boardforPlayer2 = 0l;	
+	long emptyBoard = 0l;
+	
+	if(activePlayer == player1){
+		boardforPlayer1 = getBitRepresentation(test, player1);   // 1 sec
+		boardforPlayer2 = getBitRepresentation(test, player2);	
+		emptyBoard = boardforPlayer2^279258638311359l;
+	}
+	else{
+		boardforPlayer1 = getBitRepresentation(test, player2);   // 1 sec
+		boardforPlayer2 = getBitRepresentation(test, player1);
+		emptyBoard = boardforPlayer1^279258638311359l;
+	}
+	
+	
+
 	
 	int value  = 0;
 
@@ -59,22 +69,41 @@ private int getSlotValue(int[][] test, int slot, int row, int player1, int playe
 }
 
 
-public int getBestSlot(int[][] test, int freeRows[], int player1, int player2){
-
-	Long boardforPlayer1 = getBitRepresentation(test, player1);   // 1 sec
-	Long boardforPlayer2 = getBitRepresentation(test, player2);	
-	long emptyBoard = boardforPlayer2^279258638311359l;
+public int getBestSlot(int[][] test, int freeRows[], int player1, int player2, int activePlayer){
+	
+	Long boardforPlayer1 = 0l;   // 1 sec
+	Long boardforPlayer2 = 0l;	
+	long emptyBoard = 0l;
+	
+	//System.out.println(activePlayer);
+	
+	if(activePlayer == player1){
+		boardforPlayer1 = getBitRepresentation(test, player1);   // 1 sec
+		boardforPlayer2 = getBitRepresentation(test, player2);	
+	}
+	else{
+		boardforPlayer1 = getBitRepresentation(test, player2);   // 1 sec
+		boardforPlayer2 = getBitRepresentation(test, player1);
+		
+	}	
+	
+	emptyBoard = boardforPlayer2^279258638311359l;
+	
+	printBits(boardforPlayer1);
+	printBits(boardforPlayer2);
+	
 	
 	int value  = 0;
 	int result = 0;
 	int highestValue = 0; 
+	
 	for(int z = 0; z < 7; z++){ // 4 sec
  		value = getHeuristicValue ((getRelevantDescendDiagonal((emptyBoard), z, freeRows[z] )), getRelevantDescendDiagonal(boardforPlayer1 , z , freeRows[z] ));  // 1.8s
 	    value += getHeuristicValue((getRelevantAscendDiagonal ((emptyBoard), z, freeRows[z] )), getRelevantAscendDiagonal (boardforPlayer1 , z , freeRows[z] ));  // 2.4s
     	value += getHeuristicValue((getRelevantRow            ((emptyBoard), z, freeRows[z] )), getRelevantRow            (boardforPlayer1 , z , freeRows[z] ));  // 2.4s
      	value += getHeuristicValue((getRelevantSlot           ((emptyBoard), z, freeRows[z] )), getRelevantSlot           (boardforPlayer1 , z , freeRows[z] ));  // 1.3s
     	
-    	//System.out.println("Total value for ("+z+","+freeRows[z]+") is "+values[z]);
+    	//System.out.println("Total value for ("+z+","+freeRows[z]+") is "+value);
     	
     	if(value > highestValue){
     		highestValue = value;
@@ -202,13 +231,13 @@ private long flipHorizantal(long _board) {
 
 // TESTING |/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-
 //|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\
-
+/*
 public static void main(String[] args) {
 	HeuristicNOutOfFour testMe = new HeuristicNOutOfFour();
 //	testMe.runPackingTest();
 	testMe.testHeuristic();
 	
-}
+}*/
 
 
 public void testHeuristic() {
@@ -349,13 +378,13 @@ public void testHeuristic() {
 	
 	for(;counts > 0;counts--)	
 		//h.getBestColumn(b, 1);
-		result = getBestSlot(test,free,1,2);
+		result = getBestSlot(test,free,1,2,2);
 	
 	System.out.println((System.currentTimeMillis() - lasttime) + " ms");
 	System.out.println("best row: "+ result);
 	
 	for(int v = 0; v < free.length; v++)
-		System.out.println("heuristic value for slot " + v + ": " + getSlotValue(test,v,free[v],1,2));
+		System.out.println("heuristic value for slot " + v + ": " + getSlotValue(test,v,free[v],1,2,2));
 	
 	printArrayRepresentation(test);
 	
@@ -426,7 +455,7 @@ private void printBits(long _possible) {
 		buf.insert(0, _possible&1);
 	    _possible>>>=1;
 	}
-	System.out.println(buf);
+	//System.out.println(buf);
 }
 
 private long getBitRepresentation(int[][] _board, int playerID) {
@@ -462,7 +491,7 @@ private void printArrayRepresentation(int [][] _board){
 		buf.append("\n");	
 	}
 	
-	System.out.println(buf);
+	//System.out.println(buf);
 	
 }
 
@@ -512,7 +541,7 @@ private void printArrayRepresentation(int [][] _board){
 
 33290 =>   
 
-0 0 0 0 0 0 0    (=> eins nach links + eins nach oben -> übereinstimmung überprüfen mit &)
+0 0 0 0 0 0 0    (=> eins nach links + eins nach oben -> ï¿½bereinstimmung ï¿½berprï¿½fen mit &)
 0 0 0 0 0 0 0
 0 0 0 0 0 0 0
 1 0 0 0 0 0 0

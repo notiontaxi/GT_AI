@@ -94,6 +94,10 @@ public class Logic {
 		return winnerID;
 	}
 
+	public int getInactivePlayer() {
+		return (activePlayerID + 1) % 2;
+	}
+	
 	public int getActivePlayer() {
 		return activePlayerID;
 	}

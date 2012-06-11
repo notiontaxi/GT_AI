@@ -78,6 +78,12 @@ public class Board extends JPanel implements Runnable, ActionListener,
 			}
 		}
 	}
+	
+	private void initCoins() {
+		for (Coin coin : this.coins) {
+			
+		}
+	}
 
 	@Override
 	public void paint(Graphics g) {
@@ -184,12 +190,12 @@ public class Board extends JPanel implements Runnable, ActionListener,
 			BlockHeuristic bH = new BlockHeuristic(config.getRowLengthToWin());
 
 			if (me.getX() > padding
-					&& me.getX() < dimension.getWidth() - padding
+					&& me.getX() < this.getWidth() - padding
 					&& me.getY() > padding
-					&& me.getY() < dimension.getHeight() - padding) {
+					&& me.getY() < this.getHeight() - padding) {
 
-				int wx = (dimension.width - (2 * padding)) / size_x;
-				int wy = (dimension.height - (2 * padding)) / size_y;
+				int wx = (this.getWidth() - (2 * padding)) / size_x;
+				int wy = (this.getHeight() - (2 * padding)) / size_y;
 
 				int xIndex = (int) (me.getX() - padding) / wx;
 				int yIndex = (int) (me.getY() - padding) / wy;

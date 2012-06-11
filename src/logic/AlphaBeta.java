@@ -1,7 +1,7 @@
 package logic;
 
 import heuristic.Heuristic;
-
+import heuristic.HeuristicNOutOfFour;
 import java.util.List;
 
 public class AlphaBeta {
@@ -23,6 +23,7 @@ public class AlphaBeta {
 	 */
 	public AlphaBeta(Logic logic) {
 		this.logicClone = logic.clone();
+		this.heuristic = new HeuristicNOutOfFour();
 	}
 	
 	/**
@@ -139,6 +140,7 @@ public class AlphaBeta {
 	 */
 	private int calculateUtility(int x, boolean getMax, int tmpUtility, int currentUtility) {
 		int utility = currentUtility;
+		System.out.println("calculateUtility");
 		if(this.heuristic == null) {
 			if(getMax) {
 				utility = Math.max(tmpUtility, currentUtility);
@@ -147,6 +149,7 @@ public class AlphaBeta {
 			}
 		} else {
 			utility = this.heuristic.calcColumnScore(this.logicClone.getBoard(), x, this.activePlayer);
+			System.out.println("utility(" + x + "): " + utility);
 		}
 		return utility;
 	}
@@ -195,7 +198,7 @@ public class AlphaBeta {
 	}
 	
 	/**
-	 * returns final utility
+	 * -returns final utility
 	 * @return
 	 */
 	public int getFinalUtility() {
