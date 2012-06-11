@@ -19,11 +19,6 @@ import main.Config;
 
 public class HeuristicNOutOfFour implements Heuristic {
 	
-	public static final int EMPTY = 0;
-	public static final int COMP  = 1;
-	public static final int HUMAN = 2;	
-	
-
 	public HeuristicNOutOfFour(){
 		
 		
@@ -61,6 +56,8 @@ private int getSlotValue(int[][] test, int slot, int row, int player1, int playe
 	}
 	
 	
+
+	
 	int value  = 0;
 
  		value = getHeuristicValue ((getRelevantDescendDiagonal((emptyBoard), slot, row )), getRelevantDescendDiagonal(boardforPlayer1 , slot , row ));  // 1.8s
@@ -78,16 +75,22 @@ public int getBestSlot(int[][] test, int freeRows[], int player1, int player2, i
 	Long boardforPlayer2 = 0l;	
 	long emptyBoard = 0l;
 	
+	System.out.println(activePlayer);
+	
 	if(activePlayer == player1){
 		boardforPlayer1 = getBitRepresentation(test, player1);   // 1 sec
 		boardforPlayer2 = getBitRepresentation(test, player2);	
-		emptyBoard = boardforPlayer2^279258638311359l;
 	}
 	else{
 		boardforPlayer1 = getBitRepresentation(test, player2);   // 1 sec
 		boardforPlayer2 = getBitRepresentation(test, player1);
-		emptyBoard = boardforPlayer1^279258638311359l;
+		
 	}	
+	
+	emptyBoard = boardforPlayer2^279258638311359l;
+	
+	printBits(boardforPlayer1);
+	printBits(boardforPlayer2);
 	
 	
 	int value  = 0;
@@ -100,7 +103,7 @@ public int getBestSlot(int[][] test, int freeRows[], int player1, int player2, i
     	value += getHeuristicValue((getRelevantRow            ((emptyBoard), z, freeRows[z] )), getRelevantRow            (boardforPlayer1 , z , freeRows[z] ));  // 2.4s
      	value += getHeuristicValue((getRelevantSlot           ((emptyBoard), z, freeRows[z] )), getRelevantSlot           (boardforPlayer1 , z , freeRows[z] ));  // 1.3s
     	
-    	//System.out.println("Total value for ("+z+","+freeRows[z]+") is "+values[z]);
+    	System.out.println("Total value for ("+z+","+freeRows[z]+") is "+value);
     	
     	if(value > highestValue){
     		highestValue = value;
