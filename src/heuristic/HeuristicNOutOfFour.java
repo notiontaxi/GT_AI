@@ -46,20 +46,20 @@ public class HeuristicNOutOfFour implements Heuristic {
 private int getSlotValue(int[][] test, int slot, int row, int player1, int player2, int activePlayer){
 	
 	Long boardforPlayer1 = 0l;   // 1 sec
-	Long boardforPlayer2 = 0l;
- 	
+	Long boardforPlayer2 = 0l;	
+	long emptyBoard = 0l;
+	
 	if(activePlayer == player1){
 		boardforPlayer1 = getBitRepresentation(test, player1);   // 1 sec
 		boardforPlayer2 = getBitRepresentation(test, player2);	
+		emptyBoard = boardforPlayer2^279258638311359l;
 	}
 	else{
 		boardforPlayer1 = getBitRepresentation(test, player2);   // 1 sec
-		boardforPlayer2 = getBitRepresentation(test, player1);		
+		boardforPlayer2 = getBitRepresentation(test, player1);
+		emptyBoard = boardforPlayer1^279258638311359l;
 	}
 	
-	
-	
-	long emptyBoard = boardforPlayer2^279258638311359l;
 	
 	int value  = 0;
 
@@ -76,16 +76,19 @@ public int getBestSlot(int[][] test, int freeRows[], int player1, int player2, i
 	
 	Long boardforPlayer1 = 0l;   // 1 sec
 	Long boardforPlayer2 = 0l;	
+	long emptyBoard = 0l;
 	
 	if(activePlayer == player1){
 		boardforPlayer1 = getBitRepresentation(test, player1);   // 1 sec
 		boardforPlayer2 = getBitRepresentation(test, player2);	
+		emptyBoard = boardforPlayer2^279258638311359l;
 	}
 	else{
 		boardforPlayer1 = getBitRepresentation(test, player2);   // 1 sec
-		boardforPlayer2 = getBitRepresentation(test, player1);	
+		boardforPlayer2 = getBitRepresentation(test, player1);
+		emptyBoard = boardforPlayer1^279258638311359l;
 	}	
-	long emptyBoard = boardforPlayer2^279258638311359l;
+	
 	
 	int value  = 0;
 	int result = 0;
