@@ -30,6 +30,9 @@ public class Board {
 				board.unsafePerformMove(this.fields[x][y],x,y);
 			}
 		}
+		for(int x = 0; x < topFields.length; x++) {
+			System.out.println("topFields(" + x + "): " + topFields[x]);
+		}
 		return board;
 	}
 	

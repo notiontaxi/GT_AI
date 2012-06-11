@@ -12,12 +12,31 @@ public class Coin extends Ellipse2D.Double {
 	
 	Color color;
 
+	int positionXOnBoard = 0;
+	int positionYOnBoard = 0;
+
 	public Coin(int x, int y, double width, double height, Color color) {
-		this.x = x;
-		this.y = y;
+		this.positionXOnBoard = x;
+		this.positionYOnBoard = y;
 		this.height = height;
 		this.width = width;
 		this.color = color;
+		this.calcXY();
+	}
+
+	public void setWidth(double width) {
+		this.width = width;
+		this.calcXY();
+	}
+
+	public void setHeight(double height) {
+		this.height = height;
+		this.calcXY();
+	}
+	
+	private void calcXY(){
+		this.x = positionXOnBoard * width;
+		this.y = positionYOnBoard * height;
 	}
 	
 	public Color getColor() {
