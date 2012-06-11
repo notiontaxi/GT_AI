@@ -186,7 +186,8 @@ public class Board extends JPanel implements Runnable {
 						}
 						
 						System.out.println("BlockHeuristic result (best col): " + bH.getBestColumn(logic.getBoard(), logic.getActivePlayer()));
-						System.out.println("HeuristicNOutOfFour result (best col): " + heuristicNOutOfFour.getBestColumn(logic.getBoard(), logic.getActivePlayer()));
+						System.out.println("HeuristicNOutOfFour DEF result (best col): " + bH.getBestColumn(logic.getBoard(), logic.getInactivePlayer()));
+						System.out.println("HeuristicNOutOfFour AGR result (best col): " + heuristicNOutOfFour.getBestColumn(logic.getBoard(), logic.getActivePlayer()));
 						
 						
 

@@ -28,7 +28,7 @@ public class BlockHeuristic implements Heuristic{
 		
 		int res = 0;
 		int tmpCount = 0;
-		int maxCount = 0;
+		int maxCount = -1;
 		int[] topFields = board.getTopFields();
 		
 		for (int x = 0; x < topFields.length; ++x) {
@@ -64,26 +64,40 @@ public class BlockHeuristic implements Heuristic{
 		int steps;
 		int xNew, xCurr, xCurrDelta;
 		int yNew, yCurr, yCurrDelta;
-		while (posInArray <= 3){
-			xCurr = x;
-			yCurr = y; 
-			xCurrDelta = lineArrayX[posInArray];
-			yCurrDelta = lineArrayY[posInArray];
-			directionSwitches = 0;
-			fieldsInRow = 0;
-			steps = 0;
-			
-			while(directionSwitches < 2){
-				xNew = xCurr + xCurrDelta;
-				yNew = yCurr + yCurrDelta;
-				try{
-					fieldValue = board.getFieldValue(xNew, yNew);
-					steps++;
-					if (fieldValue != playerID && fieldValue != board.getEmptyValue()){
-						fieldsInRow = (fieldsInRow + 1) * 2;
-						xCurr = xNew;
-						yCurr = yNew;
-					} else {
+		if (y >= 0){
+			while (posInArray <= 3){
+				xCurr = x;
+				yCurr = y; 
+				xCurrDelta = lineArrayX[posInArray];
+				yCurrDelta = lineArrayY[posInArray];
+				directionSwitches = 0;
+				fieldsInRow = 0;
+				steps = 0;
+
+				while(directionSwitches < 2){
+					xNew = xCurr + xCurrDelta;
+					yNew = yCurr + yCurrDelta;
+					try{
+						fieldValue = board.getFieldValue(xNew, yNew);
+						steps++;
+						if (fieldValue != playerID && fieldValue != board.getEmptyValue()){
+							fieldsInRow = (fieldsInRow + 1) * 2;
+							xCurr = xNew;
+							yCurr = yNew;
+						} else {
+							xCurrDelta *= (-1);
+							yCurrDelta *= (-1);
+							directionSwitches++;
+							res += fieldsInRow;
+							fieldsInRow = 0;
+							steps = 0;
+							xCurr = x;
+							yCurr = y;
+						}
+						if (steps == rowLengthToWin){
+							throw new IllegalAccessException("");
+						}
+					} catch (IllegalAccessException e){
 						xCurrDelta *= (-1);
 						yCurrDelta *= (-1);
 						directionSwitches++;
@@ -93,23 +107,11 @@ public class BlockHeuristic implements Heuristic{
 						xCurr = x;
 						yCurr = y;
 					}
-					if (steps == rowLengthToWin){
-						throw new IllegalAccessException("");
-					}
-				} catch (IllegalAccessException e){
-					xCurrDelta *= (-1);
-					yCurrDelta *= (-1);
-					directionSwitches++;
-					res += fieldsInRow;
-					fieldsInRow = 0;
-					steps = 0;
-					xCurr = x;
-					yCurr = y;
 				}
+				posInArray++;
 			}
-			posInArray++;
 		}
-		
+			
 		return res;
 	}
 	

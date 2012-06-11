@@ -75,7 +75,7 @@ public int getBestSlot(int[][] test, int freeRows[], int player1, int player2, i
 	Long boardforPlayer2 = 0l;	
 	long emptyBoard = 0l;
 	
-	System.out.println(activePlayer);
+	//System.out.println(activePlayer);
 	
 	if(activePlayer == player1){
 		boardforPlayer1 = getBitRepresentation(test, player1);   // 1 sec
@@ -103,7 +103,7 @@ public int getBestSlot(int[][] test, int freeRows[], int player1, int player2, i
     	value += getHeuristicValue((getRelevantRow            ((emptyBoard), z, freeRows[z] )), getRelevantRow            (boardforPlayer1 , z , freeRows[z] ));  // 2.4s
      	value += getHeuristicValue((getRelevantSlot           ((emptyBoard), z, freeRows[z] )), getRelevantSlot           (boardforPlayer1 , z , freeRows[z] ));  // 1.3s
     	
-    	System.out.println("Total value for ("+z+","+freeRows[z]+") is "+value);
+    	//System.out.println("Total value for ("+z+","+freeRows[z]+") is "+value);
     	
     	if(value > highestValue){
     		highestValue = value;
@@ -455,7 +455,7 @@ private void printBits(long _possible) {
 		buf.insert(0, _possible&1);
 	    _possible>>>=1;
 	}
-	System.out.println(buf);
+	//System.out.println(buf);
 }
 
 private long getBitRepresentation(int[][] _board, int playerID) {
@@ -491,7 +491,7 @@ private void printArrayRepresentation(int [][] _board){
 		buf.append("\n");	
 	}
 	
-	System.out.println(buf);
+	//System.out.println(buf);
 	
 }
 
