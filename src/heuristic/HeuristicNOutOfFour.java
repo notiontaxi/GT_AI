@@ -44,6 +44,7 @@ private int getSlotValue(int[][] test, int slot, int row, int player1, int playe
 	Long boardforPlayer1 = 0l;   // 1 sec
 	Long boardforPlayer2 = 0l;	
 	long emptyBoardForPlayer1 = 0l, emptyBoardForPlayer2 = 0l, emptyBoard = 279258638311359l;
+															   //0111111011111101111110111111011111101111110111111
 	
 	if(activePlayer == player1){
 		boardforPlayer1 = getBitRepresentation(test, player1);   // 1 sec
@@ -75,10 +76,10 @@ private int getSlotValue(int[][] test, int slot, int row, int player1, int playe
 	linesValue += getNumberOfWinningLines(freeRowCode);  
 	linesValue += getNumberOfWinningLines(freeSlotCode);  
 	
-	blockValue =  getNOutOfFourValue((getRelevantDescendDiagonal((emptyBoardForPlayer2), slot, row )), getRelevantDescendDiagonal(boardforPlayer2 , slot , row ), 100, 4,1);  // 1.8s
-	blockValue += getNOutOfFourValue((getRelevantAscendDiagonal ((emptyBoardForPlayer2), slot, row )), getRelevantAscendDiagonal (boardforPlayer2 , slot , row ), 100, 4,1);  // 2.4s
-	blockValue += getNOutOfFourValue((getRelevantRow            ((emptyBoardForPlayer2), slot, row )), getRelevantRow            (boardforPlayer2 , slot , row ), 100, 4,1);  // 2.4s
-	blockValue += getNOutOfFourValue((getRelevantSlot           ((emptyBoardForPlayer2), slot, row )), getRelevantSlot           (boardforPlayer2 , slot , row ), 100, 4,1);  // 1.3s
+	blockValue =  getNOutOfFourValue((getRelevantDescendDiagonal((emptyBoardForPlayer2), slot, row )), getRelevantDescendDiagonal(boardforPlayer2 , slot , row ), 100, 8,3);  // 1.8s
+	blockValue += getNOutOfFourValue((getRelevantAscendDiagonal ((emptyBoardForPlayer2), slot, row )), getRelevantAscendDiagonal (boardforPlayer2 , slot , row ), 100, 8,3);  // 2.4s
+	blockValue += getNOutOfFourValue((getRelevantRow            ((emptyBoardForPlayer2), slot, row )), getRelevantRow            (boardforPlayer2 , slot , row ), 100, 8,3);  // 2.4s
+	blockValue += getNOutOfFourValue((getRelevantSlot           ((emptyBoardForPlayer2), slot, row )), getRelevantSlot           (boardforPlayer2 , slot , row ), 100, 8,3);  // 1.3s
 	
 	
 	return scoreValue + blockValue + linesValue;
@@ -87,8 +88,8 @@ private int getSlotValue(int[][] test, int slot, int row, int player1, int playe
 
 public int getBestSlot(int[][] test, int freeRows[], int player1, int player2, int activePlayer){
 	
-	Long boardforPlayer1 = 0l;   // 1 sec
-	Long boardforPlayer2 = 0l;	
+	long boardforPlayer1 = 0l;   // 1 sec
+	long boardforPlayer2 = 0l;	
 	long emptyBoard = 0l;
 	
 	//System.out.println(activePlayer);
@@ -104,8 +105,8 @@ public int getBestSlot(int[][] test, int freeRows[], int player1, int player2, i
 	
 	emptyBoard = boardforPlayer2^279258638311359l;
 	
-	printBits(boardforPlayer1);
-	printBits(boardforPlayer2);
+	//printBits(boardforPlayer1);
+	//printBits(boardforPlayer2);
 	
 	
 	int value  = 0;
@@ -119,7 +120,7 @@ public int getBestSlot(int[][] test, int freeRows[], int player1, int player2, i
      	value += getNOutOfFourValue((getRelevantSlot           ((emptyBoard), z, freeRows[z] )), getRelevantSlot           (boardforPlayer1 , z , freeRows[z] ), 50, 6, 2);  // 1.3s
     	
      	
-    	System.out.println("Total value for ("+z+","+freeRows[z]+") is "+getSlotValue(test, z, freeRows[z], player1, player2, activePlayer));
+    	//System.out.println("Total value for ("+z+","+freeRows[z]+") is "+getSlotValue(test, z, freeRows[z], player1, player2, activePlayer));
 
     	
     	if(value > highestValue){
@@ -175,13 +176,11 @@ private int getRelevantSlot(long _board, int slot, int row){
 	int l =  (int)((_board>>>((Config.dimensionY+1)*(6-slot))) & 127);
 	
 	l<<=1;
-	
-	
-	
+
 	if(row<3)
-	l>>=3-row;
+		l>>=3-row;
 	else
-	l<<=row-3;	
+		l<<=row-3;	
 	
 	
 	return l;
@@ -270,8 +269,8 @@ public static void main(String[] args) {
 //	testMe.runPackingTest();
 	testMe.testHeuristic();
 	
-}*/
-
+}
+*/
 
 public void testHeuristic() {
 	
@@ -320,18 +319,13 @@ public void testHeuristic() {
 	
 	printArrayRepresentation(test);
 	
-//	printBits(getBitRepresentation(test, player1));
-//	printBits(getBitRepresentation(test, player2));
-//	printBitRepresentation(getBitRepresentation(test, 0      ), test.length, test[0].length);
-//	
 	
-	long emptyBoard = 279258638311359l;
-			
+	long emptyBoard = 279258638311359l;	
 	//0111111011111101111110111111011111101111110111111		
 			
 	
 	
-	int counts = 1;
+	int counts = 1000000;
 	// ###################################################
 		int testSlot = 2, testRow = 2;           //#######
 	// ###################################################
@@ -339,91 +333,17 @@ public void testHeuristic() {
 	System.out.print("elapsed time for " + counts +" computations: ");
 	
 	long lasttime = System.currentTimeMillis();
-	
-	Long boardforPlayer1 = getBitRepresentation(test, player1);
-	Long boardforPlayer2 = getBitRepresentation(test, player2);
-
-	long owned = 0l;
-/*	
-	for(;counts > 0;counts--){
-		owned = (getRelevantDescendDiagonal(boardforPlayer1  , testSlot , testRow ));
-		printBits(owned);
-	
-		owned = (getRelevantAscendDiagonal( boardforPlayer1 , testSlot , testRow ));
-		printBits(owned);
-		
-		owned = (getRelevantSlot( boardforPlayer1 , testSlot, testRow));
-		printBits(owned);
-		
-		owned = (getRelevantRow( boardforPlayer1 , testSlot, testRow ));
-		printBits(owned);
-	}
-*/	
-	
-/*	
-	int i = 0;
-	for(;counts > 0;counts--){
-		i = getHeuristicValue((getRelevantDescendDiagonal((boardforPlayer2^emptyBoard), testSlot, testRow )), getRelevantDescendDiagonal(boardforPlayer1   , testSlot , testRow ));
-	//System.out.println("possibileties in descendD: " + i);
-	
-	    i += getHeuristicValue((getRelevantAscendDiagonal ((boardforPlayer2^emptyBoard), testSlot, testRow )), getRelevantAscendDiagonal(boardforPlayer1   , testSlot , testRow ));
-	//System.out.println("possibileties in ascendD: " + i);	
-	
-    	i += getHeuristicValue((getRelevantRow            ((boardforPlayer2^emptyBoard), testSlot, testRow )), getRelevantRow           (boardforPlayer1   , testSlot , testRow ));
-    //System.out.println("possibileties in row: " + i);
-
-    	i += getHeuristicValue((getRelevantSlot           ((boardforPlayer2^emptyBoard), testSlot, testRow )), getRelevantSlot          (boardforPlayer1   , testSlot , testRow ));
-	//System.out.println("possibileties in slot: " + i);
-	
-	}
-*/	
-	
-	
-	
-	int i = 0;
-	for(int z = 0; z < free.length; z++){
-		i = getNOutOfFourValue((getRelevantDescendDiagonal((boardforPlayer2^emptyBoard), z, free[z] )), getRelevantDescendDiagonal(boardforPlayer1   , z , free[z] ), 50, 6, 2);
-	//System.out.println("possibileties in descendD: " + i);
-	
-	    i += getNOutOfFourValue((getRelevantAscendDiagonal ((boardforPlayer2^emptyBoard), z, free[z] )), getRelevantAscendDiagonal(boardforPlayer1   , z , free[z] ), 50, 6, 2);
-	//System.out.println("possibileties in ascendD: " + i);	
-	
-    	i += getNOutOfFourValue((getRelevantRow            ((boardforPlayer2^emptyBoard), z, free[z] )), getRelevantRow           (boardforPlayer1   , z , free[z] ), 50, 6, 2);
-    //System.out.println("possibileties in row: " + i);
-
-    	i += getNOutOfFourValue((getRelevantSlot           ((boardforPlayer2^emptyBoard), z, free[z] )), getRelevantSlot          (boardforPlayer1   , z , free[z] ), 50, 6, 2);
-	//System.out.println("possibileties in slot: " + i);
-
-    	System.out.println("Total value for ("+z+","+free[z]+") is "+i);
-    	
-	}	
-
-	Config config = new Config();
-
-	Logic logic = new Logic(config);
-	
-	BlockHeuristic h = new BlockHeuristic(4);
-	logic.Board b = new logic.Board(7, 6);
-	
-	//System.out.println("       " + h.getBestColumn(b, 1));
-	
 	int result = 0;
 	
 	for(;counts > 0;counts--)	
-		//h.getBestColumn(b, 1);
-		result = getBestSlot(test,free,1,2,2);
+		result = getSlotValue(test,1,2,0,1,1);
 	
 	System.out.println((System.currentTimeMillis() - lasttime) + " ms");
-	System.out.println("best row: "+ result);
+	System.out.println("best value: "+ result);
 	
-	for(int v = 0; v < free.length; v++)
-		System.out.println("heuristic value for slot " + v + ": " + getSlotValue(test,v,free[v],1,2,2));
-	
-	printArrayRepresentation(test);
-	
-	//System.out.println("best position: " + result);
-	//System.out.println(haswon(getBitRepresentation(test, player2)));
-	//printBitRepresentation(possible,test.length, test[0].length);
+//	for(int v = 0; v < free.length; v++)
+//		System.out.println("heuristic value for slot " + v + ": " + getSlotValue(test,v,free[v],1,2,2));
+
 }
 
 
