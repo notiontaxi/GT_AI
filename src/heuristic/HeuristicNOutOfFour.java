@@ -34,7 +34,8 @@ public class HeuristicNOutOfFour implements Heuristic {
 
 	@Override
 	public int calcColumnScore(logic.Board board, int x, int playerID) {
-		return getSlotValue(board.getFields(), x, board.getTopField(x), Config.PLAYER1, Config.PLAYER2, playerID);
+		System.out.print("Total value for ("+x+","+((board.getTopField(x))+1)+") is :");
+		return getSlotValue(board.getFields(), x, +((board.getTopField(x))+1), Config.PLAYER1, Config.PLAYER2, playerID);
 	}
 	
 
@@ -81,7 +82,7 @@ private int getSlotValue(int[][] test, int slot, int row, int player1, int playe
 	blockValue += getNOutOfFourValue((getRelevantRow            ((emptyBoardForPlayer2), slot, row )), getRelevantRow            (boardforPlayer2 , slot , row ), 100, 8,3);  // 2.4s
 	blockValue += getNOutOfFourValue((getRelevantSlot           ((emptyBoardForPlayer2), slot, row )), getRelevantSlot           (boardforPlayer2 , slot , row ), 100, 8,3);  // 1.3s
 	
-	//System.out.println("Total value for ("+slot+","+row+") is "+ (scoreValue + blockValue + linesValue));
+	System.out.println((scoreValue + blockValue + linesValue));
 	
 	
 	return scoreValue + blockValue + linesValue;
