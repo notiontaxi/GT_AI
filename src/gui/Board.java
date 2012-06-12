@@ -1,10 +1,7 @@
 package gui;
 
-import heuristic.BlockHeuristic;
 import java.awt.*;
 import java.awt.event.*;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -94,18 +91,6 @@ public class Board extends JPanel implements Runnable, ActionListener,
 		}
 
 		graphics2d.setColor(Color.BLACK);
-		int wx = (this.getWidth() - (2 * this.padding)) / this.size_x;
-		int wy = (this.getHeight() - (2 * this.padding)) / this.size_y;
-		for (int x = 0; x <= this.size_x; x++) {
-			graphics2d.setStroke(new BasicStroke(2.0f));
-			graphics2d.drawLine(this.padding + x * wx, this.padding,
-					this.padding + x * wx, this.getHeight() - this.padding);
-		}
-		for (int y = 0; y <= this.size_y; y++) {
-			graphics2d.setStroke(new BasicStroke(2.0f));
-			graphics2d.drawLine(this.padding, this.padding + y * wy,
-					this.getWidth() - this.padding, this.padding + y * wy);
-		}
 
 		for (Field field : this.fields) {
 			graphics2d.fillPolygon(field);
