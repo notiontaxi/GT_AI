@@ -7,9 +7,6 @@ import java.util.List;
 public class AlphaBeta {
 	private Logic logicClone = null;
 	private int activePlayer = -1; 
-	private int[][] currFields;
-	private int xSize;
-	private int ySize;
 	private int finalUtility;
 	
 	private Heuristic heuristic = null;
@@ -27,7 +24,7 @@ public class AlphaBeta {
 	}
 	
 	/**
-	 * stat alphaBetaSearch and find next possible best move
+	 * st41at alphaBetaSearch and find next possible best move
 	 * @param todoCoordinates - list with all coordinates of possible moves (x moves)
 	 * @return Coordinate giving best move
 	 */
@@ -39,10 +36,9 @@ public class AlphaBeta {
 		int bestAction = -1;
 		
 		for (int x = 0; x < topFields.length; ++x){
-			currFields = this.logicClone.getBoardFields();
-			if(topFields[x] >= 0 && this.logicClone.unsafePerformMove(x, topFields[x])) {
+			if(topFields[x] >= 0 && this.logicClone.performMove(x, topFields[x])) {
 				this.iteration++;
-				int utility = minValue(this.logicClone.getBoard().getTopFields(), this.logicClone.getConfig().getDepth(), -999999, +999999);
+				int utility = minValue(this.logicClone.getTopFields(), this.logicClone.getConfig().getDepth(), -999999, +999999);
 				if(utility > bestUtility) {
 					bestUtility = utility;
 					bestAction = x;
@@ -68,10 +64,9 @@ public class AlphaBeta {
 			utility = this.finalUtility();
 		} else {
 			for(int x = 0; x < topFields.length; x++) {
-				if(topFields[x] >= 0 && this.logicClone.unsafePerformMove(x, topFields[x])) {
+				if(topFields[x] >= 0 && this.logicClone.performMove(x, topFields[x])) {
 					this.iteration++;
-					currFields = this.logicClone.getBoardFields();
-					int tmp = minValue(this.logicClone.getBoard().getTopFields(), depth-1, alhpa, beta);
+					int tmp = minValue(this.logicClone.getTopFields(), depth-1, alhpa, beta);
 					utility = calculateUtility(x, true, tmp, utility);
 
 					if(utility >= beta) {
@@ -99,10 +94,9 @@ public class AlphaBeta {
 			utility = this.finalUtility();
 		} else {
 			for(int x = 0; x < topFields.length; x++) {
-				if(topFields[x] >= 0 && this.logicClone.unsafePerformMove(x, topFields[x])) {
+				if(topFields[x] >= 0 && this.logicClone.performMove(x, topFields[x])) {
 					this.iteration++;
-					currFields = this.logicClone.getBoardFields();
-					int tmp = maxValue(this.logicClone.getBoard().getTopFields() , depth-1, alhpa, beta);
+					int tmp = maxValue(this.logicClone.getTopFields() , depth-1, alhpa, beta);
 					utility = calculateUtility(x, false, tmp, utility);
 
 					if(utility <= alhpa) {

@@ -43,6 +43,7 @@ public class Logic {
 	}
 	
 	private boolean performMove(int x, int y, boolean useSafeMode) {
+		System.out.println("perfomMove(" + x + "," + y +")");
 		if (useSafeMode){
 			try {
 				board.performMove(activePlayerID, x,y);
@@ -120,6 +121,10 @@ public class Logic {
 	
 	public Board getBoard(){
 		return this.board;
+	}
+	
+	public int[] getTopFields(){
+		return this.board.getTopFields();
 	}
 	
 	public int[][] getBoardFields(){

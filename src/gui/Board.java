@@ -144,7 +144,8 @@ public class Board extends JPanel implements Runnable, ActionListener,
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		AlphaBeta alphaBeta = new AlphaBeta(logic);
-		System.out.println("AlphaBtea: " + alphaBeta.alphaBetaSearch(logic.getBoard().getTopFields()));
+		Coordinate c = alphaBeta.alphaBetaSearch(logic.getBoard().getTopFields());
+		System.out.println("\n---------------\nAlphaBtea: " + c.getX() + "," + c.getY()+ "\n---------------\n");
 	}
 
 	@Override

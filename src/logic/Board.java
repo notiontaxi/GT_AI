@@ -5,6 +5,8 @@
 package logic;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -15,6 +17,9 @@ public class Board {
 	private int[][] fields;
 	private int[] topFields;
 	private final int emptyValue = -1;
+	
+	private int undocount = 0;
+	private int docount = 0;
 	
 	public Board(int x, int y){
 		fields = new int[x][y];
@@ -27,7 +32,8 @@ public class Board {
 		Board board = new Board(fields.length,fields[0].length);
 		for(int x = 0; x < fields.length; x++) {
 			for(int y = 0; y < fields[0].length; y++) {
-				board.unsafePerformMove(this.fields[x][y],x,y);
+				//board.unsafePerformMove(this.fields[x][y],x,y);
+				board.fields[x][y] = this.fields[x][y];
 			}
 		}
 		for(int x = 0; x < topFields.length; x++) {
@@ -43,6 +49,7 @@ public class Board {
 	public void performMove(int playerID, int x, int y) throws IllegalAccessException{
 		if (isMoveValid(x,y)){
 			setFieldValue(x,y, playerID);
+			docount++;
 			topFields[x]--;
 		} else {
 			throw new IllegalAccessException("Move is invalid.");
@@ -50,8 +57,14 @@ public class Board {
 	}
 	
 	public void unsafePerformMove(int playerID, int x, int y) {
-		setFieldValue(x,y, playerID);
-		topFields[x]--;
+		try {
+			//setFieldValue(x,y, playerID);
+			//topFields[x]--;
+			
+			performMove(playerID, x, y);
+		} catch (IllegalAccessException ex) {
+			Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}
 	
 	public boolean isMoveValid(int x, int y){
@@ -60,6 +73,8 @@ public class Board {
 	
 	public void undoMove(int x) {
 		topFields[x]++;
+		undocount++;
+		System.out.println("undoMove(" + x + "," + topFields[x] + ")");
 		fields[x][topFields[x]] = emptyValue;
 	}
 
