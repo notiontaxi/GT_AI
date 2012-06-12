@@ -81,6 +81,8 @@ private int getSlotValue(int[][] test, int slot, int row, int player1, int playe
 	blockValue += getNOutOfFourValue((getRelevantRow            ((emptyBoardForPlayer2), slot, row )), getRelevantRow            (boardforPlayer2 , slot , row ), 100, 8,3);  // 2.4s
 	blockValue += getNOutOfFourValue((getRelevantSlot           ((emptyBoardForPlayer2), slot, row )), getRelevantSlot           (boardforPlayer2 , slot , row ), 100, 8,3);  // 1.3s
 	
+	//System.out.println("Total value for ("+slot+","+row+") is "+ (scoreValue + blockValue + linesValue));
+	
 	
 	return scoreValue + blockValue + linesValue;
 }
