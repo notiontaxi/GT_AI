@@ -122,6 +122,10 @@ public class Logic {
 		return this.board;
 	}
 	
+	public int getTopField(int x){
+		return board.getTopField(x);
+	}
+	
 	public int[] getTopFields(){
 		return this.board.getTopFields();
 	}
