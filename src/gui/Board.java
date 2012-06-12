@@ -143,9 +143,15 @@ public class Board extends JPanel implements Runnable, ActionListener,
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		AlphaBeta alphaBeta = new AlphaBeta(logic);
-		Coordinate c = alphaBeta.alphaBetaSearch(logic.getBoard().getTopFields());
-		System.out.println("\n---------------\nAlphaBtea: " + c.getX() + "," + c.getY()+ "\n---------------\n");
+		if (arg0.getActionCommand() == "move"){
+			AlphaBeta alphaBeta = new AlphaBeta(logic);
+			Coordinate c = alphaBeta.alphaBetaSearch(logic.getBoard().getTopFields());
+			System.out.println("\n---------------\nAlphaBtea: " + c.getX() + "," + c.getY()+ "\n---------------\n");
+		} else if (arg0.getActionCommand() == "smallMove"){
+			AlphaBeta alphaBeta = new AlphaBeta(logic);
+			Coordinate c = alphaBeta.smallAlphaBetaSearch(logic.getBoard().getTopFields());
+			System.out.println("\n---------------\nAlphaBtea: " + c.getX() + "," + c.getY()+ "\n---------------\n");
+		}
 	}
 
 	@Override

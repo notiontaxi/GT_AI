@@ -31,13 +31,18 @@ public class GUI extends JFrame {
 
 		JButton startButton = new JButton("Perform Move");
 		startButton.setActionCommand("move");
-
+		
+		JButton smallStartButton = new JButton("Perform Move Only First It");
+		smallStartButton.setActionCommand("smallMove");
+		
 		// ... Add Listeners
 		startButton.addActionListener(this.board);
+		smallStartButton.addActionListener(this.board);
 
 		// ... Layout inner panel with two buttons horizontally
 		this.buttonPanel.setLayout(new FlowLayout());
 		this.buttonPanel.add(startButton);
+		this.buttonPanel.add(smallStartButton);
 
 		this.add(this.buttonPanel, BorderLayout.NORTH);
 	}

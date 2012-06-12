@@ -23,6 +23,25 @@ public class AlphaBeta {
 		this.heuristic = new HeuristicNOutOfFour();
 	}
 	
+	public Coordinate smallAlphaBetaSearch(int[] topFields) {
+		int bestUtility = -999999;
+		int bestAction = -1;
+		
+		for (int x = 0; x < topFields.length; ++x){
+			if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
+				this.iteration++;
+				int utility = heuristic.calcColumnScore(logicClone.getBoard(), x, this.activePlayer);
+				if(utility > bestUtility) {
+					bestUtility = utility;
+					bestAction = x;
+				}
+				this.logicClone.undoMove(x);
+			}
+		}
+		finalUtility = bestUtility;
+		return new Coordinate(bestAction, topFields[bestAction]);
+	}
+	
 	/**
 	 * st41at alphaBetaSearch and find next possible best move
 	 * @param todoCoordinates - list with all coordinates of possible moves (x moves)
