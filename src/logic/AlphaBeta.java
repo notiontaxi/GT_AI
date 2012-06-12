@@ -31,34 +31,28 @@ public class AlphaBeta {
 	 * @param todoCoordinates - list with all coordinates of possible moves (x moves)
 	 * @return Coordinate giving best move
 	 */
-	public Coordinate alphaBetaSearch(List<Coordinate> todoCoordinates) {
+	public Coordinate alphaBetaSearch(int[] topFields) {
 		this.isDone = false;
 		this.iteration = 0;
 		
 		int bestUtility = -999999;
-		Coordinate bestAction = null;
-
-		if (todoCoordinates == null){
-			todoCoordinates = this.logicClone.getBoard().getEmptyFields();
-		}
+		int bestAction = -1;
 		
-		for (Coordinate coordinate : todoCoordinates){
-			int x = coordinate.getX();
-			int y = coordinate.getY();
+		for (int x = 0; x < topFields.length; ++x){
 			currFields = this.logicClone.getBoardFields();
-			if(this.logicClone.performMove(x, y)) {
+			if(topFields[x] >= 0 && this.logicClone.unsafePerformMove(x, topFields[x])) {
 				this.iteration++;
-				int utility = minValue(this.logicClone.getConfig().getDepth(), -999999, +999999);
+				int utility = minValue(this.logicClone.getBoard().getTopFields(), this.logicClone.getConfig().getDepth(), -999999, +999999);
 				if(utility > bestUtility) {
 					bestUtility = utility;
-					bestAction = coordinate;
+					bestAction = x;
 				}
-				this.logicClone.undoMove(x, y);
+				this.logicClone.undoMove(x);
 			}
 		}
 		finalUtility = bestUtility;
 		this.isDone = true;
-		return bestAction;
+		return new Coordinate(bestAction, topFields[bestAction]);
 	}
 	
 	/**
@@ -68,27 +62,23 @@ public class AlphaBeta {
 	 * @param beta
 	 * @return calculated utility
 	 */
-	private int maxValue(int depth, int alhpa, int beta) {
+	private int maxValue(int[] topFields, int depth, int alhpa, int beta) {
 		int utility = -999999;
 		if(this.isFinal(depth)) {
 			utility = this.finalUtility();
 		} else {
-			for(int x = 0; x < xSize; x++) {
-				for(int y = 0; y < ySize; y++) {
-					if (currFields[x][y] == -1){
-						if(this.logicClone.performMove(x, y)) {
-							this.iteration++;
-							currFields = this.logicClone.getBoardFields();
-							int tmp = minValue(depth-1, alhpa, beta);
-							utility = calculateUtility(x, true, tmp, utility);
-							
-							if(utility >= beta) {
-								return utility;
-							}
-							alhpa = Math.max(alhpa, utility);
-							this.logicClone.undoMove(x, y);
-						}
+			for(int x = 0; x < topFields.length; x++) {
+				if(topFields[x] >= 0 && this.logicClone.unsafePerformMove(x, topFields[x])) {
+					this.iteration++;
+					currFields = this.logicClone.getBoardFields();
+					int tmp = minValue(this.logicClone.getBoard().getTopFields(), depth-1, alhpa, beta);
+					utility = calculateUtility(x, true, tmp, utility);
+
+					if(utility >= beta) {
+						return utility;
 					}
+					alhpa = Math.max(alhpa, utility);
+					this.logicClone.undoMove(x);
 				}
 			}
 		}
@@ -103,27 +93,23 @@ public class AlphaBeta {
 	 * @param beta
 	 * @return calculated utility
 	 */
-	private int minValue(int depth, int alhpa, int beta) {
+	private int minValue(int[] topFields, int depth, int alhpa, int beta) {
 		int utility = +999999;
 		if(this.isFinal(depth)) {
 			utility = this.finalUtility();
 		} else {
-			for(int x = 0; x < xSize; x++) {
-				for(int y = 0; y < ySize; y++) {
-					if (currFields[x][y] == -1){
-						if(this.logicClone.performMove(x, y)) {
-							this.iteration++;
-							currFields = this.logicClone.getBoardFields();
-							int tmp = maxValue(depth-1, alhpa, beta);
-							utility = calculateUtility(x, false, tmp, utility);
-							
-							if(utility <= alhpa) {
-								return utility;
-							}
-							beta = Math.min(alhpa, utility);
-							this.logicClone.undoMove(x, y);
-						}
+			for(int x = 0; x < topFields.length; x++) {
+				if(topFields[x] >= 0 && this.logicClone.unsafePerformMove(x, topFields[x])) {
+					this.iteration++;
+					currFields = this.logicClone.getBoardFields();
+					int tmp = maxValue(this.logicClone.getBoard().getTopFields() , depth-1, alhpa, beta);
+					utility = calculateUtility(x, false, tmp, utility);
+
+					if(utility <= alhpa) {
+						return utility;
 					}
+					beta = Math.min(alhpa, utility);
+					this.logicClone.undoMove(x);
 				}
 			}
 		}

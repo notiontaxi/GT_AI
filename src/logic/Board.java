@@ -31,7 +31,7 @@ public class Board {
 			}
 		}
 		for(int x = 0; x < topFields.length; x++) {
-			System.out.println("topFields(" + x + "): " + topFields[x]);
+			board.topFields[x] = this.topFields[x];
 		}
 		return board;
 	}
@@ -58,9 +58,9 @@ public class Board {
 		return topFields[x] == y;		
 	}
 	
-	public void undoMove(int x,  int y) {
-		fields[x][y] = emptyValue;
+	public void undoMove(int x) {
 		topFields[x]++;
+		fields[x][topFields[x]] = emptyValue;
 	}
 
 	public int[][] getFields() {

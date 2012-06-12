@@ -34,12 +34,24 @@ public class Logic {
 		initLineArray();
 	}	
 	
+	public boolean unsafePerformMove(int x, int y) {
+		return performMove(x, y, false);
+	}
+	
 	public boolean performMove(int x, int y) {
-		try {
-			board.performMove(activePlayerID, x,y);
-		} catch (IllegalAccessException e) {
-			System.out.println("Invalid move(" + x + "," + y + ").");
-			return false;
+		return performMove(x, y, true);	
+	}
+	
+	private boolean performMove(int x, int y, boolean useSafeMode) {
+		if (useSafeMode){
+			try {
+				board.performMove(activePlayerID, x,y);
+			} catch (IllegalAccessException e) {
+				System.out.println("Invalid move(" + x + "," + y + ").");
+				return false;
+			}
+		} else {
+			board.unsafePerformMove(activePlayerID, x,y);
 		}
 		moveCount++;
 		if (moveCount >= (2 * config.getRowLengthToWin()) - 1){
@@ -64,8 +76,8 @@ public class Logic {
 		return true;
 	}
 
-	public void undoMove(int x, int y) {
-		board.undoMove(x,y);
+	public void undoMove(int x) {
+		board.undoMove(x);
 		this.winnerID = -1;
 		moveCount--;
 		switchPlayer();

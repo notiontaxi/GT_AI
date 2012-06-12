@@ -51,7 +51,7 @@ public class MinMax{
 					bestUtility = utility;
 					bestAction = coordinate;
 				}
-				this.logicClone.undoMove(x, y);
+				//this.logicClone.undoMove(x, y);
 			}
 			System.out.println("End (" + x + "," + y +")");
 		}
@@ -76,7 +76,7 @@ public class MinMax{
 							currFields = this.logicClone.getBoardFields();
 							int tmp = maxValue(depth-1);
 							utility = Math.min(tmp, utility);
-							this.logicClone.undoMove(x, y);
+							//this.logicClone.undoMove(x, y);
 						}
 					}
 				}
@@ -99,7 +99,7 @@ public class MinMax{
 							currFields = this.logicClone.getBoardFields();
 							int tmp = minValue(depth-1);
 							utility = Math.max(tmp, utility);
-							this.logicClone.undoMove(x, y);
+							//this.logicClone.undoMove(x, y);
 						}
 					}
 				}

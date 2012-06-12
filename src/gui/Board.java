@@ -143,7 +143,8 @@ public class Board extends JPanel implements Runnable, ActionListener,
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		System.out.println(arg0.getActionCommand());
+		AlphaBeta alphaBeta = new AlphaBeta(logic);
+		System.out.println("AlphaBtea: " + alphaBeta.alphaBetaSearch(logic.getBoard().getTopFields()));
 	}
 
 	@Override
@@ -186,8 +187,6 @@ public class Board extends JPanel implements Runnable, ActionListener,
 	public void mousePressed(MouseEvent me) {
 		if (logic.getWinner() == null && !logic.isGameOver()) {
 
-			BlockHeuristic bH = new BlockHeuristic(config.getRowLengthToWin());
-
 			if (me.getX() > padding
 					&& me.getX() < this.getWidth() - padding
 					&& me.getY() > padding
@@ -212,39 +211,6 @@ public class Board extends JPanel implements Runnable, ActionListener,
 					}
 					repaint();
 				}
-
-				System.out.println("BlockHeuristic result (best col): "
-						+ bH.getBestColumn(logic.getBoard(),
-								logic.getActivePlayer()));
-
-				if (logic.getWinner() == null && !logic.isGameOver()) {
-					// MinMax minMax = new MinMax(logic);
-					long startTime = System.currentTimeMillis();
-					ThreadObsever to = new ThreadObsever(logic,
-							config.getThreadCount());
-
-					Coordinate c = to.getCoordinate();
-
-					// Coordinate c = minMax.minmaxDecision();
-					System.out.println("Final Duration: "
-							+ (System.currentTimeMillis() - startTime));
-					if (c != null && logic.performMove(c.getX(), c.getY())) {
-						Coin coin = new Coin(c.getX(), c.getY(), wx, wy,
-								colorPlayerMapping.get(logic.getActivePlayer()));
-						coins.add(coin);
-					}
-
-					Player winner = logic.getWinner();
-					if (winner != null) {
-						System.out.println("Winner!!!!!! Congratulations "
-								+ winner.getName() + ".");
-					} else if (logic.isGameOver()) {
-						System.out.println("Game Over. No Winner.");
-					}
-
-					repaint();
-				}
-
 			}
 		}
 	}
