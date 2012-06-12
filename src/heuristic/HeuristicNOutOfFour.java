@@ -48,19 +48,16 @@ private int getSlotValue(int[][] test, int slot, int row, int player1, int playe
 	long emptyBoardForPlayer1 = 0l, emptyBoardForPlayer2 = 0l, emptyBoard = 279258638311359l;
 															   //0111111011111101111110111111011111101111110111111
 	
-	if(activePlayer == player1){
-		boardforPlayer1 = getBitRepresentation(test, player1);   // 1 sec
-		boardforPlayer2 = getBitRepresentation(test, player2);	
-	}
-	else{
-		boardforPlayer1 = getBitRepresentation(test, player2);   // 1 sec
-		boardforPlayer2 = getBitRepresentation(test, player1);	
-	}
+
+	boardforPlayer1 = getBitRepresentation(test, activePlayer);   // 1 sec
+	boardforPlayer2 = getBitRepresentation(test, activePlayer^1);	
+	emptyBoardForPlayer1 = boardforPlayer2^emptyBoard;
+	emptyBoardForPlayer2 = boardforPlayer1^emptyBoard;	
+
 	
 	int scoreValue = 0, blockValue  = 0, linesValue = 0;
 	
-	emptyBoardForPlayer1 = boardforPlayer2^emptyBoard;
-	emptyBoardForPlayer2 = boardforPlayer1^emptyBoard;
+
 	
 	int freeDescendDiagonalCode = getRelevantDescendDiagonal((emptyBoardForPlayer1), slot, row );
 	int freeAscendDiagonalCode  = getRelevantAscendDiagonal ((emptyBoardForPlayer1), slot, row ); 
@@ -68,20 +65,27 @@ private int getSlotValue(int[][] test, int slot, int row, int player1, int playe
 	int freeSlotCode 			= getRelevantSlot           ((emptyBoardForPlayer1), slot, row );	
 	
 	
-	scoreValue =  getNOutOfFourValue(freeDescendDiagonalCode, getRelevantDescendDiagonal(boardforPlayer1 , slot , row ), 50, 10, 5);  
-	scoreValue += getNOutOfFourValue(freeAscendDiagonalCode,  getRelevantAscendDiagonal (boardforPlayer1 , slot , row ), 50, 10, 5);  
-	scoreValue += getNOutOfFourValue(freeRowCode, 			  getRelevantRow            (boardforPlayer1 , slot , row ), 50, 10, 5);  
-	scoreValue += getNOutOfFourValue(freeSlotCode, 			  getRelevantSlot           (boardforPlayer1 , slot , row ), 50, 10, 5);  
+	scoreValue =  getNOutOfFourValue(freeDescendDiagonalCode, getRelevantDescendDiagonal(boardforPlayer1 , slot , row ), 100, 10, 5);  
+	scoreValue += getNOutOfFourValue(freeAscendDiagonalCode,  getRelevantAscendDiagonal (boardforPlayer1 , slot , row ), 100, 10, 5);  
+	scoreValue += getNOutOfFourValue(freeRowCode, 			  getRelevantRow            (boardforPlayer1 , slot , row ), 100, 10, 5);  
+	scoreValue += getNOutOfFourValue(freeSlotCode, 			  getRelevantSlot           (boardforPlayer1 , slot , row ), 100, 10, 5);  
 
 	linesValue =  getNumberOfWinningLines(freeDescendDiagonalCode); 
 	linesValue += getNumberOfWinningLines(freeAscendDiagonalCode);  
 	linesValue += getNumberOfWinningLines(freeRowCode);  
 	linesValue += getNumberOfWinningLines(freeSlotCode);  
+		
+	//TODO: speed up
+	test[slot][row] = activePlayer^1;
+	boardforPlayer1 = getBitRepresentation(test, activePlayer);   // 1 sec
+	boardforPlayer2 = getBitRepresentation(test, activePlayer^1);
+	emptyBoardForPlayer2 = boardforPlayer1^emptyBoard;		
 	
-	blockValue =  getNOutOfFourValue((getRelevantDescendDiagonal((emptyBoardForPlayer2), slot, row )), getRelevantDescendDiagonal(boardforPlayer2 , slot , row ), 100, 8,3);  // 1.8s
-	blockValue += getNOutOfFourValue((getRelevantAscendDiagonal ((emptyBoardForPlayer2), slot, row )), getRelevantAscendDiagonal (boardforPlayer2 , slot , row ), 100, 8,3);  // 2.4s
-	blockValue += getNOutOfFourValue((getRelevantRow            ((emptyBoardForPlayer2), slot, row )), getRelevantRow            (boardforPlayer2 , slot , row ), 100, 8,3);  // 2.4s
-	blockValue += getNOutOfFourValue((getRelevantSlot           ((emptyBoardForPlayer2), slot, row )), getRelevantSlot           (boardforPlayer2 , slot , row ), 100, 8,3);  // 1.3s
+	
+	blockValue =  getNOutOfFourValue((getRelevantDescendDiagonal((emptyBoardForPlayer2), slot, row )), getRelevantDescendDiagonal(boardforPlayer2 , slot , row ), 50, 15,3);  // 1.8s    avoid killer-moves
+	blockValue += getNOutOfFourValue((getRelevantAscendDiagonal ((emptyBoardForPlayer2), slot, row )), getRelevantAscendDiagonal (boardforPlayer2 , slot , row ), 50, 15,3);  // 2.4s
+	blockValue += getNOutOfFourValue((getRelevantRow            ((emptyBoardForPlayer2), slot, row )), getRelevantRow            (boardforPlayer2 , slot , row ), 50, 15,3);  // 2.4s
+	blockValue += getNOutOfFourValue((getRelevantSlot           ((emptyBoardForPlayer2), slot, row )), getRelevantSlot           (boardforPlayer2 , slot , row ), 50, 8,3);  // 1.3s
 	
 	System.out.println(("player: " + activePlayer +"n out of four: "+scoreValue + " block: " +blockValue + " winning lines: " + linesValue));
 	
@@ -146,10 +150,10 @@ private int getNOutOfFourValue(long possible, long owned, int maxVal, int midVal
 			for(int j = 0; j<4;j++)
 				thisChance += (owned>>j)&1;
 			
-			if(thisChance == 0);
-			else if(thisChance == 1) result += minVal;
-			else if(thisChance == 2) result += midVal;
-			else if(thisChance == 3) result += maxVal;		
+			if(thisChance == 1);
+			else if(thisChance == 2) result += minVal;
+			else if(thisChance == 3) result += midVal;
+			else if(thisChance == 4) result += maxVal;		
 			
 		}
 		possible>>>=1;
