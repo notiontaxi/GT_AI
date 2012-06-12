@@ -36,7 +36,7 @@ public class AlphaBeta {
 		int bestAction = -1;
 		
 		for (int x = 0; x < topFields.length; ++x){
-			if(topFields[x] >= 0 && this.logicClone.performMove(x, topFields[x])) {
+			if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
 				this.iteration++;
 				int utility = minValue(this.logicClone.getTopFields(), this.logicClone.getConfig().getDepth(), -999999, +999999);
 				if(utility > bestUtility) {
@@ -64,7 +64,7 @@ public class AlphaBeta {
 			utility = this.finalUtility();
 		} else {
 			for(int x = 0; x < topFields.length; x++) {
-				if(topFields[x] >= 0 && this.logicClone.performMove(x, topFields[x])) {
+				if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
 					this.iteration++;
 					int tmp = minValue(this.logicClone.getTopFields(), depth-1, alhpa, beta);
 					utility = calculateUtility(x, true, tmp, utility);
@@ -94,7 +94,7 @@ public class AlphaBeta {
 			utility = this.finalUtility();
 		} else {
 			for(int x = 0; x < topFields.length; x++) {
-				if(topFields[x] >= 0 && this.logicClone.performMove(x, topFields[x])) {
+				if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
 					this.iteration++;
 					int tmp = maxValue(this.logicClone.getTopFields() , depth-1, alhpa, beta);
 					utility = calculateUtility(x, false, tmp, utility);

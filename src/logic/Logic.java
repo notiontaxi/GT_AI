@@ -34,25 +34,24 @@ public class Logic {
 		initLineArray();
 	}	
 	
-	public boolean unsafePerformMove(int x, int y) {
-		return performMove(x, y, false);
+	public boolean unsafePerformMove(int x) {
+		return performMove(x, false);
 	}
 	
-	public boolean performMove(int x, int y) {
-		return performMove(x, y, true);	
+	public boolean performMove(int x) {
+		return performMove(x, true);	
 	}
 	
-	private boolean performMove(int x, int y, boolean useSafeMode) {
-		System.out.println("perfomMove(" + x + "," + y +")");
+	private boolean performMove(int x, boolean useSafeMode) {
 		if (useSafeMode){
 			try {
-				board.performMove(activePlayerID, x,y);
+				board.performMove(activePlayerID, x);
 			} catch (IllegalAccessException e) {
-				System.out.println("Invalid move(" + x + "," + y + ").");
+				System.out.println("Invalid move(" + x + "," + board.getTopField(x) + ").");
 				return false;
 			}
 		} else {
-			board.unsafePerformMove(activePlayerID, x,y);
+			board.unsafePerformMove(activePlayerID, x);
 		}
 		moveCount++;
 		if (moveCount >= (2 * config.getRowLengthToWin()) - 1){

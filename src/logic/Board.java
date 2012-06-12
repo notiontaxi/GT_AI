@@ -46,9 +46,9 @@ public class Board {
 		fields[x][y] = value;
 	}
 	
-	public void performMove(int playerID, int x, int y) throws IllegalAccessException{
-		if (isMoveValid(x,y)){
-			setFieldValue(x,y, playerID);
+	public void performMove(int playerID, int x) throws IllegalAccessException{
+		if (isMoveValid(x)){
+			setFieldValue(x, topFields[x], playerID);
 			docount++;
 			topFields[x]--;
 		} else {
@@ -56,19 +56,19 @@ public class Board {
 		}
 	}
 	
-	public void unsafePerformMove(int playerID, int x, int y) {
+	public void unsafePerformMove(int playerID, int x) {
 		try {
 			//setFieldValue(x,y, playerID);
 			//topFields[x]--;
 			
-			performMove(playerID, x, y);
+			performMove(playerID, x);
 		} catch (IllegalAccessException ex) {
 			Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 	
-	public boolean isMoveValid(int x, int y){
-		return topFields[x] == y;		
+	public boolean isMoveValid(int x){
+		return topFields[x] >= 0;		
 	}
 	
 	public void undoMove(int x) {

@@ -199,7 +199,7 @@ public class Board extends JPanel implements Runnable, ActionListener,
 				int x = (int) (me.getX() - padding) / wx;
 				int y = (int) (me.getY() - padding) / wy;
 
-				if (logic.performMove(x, y)) {
+				if (logic.performMove(x)) {
 					Coin coin = new Coin(x, y, wx, wy,
 							colorPlayerMapping.get(logic.getActivePlayer()));
 					coins.add(coin);

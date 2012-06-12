@@ -43,7 +43,7 @@ public class MinMax{
 			int y = coordinate.getY();
 			currFields = this.logicClone.getBoardFields();
 			System.out.println("Start (" + x + "," + y +")");
-			if(this.logicClone.performMove(x, y)) {
+		/*	if(this.logicClone.performMove(x, y)) {
 				this.itteration++;
 				System.out.println("Performing (" + x + "," + y +")");
 				int utility = minValue(this.logicClone.getConfig().getDepth());
@@ -52,7 +52,7 @@ public class MinMax{
 					bestAction = coordinate;
 				}
 				//this.logicClone.undoMove(x, y);
-			}
+			}*/
 			System.out.println("End (" + x + "," + y +")");
 		}
 		finalUtility = bestUtility;
@@ -70,14 +70,14 @@ public class MinMax{
 			for(int x = 0; x < xSize; x++) {
 				for(int y = 0; y < ySize; y++) {
 					if (currFields[x][y] == -1){
-						if(this.logicClone.performMove(x, y)) {
+						/*if(this.logicClone.performMove(x, y)) {
 							
 							this.itteration++;
 							currFields = this.logicClone.getBoardFields();
 							int tmp = maxValue(depth-1);
 							utility = Math.min(tmp, utility);
 							//this.logicClone.undoMove(x, y);
-						}
+						}*/
 					}
 				}
 			}
@@ -94,13 +94,13 @@ public class MinMax{
 			for(int x = 0; x < xSize; x++) {
 				for(int y = 0; y < ySize; y++) {
 					if (currFields[x][y] == -1){
-						if(this.logicClone.performMove(x, y)) {
+						/*if(this.logicClone.performMove(x, y)) {
 							this.itteration++;
 							currFields = this.logicClone.getBoardFields();
 							int tmp = minValue(depth-1);
 							utility = Math.max(tmp, utility);
 							//this.logicClone.undoMove(x, y);
-						}
+						}*/
 					}
 				}
 			}
