@@ -72,8 +72,7 @@ public class Board extends JPanel implements Runnable, ActionListener,
 
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
-				Field field = new Field(this.padding + x * wx, this.padding + y
-						* wy, wx, wy);
+				Field field = new Field(this.padding + x * wx, this.padding + y * wy, wx, wy);
 				this.fields.add(field);
 			}
 		}
@@ -137,21 +136,39 @@ public class Board extends JPanel implements Runnable, ActionListener,
 	private void initListeners() {
 		this.addMouseListener(this);
 	}
+	
+	private void paintCoin(int x, int y){
+		int wx = (this.getWidth() - (2 * padding)) / size_x;
+		int wy = (this.getHeight() - (2 * padding)) / size_y;
+		Coin coin = new Coin(x, y, wx, wy, colorPlayerMapping.get(logic.getActivePlayer()));
+		coins.add(coin);
+		
+		Player winner = logic.getWinner();
+		if (winner != null) {
+			System.out.println("Winner!!!!!! Congratulations " + winner.getName() + ".");
+		} else if (logic.isGameOver()) {
+			System.out.println("Game Over. No Winner.");
+		}
+
+		repaint();
+	}
 
 	/*
 	 * Performed actions (buttons)
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		AlphaBeta alphaBeta = new AlphaBeta(logic);
+		Coordinate c = null;
 		if (arg0.getActionCommand() == "move"){
-			AlphaBeta alphaBeta = new AlphaBeta(logic);
-			Coordinate c = alphaBeta.alphaBetaSearch(logic.getBoard().getTopFields());
+			c = alphaBeta.alphaBetaSearch(logic.getBoard().getTopFields());
 			System.out.println("\n---------------\nAlphaBtea: " + c.getX() + "," + c.getY()+ "\n---------------\n");
 		} else if (arg0.getActionCommand() == "smallMove"){
-			AlphaBeta alphaBeta = new AlphaBeta(logic);
-			Coordinate c = alphaBeta.smallAlphaBetaSearch(logic.getBoard().getTopFields());
+			c = alphaBeta.smallAlphaBetaSearch(logic.getBoard().getTopFields());
 			System.out.println("\n---------------\nAlphaBtea: " + c.getX() + "," + c.getY()+ "\n---------------\n");
 		}
+		logic.performMove(c.getX());
+		paintCoin(c.getX(), c.getY());
 	}
 
 	@Override
@@ -200,23 +217,10 @@ public class Board extends JPanel implements Runnable, ActionListener,
 					&& me.getY() < this.getHeight() - padding) {
 
 				int wx = (this.getWidth() - (2 * padding)) / size_x;
-				int wy = (this.getHeight() - (2 * padding)) / size_y;
-
 				int x = (int) (me.getX() - padding) / wx;
-				int y = (int) (me.getY() - padding) / wy;
 
 				if (logic.performMove(x)) {
-					Coin coin = new Coin(x, y, wx, wy,
-							colorPlayerMapping.get(logic.getActivePlayer()));
-					coins.add(coin);
-					Player winner = logic.getWinner();
-					if (winner != null) {
-						System.out.println("Winner!!!!!! Congratulations "
-								+ winner.getName() + ".");
-					} else if (logic.isGameOver()) {
-						System.out.println("Game Over. No Winner.");
-					}
-					repaint();
+					paintCoin(x, logic.getTopField(x) + 1);
 				}
 			}
 		}
