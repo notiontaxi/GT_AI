@@ -21,6 +21,7 @@ public class AlphaBeta {
 	public AlphaBeta(Logic logic) {
 		this.logicClone = logic.clone();
 		this.heuristic = new HeuristicNOutOfFour();
+		activePlayer = logic.getActivePlayer();
 	}
 	
 	public Coordinate smallAlphaBetaSearch(int[] topFields) {
