@@ -80,7 +80,12 @@ public class AlphaBeta {
 	 */
 	private int maxValue(int[] topFields, int depth, int alhpa, int beta) {
 		int utility = -999999;
-		if(this.isFinal(depth)) {
+		
+		/*if(this.isFinal(depth)) {
+			utility = this.heuristic.getBestColumnValue(this.logicClone.getBoard(), this.activePlayer);*/
+		if (this.logicClone.isGameOver()){
+			utility = finalUtility();
+		} else if (depth < 0){
 			utility = this.heuristic.getBestColumnValue(this.logicClone.getBoard(), this.activePlayer);
 		} else {
 			for(int x = 0; x < topFields.length; x++) {
@@ -110,8 +115,8 @@ public class AlphaBeta {
 	private int minValue(int[] topFields, int depth, int alhpa, int beta) {
 		int utility = +999999;
 		/*if(this.isFinal(depth)) {
-			utility = this.heuristic.getBestColumnValue(this.logicClone.getBoard(), this.activePlayer);
-		*/
+			utility = this.heuristic.getBestColumnValue(this.logicClone.getBoard(), this.activePlayer);*/
+		
 		if (this.logicClone.isGameOver()){
 			utility = finalUtility();
 		} else if (depth < 0){
@@ -161,13 +166,13 @@ public class AlphaBeta {
 	 * @return
 	 */
 	private int finalUtility() {
-		int utility = 25;
+		int utility = 1;
 		int winnerID = this.logicClone.getWinnerID();
 		if(winnerID != -1) {
 			if(winnerID == this.activePlayer) {
 				utility = 80;
 			} else {
-				utility = -10;
+				utility = -80;
 			}
 		}
 		return utility;
