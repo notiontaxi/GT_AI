@@ -19,6 +19,9 @@ import main.Config;
 
 public class HeuristicNOutOfFour implements Heuristic {
 	
+	private final static int GETVALUE = 0;
+	private final static int GETSLOT = 1;
+	
 	public HeuristicNOutOfFour(){
 		
 		
@@ -28,7 +31,11 @@ public class HeuristicNOutOfFour implements Heuristic {
 	
 	@Override
 	public int getBestColumn(logic.Board board, int playerID) {
-		return getBestSlot(board.getFields(), board.getTopFields(), Config.PLAYER1,Config.PLAYER2, playerID);
+		return getBestSlot(board.getFields(), board.getTopFields(), Config.PLAYER1,Config.PLAYER2, playerID, GETSLOT);
+	}
+	
+	public int getBestColumnValue(logic.Board board, int playerID) {
+		return getBestSlot(board.getFields(), board.getTopFields(), Config.PLAYER1,Config.PLAYER2, playerID, GETVALUE);
 	}
 
 
@@ -128,7 +135,7 @@ private int getSlotValue(int[][] test, int slot, int row, int player1, int playe
 }
 
 
-public int getBestSlot(int[][] test, int freeRows[], int player1, int player2, int activePlayer){
+public int getBestSlot(int[][] test, int freeRows[], int player1, int player2, int activePlayer, int resType){
 	
 	long boardforPlayer1 = 0l;   // 1 sec
 	long boardforPlayer2 = 0l;	
@@ -171,7 +178,11 @@ public int getBestSlot(int[][] test, int freeRows[], int player1, int player2, i
     	}
     	value  = 0;
 	}
-	return result;
+	if (resType == GETVALUE){
+		return highestValue;
+	} else {
+		return result;
+	}
 }
 
 

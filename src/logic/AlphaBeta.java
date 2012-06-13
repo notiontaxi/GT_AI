@@ -8,7 +8,7 @@ public class AlphaBeta {
 	private int activePlayer = -1; 
 	private int finalUtility;
 	
-	private Heuristic heuristic = null;
+	private HeuristicNOutOfFour heuristic = null;
 
 	private boolean isDone = false;
 	private int iteration = 0;
@@ -81,14 +81,13 @@ public class AlphaBeta {
 	private int maxValue(int[] topFields, int depth, int alhpa, int beta) {
 		int utility = -999999;
 		if(this.isFinal(depth)) {
-			utility = this.finalUtility();
+			utility = this.heuristic.getBestColumnValue(this.logicClone.getBoard(), this.activePlayer);
 		} else {
 			for(int x = 0; x < topFields.length; x++) {
 				if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
 					this.iteration++;
 					int tmp = minValue(this.logicClone.getTopFields(), depth-1, alhpa, beta);
-					//utility = calculateUtility(x, true, tmp, utility);
-					//System.out.println("utility MAX(" + x + ")" + utility);
+					utility = Math.max(tmp, utility);
 					this.logicClone.undoMove(x);
 					if(utility >= beta) {
 						return utility;
@@ -110,15 +109,19 @@ public class AlphaBeta {
 	 */
 	private int minValue(int[] topFields, int depth, int alhpa, int beta) {
 		int utility = +999999;
-		if(this.isFinal(depth)) {
-			utility = this.finalUtility();
+		/*if(this.isFinal(depth)) {
+			utility = this.heuristic.getBestColumnValue(this.logicClone.getBoard(), this.activePlayer);
+		*/
+		if (this.logicClone.isGameOver()){
+			utility = finalUtility();
+		} else if (depth < 0){
+			utility = this.heuristic.getBestColumnValue(this.logicClone.getBoard(), this.activePlayer);
 		} else {
 			for(int x = 0; x < topFields.length; x++) {
 				if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
 					this.iteration++;
 					int tmp = maxValue(this.logicClone.getTopFields() , depth-1, alhpa, beta);
-					utility = calculateUtility(x, false, tmp, utility);
-					//System.out.println("utility MIN(" + x + ")" + utility);
+					utility = Math.min(tmp, utility);
 					this.logicClone.undoMove(x);
 					if(utility <= alhpa) {
 						return utility;
@@ -176,15 +179,14 @@ public class AlphaBeta {
 	 * @return
 	 */
 	private boolean isFinal(int depth) {
-		boolean isFinal = this.logicClone.isGameOver() || depth < 0;
-		return isFinal;
+		return this.logicClone.isGameOver() || depth < 0;
 	}
 	
 	/**
 	 * sets heuristic - if no heuristic is set, simple utility (Min(a,b)/Max(a,b)) is calculated
 	 * @param heuristic
 	 */
-	public void setHeuristic(Heuristic heuristic) {
+	public void setHeuristic(HeuristicNOutOfFour heuristic) {
 		this.heuristic = heuristic;
 	}
 	

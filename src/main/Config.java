@@ -16,7 +16,7 @@ public class Config {
 	public Config(){
 		this.rowLengthToWin = 4;
 		this.threadCount = 7;
-		this.depth = 6;
+		this.depth = 8;
 	}
 	
 	public Config(String path){
