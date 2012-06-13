@@ -43,7 +43,7 @@ public class Logic {
 	}
 	
 	private boolean performMove(int x, boolean useSafeMode) {
-		if (useSafeMode){
+		/*if (useSafeMode){
 			try {
 				board.performMove(activePlayerID, x);
 			} catch (IllegalAccessException e) {
@@ -51,8 +51,16 @@ public class Logic {
 				return false;
 			}
 		} else {
-			board.unsafePerformMove(activePlayerID, x);
+			board.performMove(activePlayerID, x);
+		}*/
+		
+		try {
+			board.performMove(activePlayerID, x);
+		} catch (IllegalAccessException e) {
+			System.err.println("Invalid move(" + x + "," + board.getTopField(x) + ").");
+			return false;
 		}
+		
 		moveCount++;
 		if (moveCount >= (2 * config.getRowLengthToWin()) - 1){
 			

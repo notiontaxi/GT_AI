@@ -2,7 +2,6 @@ package logic;
 
 import heuristic.Heuristic;
 import heuristic.HeuristicNOutOfFour;
-import java.util.List;
 
 public class AlphaBeta {
 	private Logic logicClone = null;
@@ -59,6 +58,7 @@ public class AlphaBeta {
 			if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
 				this.iteration++;
 				int utility = minValue(this.logicClone.getTopFields(), this.logicClone.getConfig().getDepth(), -999999, +999999);
+				System.out.println("utility(" + x + ")" + utility);
 				if(utility > bestUtility) {
 					bestUtility = utility;
 					bestAction = x;
@@ -87,13 +87,13 @@ public class AlphaBeta {
 				if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
 					this.iteration++;
 					int tmp = minValue(this.logicClone.getTopFields(), depth-1, alhpa, beta);
-					utility = calculateUtility(x, true, tmp, utility);
-
+					//utility = calculateUtility(x, true, tmp, utility);
+					//System.out.println("utility MAX(" + x + ")" + utility);
+					this.logicClone.undoMove(x);
 					if(utility >= beta) {
 						return utility;
 					}
 					alhpa = Math.max(alhpa, utility);
-					this.logicClone.undoMove(x);
 				}
 			}
 		}
@@ -118,12 +118,12 @@ public class AlphaBeta {
 					this.iteration++;
 					int tmp = maxValue(this.logicClone.getTopFields() , depth-1, alhpa, beta);
 					utility = calculateUtility(x, false, tmp, utility);
-
+					//System.out.println("utility MIN(" + x + ")" + utility);
+					this.logicClone.undoMove(x);
 					if(utility <= alhpa) {
 						return utility;
 					}
-					beta = Math.min(alhpa, utility);
-					this.logicClone.undoMove(x);
+					beta = Math.min(beta, utility);
 				}
 			}
 		}
@@ -140,7 +140,6 @@ public class AlphaBeta {
 	 */
 	private int calculateUtility(int x, boolean getMax, int tmpUtility, int currentUtility) {
 		int utility = currentUtility;
-		System.out.println("calculateUtility");
 		if(this.heuristic == null) {
 			if(getMax) {
 				utility = Math.max(tmpUtility, currentUtility);
@@ -149,7 +148,7 @@ public class AlphaBeta {
 			}
 		} else {
 			utility = this.heuristic.calcColumnScore(this.logicClone.getBoard(), x, this.activePlayer);
-			System.out.println("utility(" + x + "): " + utility);
+			//System.out.println("utility(" + x + "): " + utility);
 		}
 		return utility;
 	}
@@ -159,13 +158,13 @@ public class AlphaBeta {
 	 * @return
 	 */
 	private int finalUtility() {
-		int utility = 0;
+		int utility = 25;
 		int winnerID = this.logicClone.getWinnerID();
 		if(winnerID != -1) {
 			if(winnerID == this.activePlayer) {
-				utility = 1;
+				utility = 80;
 			} else {
-				utility = -1;
+				utility = -10;
 			}
 		}
 		return utility;

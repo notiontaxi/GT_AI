@@ -52,7 +52,7 @@ public class Board {
 			docount++;
 			topFields[x]--;
 		} else {
-			throw new IllegalAccessException("Move is invalid.");
+			throw new IllegalAccessException("Move is invalid.\ndocount:" +  docount + "\nundocount:" +  undocount);
 		}
 	}
 	
@@ -74,7 +74,6 @@ public class Board {
 	public void undoMove(int x) {
 		topFields[x]++;
 		undocount++;
-		System.out.println("undoMove(" + x + "," + topFields[x] + ")");
 		fields[x][topFields[x]] = emptyValue;
 	}
 
