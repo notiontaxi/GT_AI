@@ -7,14 +7,14 @@ import logic.Logic;
 import main.Config;
 
 
-//bitmask corresponds to board as follows in 7x6 case:
-//.  .  .  .  .  .  .  TOP
-//5 12 19 26 33 40 47
-//4 11 18 25 32 39 46
-//3 10 17 24 31 38 45
-//2  9 16 23 30 37 44
-//1  8 15 22 29 36 43
-//0  7 14 21 28 35 42  BOTTOM
+//bitmask looks in 7x6 case as follows:
+//.  .  .  .  .  .  .  TOP (in empty board filled with 1)
+//47 40 33 26 19 12 05
+//46 39 32 25 18 11 04
+//45 38 31 24 17 10 03
+//44 37 30 23 16 09 02
+//43 36 29 22 15 08 01
+//42 35 28 21 14 07 00  BOTTOM
 
 
 public class HeuristicNOutOfFour implements Heuristic {
@@ -40,6 +40,40 @@ public class HeuristicNOutOfFour implements Heuristic {
 	}
 	
 
+	
+private boolean haswon(int[][] _board, int playerID)
+{
+	Long boardforPlayer1 = 0l;   // 1 sec
+	Long boardforPlayer2 = 0l;	
+	long emptyBoardForPlayer1 = 0l, emptyBoardForPlayer2 = 0l, emptyBoard = 279258638311359l;
+															   //0111111011111101111110111111011111101111110111111
+	
+	boardforPlayer1 = getBitRepresentation(_board, playerID);   // 1 sec
+	boardforPlayer2 = getBitRepresentation(_board, playerID^1);	
+	emptyBoardForPlayer1 = boardforPlayer2^emptyBoard;
+	emptyBoardForPlayer2 = boardforPlayer1^emptyBoard;
+	
+			
+		 long y = boardforPlayer1 & (boardforPlayer1>>Config.dimensionY);
+		 
+		 if ((y & (y >> 2*Config.dimensionY)) != 0){ // check diagonal /
+			 return true;
+		 }
+		 y = boardforPlayer1 & (boardforPlayer1>>(Config.dimensionY+1));
+		 if ((y & (y >> 2*(Config.dimensionY+1))) != 0){ // check horizontal -
+			 return true;
+		 }
+		 y = boardforPlayer1 & (boardforPlayer1>>(Config.dimensionY+2)); // check diagonal \
+		 if ((y & (y >> 2*(Config.dimensionY+2))) != 0){
+			 return true;
+		 }
+		 y = boardforPlayer1 & (boardforPlayer1>>1); // check vertical |
+		 
+		 
+		 return (y & (y >> 2)) != 0;
+	}	
+	
+	
 
 private int getSlotValue(int[][] test, int slot, int row, int player1, int player2, int activePlayer){
 	
@@ -289,9 +323,9 @@ public void testHeuristic() {
 	int test[][] = new int[7][6];
 
 	test[0][5] = player1;	
-//	test[1][5] = player2;
+	test[1][5] = player1;
 	test[2][5] = player1;
-//	test[3][5] = player2;
+	test[3][5] = player2;
 	test[4][5] = player1;
 	test[5][5] = player2;
 	test[6][5] = player1;
@@ -299,7 +333,7 @@ public void testHeuristic() {
 	test[0][4] = player1;	
 	test[1][4] = player1;
 	test[2][4] = player1;
-	test[3][4] = player2;
+	test[3][4] = player1;
 	test[4][4] = player2;
 	test[5][4] = empty;
 	test[6][4] = empty;
@@ -312,32 +346,61 @@ public void testHeuristic() {
 	test[5][3] = empty;
 	test[6][3] = empty;
 	
-	test[0][2] = empty;	
-	test[1][2] = empty;
+	test[0][2] = player1;	
+	test[1][2] = player1;
 	test[2][2] = empty;
 	test[3][2] = empty;
 	test[4][2] = empty;
 	test[5][2] = empty;
-	test[1][2] = empty;	
+	test[6][2] = empty;	
 	
-	test[1][5] = player2;
-	test[3][5] = player2;	
+
 	
 	int[] free = {2,2,2,2,3,4,4};
-	
 	printArrayRepresentation(test);
+	long emptyBoard = 279258638311359l;
+	long boardForPlayer1 = getBitRepresentation(test, player1);
 	
-	
-	long emptyBoard = 279258638311359l;	
 	//0111111011111101111110111111011111101111110111111		
 			
+	 printBoard(boardForPlayer1);
+	 System.out.println(sumOfBitsInBoard(boardForPlayer1));
+	 long y = boardForPlayer1 & (boardForPlayer1>>(Config.dimensionY+2));
+	 printBoard(y);
+	 System.out.println(sumOfBitsInBoard(y));
+	 	  y = y & (boardForPlayer1>>(Config.dimensionY+2)*2);
+	 printBoard(y);
+	 System.out.println(sumOfBitsInBoard(y));
+		  y = y & (boardForPlayer1>>(Config.dimensionY+2) *3);
+	 printBoard(y);
+	 System.out.println(sumOfBitsInBoard(y));
+	 
+	 /*
+	 if ((y & (y >> 2*Config.dimensionY)) != 0){ // check diagonal /
+		return true; 
+	 }
+	 y = boardforPlayer1 & (boardforPlayer1>>(Config.dimensionY+1));
+	 if ((y & (y >> 2*(Config.dimensionY+1))) != 0){ // check horizontal -
+		 return true;
+	 }
+	 y = boardforPlayer1 & (boardforPlayer1>>(Config.dimensionY+2)); // check diagonal \
+	 if ((y & (y >> 2*(Config.dimensionY+2))) != 0){
+		 return true;
+	 }
+	 y = boardforPlayer1 & (boardforPlayer1>>1); // check vertical |	
+	*/
+	
+	
 	
 	
 	int counts = 1000000;
 	// ###################################################
 		int testSlot = 2, testRow = 2;           //#######
 	// ###################################################
-		System.out.println("testSlot: " + testSlot + " testRow: " + testRow);
+	
+		
+/*		
+	System.out.println("testSlot: " + testSlot + " testRow: " + testRow);
 	System.out.print("elapsed time for " + counts +" computations: ");
 	
 	long lasttime = System.currentTimeMillis();
@@ -348,7 +411,7 @@ public void testHeuristic() {
 	
 	System.out.println((System.currentTimeMillis() - lasttime) + " ms");
 	System.out.println("best value: "+ result);
-	
+*/	
 //	for(int v = 0; v < free.length; v++)
 //		System.out.println("heuristic value for slot " + v + ": " + getSlotValue(test,v,free[v],1,2,2));
 
@@ -358,6 +421,16 @@ public void testHeuristic() {
 
 
  
+private short sumOfBitsInBoard(long y) {
+	short sum = 0;
+	
+	for(short s = 0; s < 49; s++)
+		sum += y>>>s&1l;
+	
+	return sum;
+}
+
+
 //BIT PACKING - currently not in use |/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|
 //|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\
 
@@ -416,8 +489,22 @@ private void printBits(long _possible) {
 		buf.insert(0, _possible&1);
 	    _possible>>>=1;
 	}
-	//System.out.println(buf);
+	System.out.println(buf);
 }
+
+private void printBoard(long _possible) {
+	//printBits(_possible);
+	StringBuffer buf = new StringBuffer();
+	
+	for(short i = 0; i < 6; i++){
+		for(short s = 0; s < 7; s++){
+			buf.insert(0, (" " + ((_possible>>s*7+i)&1)));
+		}
+		buf.insert(0,"\n");
+	}
+	System.out.println(buf);
+}
+
 
 private long getBitRepresentation(int[][] _board, int playerID) {
 	long l = 0l;
@@ -452,7 +539,7 @@ private void printArrayRepresentation(int [][] _board){
 		buf.append("\n");	
 	}
 	
-	//System.out.println(buf);
+	System.out.println(buf);
 	
 }
 
@@ -475,12 +562,27 @@ private void printArrayRepresentation(int [][] _board){
 #     BITBOARD      #
 #####################
 
+
+-> WIN <-
+ 
+0 0 0 0 0 0 0
+0 0 0 0 0 0 0
+0 0 0 0 0 0 0 
+1 1 0 0 0 0 0
+1 1 0 0 0 0 0
+1 1 1 1 0 0 0
+1 1 1 1 1 0 0
+
+
+
+
 1 2 3 4 5 6 7
 . . . . . . .
 . . . . . . .
 @ . . . . . .
 0 @ . . . . .
 @ 0 @ . . . .
+444
 0 @ 0 @ . . 0
 
 2130570 =  1000001000001010001010
