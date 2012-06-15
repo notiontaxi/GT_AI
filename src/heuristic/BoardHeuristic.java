@@ -1,4 +1,5 @@
 package heuristic;
+import logic.Board;
 import main.Config;
 
 
@@ -14,13 +15,16 @@ import main.Config;
 
 public class BoardHeuristic{
 	
-	private final static int GETVALUE = 0;
+	private final static int GET_VALUE = 0;
+	private final static int GET_SLOT = 1;
+	private final static int GET_TOTAL_VALUE = 2;
+	
 	private final static int NoMATCHE     = 1;
 	private final static int OneMATCH     = 1;
 	private final static int TwoMATCHES   = 1;
 	private final static int ThreeMATCHES = 1;
 	
-	private final static int GETSLOT = 1;
+
 	
 	private final static long EMPTYBOARD = 279258638311359l;
 										   //0111111011111101111110111111011111101111110111111
@@ -31,6 +35,7 @@ public class BoardHeuristic{
 	}
 	
 	
+
 	/**
 	 * 
 	 * @param board 
@@ -38,7 +43,7 @@ public class BoardHeuristic{
 	 * @return The best column (0-6)
 	 */
 	public int getBestColumn(logic.Board board, int playerID) {
-		return getPositionUtility(board.getFields(), board.getTopFields(), playerID, GETSLOT);
+		return getBoardUtility_dependingOnFreePositions(board.getFields(), board.getTopFields(), playerID, GET_SLOT);
 	}
 	
 	/**
@@ -48,7 +53,7 @@ public class BoardHeuristic{
 	 * @return The value of the best column
 	 */
 	public int getBestColumnValue(logic.Board board, int playerID) {
-		return getPositionUtility(board.getFields(), board.getTopFields(), playerID, GETVALUE);
+		return getBoardUtility_dependingOnFreePositions(board.getFields(), board.getTopFields(), playerID, GET_VALUE);
 	}
 	
 	/**
@@ -65,21 +70,7 @@ public class BoardHeuristic{
 		return getBoardUtility(board.getFields(),  playerID);
 	}
 
-	/**
-	 * This Method returns the utility for one (already set) position on the board
-	 * positive value for n out of four
-	 * positive value for winning lines
-	 * negative value for n out of four for the opponent
-	 * 
-	 * 
-	 * @param board
-	 * @param x
-	 * @param playerID
-	 * @return Utility for the declared position
-	 */
-	public int calcColumnScore(logic.Board board, int x, int playerID) {
-		return getSlotValue_CoinWasSet(board.getFields(), x, (board.getTopField(x))+1, playerID);
-	}
+
 	
 	
 	
@@ -95,13 +86,9 @@ public class BoardHeuristic{
 		
 		for(int i = 0; i < 6 ; i++){
 			value += getRowValue(boardPlayer1, boardPlayer2, i);
-			//System.out.println("RowValue: "+getRowValue(boardPlayer1, boardPlayer2, i));
 			value += getSlotValue(boardPlayer1, boardPlayer2, i);
-			//System.out.println("SlotValue: "+getSlotValue(boardPlayer1, boardPlayer2, i));
 			value += getAscendDiagonalValue(boardPlayer1, boardPlayer2, i, 2);
-			//System.out.println("Ascend: "+getAscendDiagonalValue(boardPlayer1, boardPlayer2, i, 2));
 			value += getDescendDiagonalValue(boardPlayer1, boardPlayer2, i, 2);
-			//System.out.println("Descend: "+getDescendDiagonalValue(boardPlayer1, boardPlayer2, i, 2));
 		}
 		
 		
@@ -111,11 +98,11 @@ public class BoardHeuristic{
 	}
 	
 	
-	public int getPositionUtility(int[][] _board, int freeRows[], int activePlayer, int resType){
-				
-		Long boardforPlayer1 = 0l;   
+	public int getBoardUtility_dependingOnFreePositions(int[][] _board, int freeRows[], int activePlayer, int resType){			
+		
+		Long boardforPlayer1 = 0l;   // 1 sec
 		Long boardforPlayer2 = 0l;	
-
+		
 		boardforPlayer1 = getBitRepresentation(_board, activePlayer);   // 1 sec
 		boardforPlayer2 = getBitRepresentation(_board, activePlayer^1);	
 
@@ -123,7 +110,7 @@ public class BoardHeuristic{
 		
 		
 		for(int z = 0; z < 7; z++){
-			value = getPositionValue(boardforPlayer1, boardforPlayer2, z, freeRows[z]+1);
+			value = getSlotValue(boardforPlayer1, boardforPlayer2, z, freeRows[z],activePlayer);//getPositionValue(boardforPlayer1, boardforPlayer2, z, freeRows[z]+1);
 			totalValue += value; 
 	    	if(value > highestValue){
 	    		highestValue = value;
@@ -134,11 +121,14 @@ public class BoardHeuristic{
 		
 		
 		switch(resType){
-		case GETSLOT:
+		case GET_SLOT:
 			returnMe = bestSlot;
 			break;
-		case GETVALUE:
+		case GET_VALUE:
 			returnMe = highestValue;
+			break;
+		case GET_TOTAL_VALUE:
+			returnMe = totalValue;
 			break;
 		}
 		
@@ -147,24 +137,8 @@ public class BoardHeuristic{
 }
 
 
-	/**
-	 * This Method returns the utility for the specified position
-	 * for player 1
-	 * 
-	 * @param _boardPlayer1
-	 * @param _boardPLayer2
-	 * @param slot
-	 * @param row
-	 * @return Utility for the specified position (could be NEGATIVE)
-	 */
-	private int getPositionValue(long _boardPlayer1, long _boardPLayer2, int slot, int row){
 
-		return   (getAscendDiagonalValue(_boardPlayer1, _boardPLayer2, slot, row) + 
-				  getDescendDiagonalValue(_boardPlayer1, _boardPLayer2, slot, row) + 
-				  getRowValue(_boardPlayer1, _boardPLayer2,  row) + 
-				  getSlotValue(_boardPlayer1, _boardPLayer2, slot));
-		
-	}	
+
 
 	
 	
@@ -219,55 +193,46 @@ public class BoardHeuristic{
 	}
 	
 
-private int getSlotValue_CoinWasSet(int[][] test, int slot, int row, int activePlayer){
+	/**
+	 * This Method returns the utility for the specified position
+	 * for player 1
+	 * 
+	 * @param _boardPlayer1
+	 * @param _boardPLayer2
+	 * @param slot
+	 * @param row
+	 * @return Utility for the specified position (could be NEGATIVE)
+	 */
+private int getSlotValue(long boardPlayer1, long boardPlayer2, int slot, int row, int activePlayer){
 	
-	Long boardforPlayer1 = 0l;   // 1 sec
-	Long boardforPlayer2 = 0l;	
-	long emptyBoardForPlayer1 = 0l, emptyBoardForPlayer2 = 0l, emptyBoard = 279258638311359l;
-															   
 	
-
-	boardforPlayer1 = getBitRepresentation(test, activePlayer);   // 1 sec
-	boardforPlayer2 = getBitRepresentation(test, activePlayer^1);	
-	emptyBoardForPlayer1 = boardforPlayer2^emptyBoard;
-	emptyBoardForPlayer2 = boardforPlayer1^emptyBoard;	
-
-	
+	long emptyBoardPlayer1 = boardPlayer2^EMPTYBOARD, emptyBoardPlayer2 = boardPlayer1^EMPTYBOARD;
 	int scoreValue = 0, blockValue  = 0, linesValue = 0;
 	
 
 	
-	int freeDescendDiagonalCode = getRelevantDescendDiagonal((emptyBoardForPlayer1), slot, row );
-	int freeAscendDiagonalCode  = getRelevantAscendDiagonal ((emptyBoardForPlayer1), slot, row ); 
-	int freeRowCode 			= getRelevantRow            ((emptyBoardForPlayer1), slot, row );
-	int freeSlotCode 			= getRelevantSlot           ((emptyBoardForPlayer1), slot, row );	
+	int freeDescendDiagonalCode = getRelevantDescendDiagonal((emptyBoardPlayer1), slot, row );
+	int freeAscendDiagonalCode  = getRelevantAscendDiagonal ((emptyBoardPlayer1), slot, row ); 
+	int freeRowCode 			= getRelevantRow            ((emptyBoardPlayer1), slot, row );
+	int freeSlotCode 			= getRelevantSlot           ((emptyBoardPlayer1), slot, row );	
 	
 	
-	scoreValue =  getNOutOfFourValue(freeDescendDiagonalCode, getRelevantDescendDiagonal(boardforPlayer1 , slot , row ), 100, 10, 5, 0);  
-	scoreValue += getNOutOfFourValue(freeAscendDiagonalCode,  getRelevantAscendDiagonal (boardforPlayer1 , slot , row ), 100, 10, 5, 0);  
-	scoreValue += getNOutOfFourValue(freeRowCode, 			  getRelevantRow            (boardforPlayer1 , slot , row ), 100, 10, 5, 0);  
-	scoreValue += getNOutOfFourValue(freeSlotCode, 			  getRelevantSlot           (boardforPlayer1 , slot , row ), 100, 10, 5, 0);  
+	scoreValue =  getNOutOfFourValue(freeDescendDiagonalCode, getRelevantDescendDiagonal(boardPlayer1 , slot , row ), 0, 100, 10, 5);  
+	scoreValue += getNOutOfFourValue(freeAscendDiagonalCode,  getRelevantAscendDiagonal (boardPlayer1 , slot , row ), 0, 100, 10, 5);  
+	scoreValue += getNOutOfFourValue(freeRowCode, 			  getRelevantRow            (boardPlayer1 , slot , row ), 0, 100, 10, 5);  
+	scoreValue += getNOutOfFourValue(freeSlotCode, 			  getRelevantSlot           (boardPlayer1 , slot , row ), 0, 100, 10, 5);  
 
 	linesValue =  getNumberOfWinningLines(freeDescendDiagonalCode); 
 	linesValue += getNumberOfWinningLines(freeAscendDiagonalCode);  
 	linesValue += getNumberOfWinningLines(freeRowCode);  
 	linesValue += getNumberOfWinningLines(freeSlotCode);  
-		
-	//TODO: speed up
-	test[slot][row] = activePlayer^1;
-	boardforPlayer1 = getBitRepresentation(test, activePlayer);   // 1 sec
-	boardforPlayer2 = getBitRepresentation(test, activePlayer^1);
-	emptyBoardForPlayer2 = boardforPlayer1^emptyBoard;		
+
 	
-	
-	blockValue =  getNOutOfFourValue((getRelevantDescendDiagonal((emptyBoardForPlayer2), slot, row )), getRelevantDescendDiagonal(boardforPlayer2 , slot , row ), 50, 15,3, 0);  // 1.8s    avoid killer-moves
-	blockValue += getNOutOfFourValue((getRelevantAscendDiagonal ((emptyBoardForPlayer2), slot, row )), getRelevantAscendDiagonal (boardforPlayer2 , slot , row ), 50, 15,3, 0);  // 2.4s
-	blockValue += getNOutOfFourValue((getRelevantRow            ((emptyBoardForPlayer2), slot, row )), getRelevantRow            (boardforPlayer2 , slot , row ), 50, 15,3, 0);  // 2.4s
-	blockValue += getNOutOfFourValue((getRelevantSlot           ((emptyBoardForPlayer2), slot, row )), getRelevantSlot           (boardforPlayer2 , slot , row ), 50, 8, 3, 0);  // 1.3s
-	
-	//System.out.println(("player: " + activePlayer +"n out of four: "+scoreValue + " block: " +blockValue + " winning lines: " + linesValue));
-	
-	
+	blockValue =  getNOutOfFourValue((getRelevantDescendDiagonal((emptyBoardPlayer2), slot, row )), getRelevantDescendDiagonal(boardPlayer2 , slot , row ), 0, 50, 15,3);  // 1.8s    avoid killer-moves
+	blockValue += getNOutOfFourValue((getRelevantAscendDiagonal ((emptyBoardPlayer2), slot, row )), getRelevantAscendDiagonal (boardPlayer2 , slot , row ), 0, 50, 15,3);  // 2.4s
+	blockValue += getNOutOfFourValue((getRelevantRow            ((emptyBoardPlayer2), slot, row )), getRelevantRow            (boardPlayer2 , slot , row ), 0, 50, 15,3);  // 2.4s
+	blockValue += getNOutOfFourValue((getRelevantSlot           ((emptyBoardPlayer2), slot, row )), getRelevantSlot           (boardPlayer2 , slot , row ), 0, 50, 8, 3);  // 1.3s
+
 	return scoreValue + blockValue + linesValue;
 }
 
@@ -672,6 +637,9 @@ private void printArrayRepresentation(int [][] _board){
 	System.out.println(buf);
 	
 }
+
+
+
 
 
 

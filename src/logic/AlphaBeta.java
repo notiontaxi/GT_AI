@@ -25,20 +25,8 @@ public class AlphaBeta {
 	}
 	
 	public Coordinate smallAlphaBetaSearch(int[] topFields) {
-		double bestUtility = -999999;
-		int bestAction = -1;
-		
-		for (int x = 0; x < topFields.length; ++x){
-			if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
-				this.iteration++;
-				double utility = heuristic.calcColumnScore(logicClone.getBoard(), x, this.activePlayer);
-				if(utility > bestUtility) {
-					bestUtility = utility;
-					bestAction = x;
-				}
-				this.logicClone.undoMove(x);
-			}
-		}
+		int bestAction = heuristic.getBestColumn(logicClone.getBoard(),  this.activePlayer);
+		this.logicClone.performMove(bestAction);
 		return new Coordinate(bestAction, topFields[bestAction]);
 	}
 	
