@@ -1,13 +1,13 @@
 package logic;
 
 import heuristic.Heuristic;
-import heuristic.HeuristicNOutOfFour;
+import heuristic.BoardHeuristic;
 
 public class AlphaBeta {
 	private Logic logicClone = null;
 	private int activePlayer = -1; 
 	
-	private HeuristicNOutOfFour heuristic = null;
+	private BoardHeuristic heuristic = null;
 
 	private boolean isDone = false;
 	private int maxDepth = 0;
@@ -19,7 +19,7 @@ public class AlphaBeta {
 	 */
 	public AlphaBeta(Logic logic) {
 		this.logicClone = logic.clone();
-		this.heuristic = new HeuristicNOutOfFour();
+		this.heuristic = new BoardHeuristic();
 		activePlayer = logic.getActivePlayer();
 		maxDepth = logic.getConfig().getDepth();
 	}
@@ -85,7 +85,7 @@ public class AlphaBeta {
 		if (this.logicClone.isGameOver()){
 			utility = finalUtility();
 		} else if (depth < 0){
-			utility = (double) this.heuristic.getBestColumnValue(this.logicClone.getBoard(), this.activePlayer);
+			utility = (double) this.heuristic.getBoardUtility(this.logicClone.getBoard(), this.activePlayer);
 		} else {
 			for(int x = 0; x < topFields.length; x++) {
 				if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
@@ -120,7 +120,7 @@ public class AlphaBeta {
 		if (this.logicClone.isGameOver()){
 			utility = finalUtility();
 		} else if (depth < 0){
-			utility = (double) this.heuristic.getBestColumnValue(this.logicClone.getBoard(), this.activePlayer);
+			utility = (double) this.heuristic.getBoardUtility(this.logicClone.getBoard(), this.activePlayer);
 		} else {
 			for(int x = 0; x < topFields.length; x++) {
 				if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
@@ -169,7 +169,7 @@ public class AlphaBeta {
 	 * sets heuristic - if no heuristic is set, simple utility (Min(a,b)/Max(a,b)) is calculated
 	 * @param heuristic
 	 */
-	public void setHeuristic(HeuristicNOutOfFour heuristic) {
+	public void setHeuristic(BoardHeuristic heuristic) {
 		this.heuristic = heuristic;
 	}
 	
