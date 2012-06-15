@@ -148,9 +148,9 @@ public class AlphaBeta {
 		int winnerID = this.logicClone.getWinnerID();
 		if(winnerID != -1) {
 			if(winnerID == this.activePlayer) {
-				utility = 80;
+				utility = 99999;
 			} else {
-				utility = -80;
+				utility = -99999;
 			}
 		}
 		return utility;
