@@ -86,7 +86,6 @@ public class BoardHeuristic{
 		
 		Long boardPlayer1 = 0l;   
 		Long boardPlayer2 = 0l;	
-		long emptyBoardForPlayer1 = 0l, emptyBoardForPlayer2 = 0l;
 
 		boardPlayer1 = getBitRepresentation(_board, activePlayer);   // 1 sec
 		boardPlayer2 = getBitRepresentation(_board, activePlayer^1);	
@@ -95,13 +94,10 @@ public class BoardHeuristic{
 		for(int i = 0; i < 6 ; i++){
 			value += getRowValue(boardPlayer1, boardPlayer2, i);
 			value += getSlotValue(boardPlayer1, boardPlayer2, i);
-			value += getAscendDiagonalValue(boardPlayer1, boardPlayer2, i, 2);
+			value += getDescendDiagonalValue(flipHorizantal(boardPlayer1), flipHorizantal(boardPlayer2), 5-i, 2);
 			value += getDescendDiagonalValue(boardPlayer1, boardPlayer2, i, 2);
 		}
 		
-		
-		//printArrayRepresentation(_board);
-		//System.out.println(value);
 		return (value +  getSlotValue(boardPlayer1, boardPlayer2, 6));
 	}
 	
@@ -146,22 +142,6 @@ public class BoardHeuristic{
 
 
 
-
-
-	
-	
-	private int getAscendDiagonalValue(long boardPlayer1, long boardPlayer2, int slot, int row){
-		int scoreValue = 0, blockValue  = 0, linesValue = 0;
-		int freeAscendDiagonalCodeP1  = getAscendDiagonal ((boardPlayer2^EMPTYBOARD), slot, row ); 
-		int freeAscendDiagonalCodeP2  = getAscendDiagonal ((boardPlayer1^EMPTYBOARD), slot, row ); 
-		
-		linesValue += getNumberOfWinningLines(freeAscendDiagonalCodeP1); 
-		scoreValue += getNOutOfFourValue(     freeAscendDiagonalCodeP1,  getAscendDiagonal (boardPlayer1 , slot , row ), 100, 50, 10, 5);   
-		blockValue += getNOutOfFourValue(     freeAscendDiagonalCodeP2,  getAscendDiagonal (boardPlayer2 , slot , row ), 100, 50, 10, 2); 
-		
-		return linesValue + scoreValue - blockValue;
-	}		
-	
 	
 	private int getDescendDiagonalValue(long boardPlayer1, long boardPlayer2,  int slot, int row){
 		int scoreValue = 0, blockValue  = 0, linesValue = 0;
@@ -220,13 +200,13 @@ private int getSlotValue(long boardPlayer1, long boardPlayer2, int slot, int row
 
 	
 	int freeDescendDiagonalCode = getRelevantDescendDiagonal((emptyBoardPlayer1), slot, row );
-	int freeAscendDiagonalCode  = getRelevantAscendDiagonal ((emptyBoardPlayer1), slot, row ); 
+	int freeAscendDiagonalCode  = getRelevantDescendDiagonal ((flipHorizantal(emptyBoardPlayer1)), 5-slot, row ); 
 	int freeRowCode 			= getRelevantRow            ((emptyBoardPlayer1), slot, row );
 	int freeSlotCode 			= getRelevantSlot           ((emptyBoardPlayer1), slot, row );	
 	
 	
 	scoreValue =  getNOutOfFourValue(freeDescendDiagonalCode, getRelevantDescendDiagonal(boardPlayer1 , slot , row ), 0, 100, 10, 5);  
-	scoreValue += getNOutOfFourValue(freeAscendDiagonalCode,  getRelevantAscendDiagonal (boardPlayer1 , slot , row ), 0, 100, 10, 5);  
+	scoreValue += getNOutOfFourValue(freeAscendDiagonalCode,  getRelevantDescendDiagonal (flipHorizantal(boardPlayer1) , 5-slot , row ), 0, 100, 10, 5);  
 	scoreValue += getNOutOfFourValue(freeRowCode, 			  getRelevantRow            (boardPlayer1 , slot , row ), 0, 100, 10, 5);  
 	scoreValue += getNOutOfFourValue(freeSlotCode, 			  getRelevantSlot           (boardPlayer1 , slot , row ), 0, 100, 10, 5);  
 
@@ -237,7 +217,7 @@ private int getSlotValue(long boardPlayer1, long boardPlayer2, int slot, int row
 
 	
 	blockValue =  getNOutOfFourValue((getRelevantDescendDiagonal((emptyBoardPlayer2), slot, row )), getRelevantDescendDiagonal(boardPlayer2 , slot , row ), 0, 100, 10,3);  // 1.8s    avoid killer-moves
-	blockValue += getNOutOfFourValue((getRelevantAscendDiagonal ((emptyBoardPlayer2), slot, row )), getRelevantAscendDiagonal (boardPlayer2 , slot , row ), 0, 100, 10,3);  // 2.4s
+	blockValue += getNOutOfFourValue((getRelevantDescendDiagonal((flipHorizantal(emptyBoardPlayer2)), 5-slot, row )), getRelevantDescendDiagonal (flipHorizantal(boardPlayer2) , 5-slot , row ), 0, 100, 10,3);  // 2.4s
 	blockValue += getNOutOfFourValue((getRelevantRow            ((emptyBoardPlayer2), slot, row )), getRelevantRow            (boardPlayer2 , slot , row ), 0, 100, 10,3);  // 2.4s
 	blockValue += getNOutOfFourValue((getRelevantSlot           ((emptyBoardPlayer2), slot, row )), getRelevantSlot           (boardPlayer2 , slot , row ), 0, 100, 10, 3);  // 1.3s
 
@@ -252,8 +232,11 @@ private int getSlotValue(long boardPlayer1, long boardPlayer2, int slot, int row
 
 
 private int getNOutOfFourValue(long possible, long owned, int valFor4Hits, int valFor3Hits, int valFor2Hits, int valFor1Hit) { //2.5s
-	int thisChance = 0, result = 0;
+	long thisChance = 0;
+	int result = 0;
 	
+// nice version	
+/*	
 	for(int i = 0; i < 4; i++){
 		if((possible&15) == 15){
 			thisChance = 0;
@@ -270,18 +253,52 @@ private int getNOutOfFourValue(long possible, long owned, int valFor4Hits, int v
 		possible>>>=1;
 		owned>>>=1;
 	}
+*/	
+
+	
+// fast version
+	if((possible&15) == 15){
+		thisChance = ((owned&1) + ((owned>>1)&1) + ((owned>>2)&1) + ((owned>>3)&1));
+		result += (thisChance == 0) ? 0 : ((thisChance == 1) ? valFor1Hit : ((thisChance == 2) ? valFor2Hits : ((thisChance == 3) ? valFor3Hits : valFor4Hits)));
+	}
+	possible>>>=1; owned>>>=1;
+	if((possible&15) == 15){
+		thisChance = ((owned&1) + ((owned>>1)&1) + ((owned>>2)&1) + ((owned>>3)&1));
+		result += (thisChance == 0) ? 0 : ((thisChance == 1) ? valFor1Hit : ((thisChance == 2) ? valFor2Hits : ((thisChance == 3) ? valFor3Hits : valFor4Hits)));
+	}
+	possible>>>=1; owned>>>=1;
+	if((possible&15) == 15){
+		thisChance = ((owned&1) + ((owned>>1)&1) + ((owned>>2)&1) + ((owned>>3)&1));
+		result += (thisChance == 0) ? 0 : ((thisChance == 1) ? valFor1Hit : ((thisChance == 2) ? valFor2Hits : ((thisChance == 3) ? valFor3Hits : valFor4Hits)));
+	}
+	possible>>>=1; owned>>>=1;	
+	if((possible&15) == 15){
+		thisChance = ((owned&1) + ((owned>>1)&1) + ((owned>>2)&1) + ((owned>>3)&1));
+		result += (thisChance == 0) ? 0 : ((thisChance == 1) ? valFor1Hit : ((thisChance == 2) ? valFor2Hits : ((thisChance == 3) ? valFor3Hits : valFor4Hits)));
+	}
+	possible>>>=1; owned>>>=1;	
+	
+	
 	return result;
 }
 
 private int getNumberOfWinningLines(long possible) { //2.5s
 	int result = 0;
 	
-	for(int i = 0; i < 4; i++){
+// nice version	
+/*	for(int i = 0; i < 4; i++){
 		if((possible&15) == 15){
 			result++;
 		}
 		possible>>>=1;
 	}
+*/
+// fast version	
+	if((possible&15) == 15) result++; possible>>>=1;	
+	if((possible&15) == 15) result++; possible>>>=1;
+	if((possible&15) == 15) result++; possible>>>=1;
+	if((possible&15) == 15) result++; possible>>>=1;
+
 	return result;
 }
 
@@ -376,14 +393,6 @@ private int getDescendDiagonal(long _board, int slot, int row) {
 	return result;
 }
 
-
-
-private int getRelevantAscendDiagonal(long _board, int slot, int row){
-	return (getRelevantDescendDiagonal(flipHorizantal(_board),6-slot,row));
-}
-private int getAscendDiagonal(long _board, int slot, int row){
-	return (getDescendDiagonal(flipHorizantal(_board),6-slot,row));
-}
 
 
 private long flipHorizantal(long _board) {
