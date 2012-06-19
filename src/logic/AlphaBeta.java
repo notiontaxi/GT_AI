@@ -2,6 +2,7 @@ package logic;
 
 import heuristic.Heuristic;
 import heuristic.BoardHeuristic;
+import org.omg.CORBA.TIMEOUT;
 
 public class AlphaBeta {
 	private Logic logicClone = null;
@@ -39,13 +40,15 @@ public class AlphaBeta {
 		this.isDone = false;
 		this.iteration = 0;
 		
+		long start = System.currentTimeMillis();
+		
 		double bestUtility = -999999;
 		int bestAction = -1;
 		
 		for (int x = 0; x < topFields.length; ++x){
 			if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
 				this.iteration++;
-				double utility = minValue(this.logicClone.getTopFields(), this.logicClone.getConfig().getDepth(), -999999, +999999);
+				double utility = minValue(this.logicClone.getTopFields(), this.logicClone.getConfig().getDepth(), bestUtility, 9999999);
 				System.out.println("utility(" + x + ")" + utility);
 				if(utility > bestUtility) {
 					bestUtility = utility;
@@ -55,6 +58,9 @@ public class AlphaBeta {
 			}
 		}
 		this.isDone = true;
+		
+		System.out.println("time:" + (System.currentTimeMillis() - start));
+		
 		return new Coordinate(bestAction, topFields[bestAction]);
 	}
 	
@@ -68,18 +74,15 @@ public class AlphaBeta {
 	private double maxValue(int[] topFields, int depth, double alhpa, double beta) {
 		double utility = -999999;
 		
-		/*if(this.isFinal(depth)) {
-			utility = this.heuristic.getBestColumnValue(this.logicClone.getBoard(), this.activePlayer);*/
 		if (this.logicClone.isGameOver()){
-			utility = finalUtility();
+			utility = finalUtility() * (1 - ((maxDepth - depth) * 0.1));
 		} else if (depth < 0){
-			utility = (double) this.heuristic.getBoardUtility(this.logicClone.getBoard(), this.activePlayer);
+			utility = (double) this.heuristic.getBoardUtility(this.logicClone.getBoard(), this.activePlayer) * (1 - ((maxDepth - depth) * 0.1));
 		} else {
 			for(int x = 0; x < topFields.length; x++) {
 				if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
 					this.iteration++;
 					double tmp = minValue(this.logicClone.getTopFields(), depth-1, alhpa, beta);
-					tmp *= (1 - ((maxDepth - depth) * 0.1));
 					utility = Math.max(tmp, utility);
 					this.logicClone.undoMove(x);
 					if(utility >= beta) {
@@ -102,19 +105,16 @@ public class AlphaBeta {
 	 */
 	private double minValue(int[] topFields, int depth, double alhpa, double beta) {
 		double utility = 999999;
-		/*if(this.isFinal(depth)) {
-			utility = this.heuristic.getBestColumnValue(this.logicClone.getBoard(), this.activePlayer);*/
-		
+
 		if (this.logicClone.isGameOver()){
-			utility = finalUtility();
+			utility = finalUtility() * (1 - ((maxDepth - depth) * 0.1));
 		} else if (depth < 0){
-			utility = (double) this.heuristic.getBoardUtility(this.logicClone.getBoard(), this.activePlayer);
+			utility = (double) this.heuristic.getBoardUtility(this.logicClone.getBoard(), this.activePlayer) * (1 - ((maxDepth - depth) * 0.1));
 		} else {
 			for(int x = 0; x < topFields.length; x++) {
 				if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
 					this.iteration++;
 					double tmp = maxValue(this.logicClone.getTopFields() , depth-1, alhpa, beta);
-					tmp *= (1 - ((maxDepth - depth) * 0.01));
 					utility = Math.min(tmp, utility);
 					this.logicClone.undoMove(x);
 					if(utility <= alhpa) {
@@ -132,13 +132,13 @@ public class AlphaBeta {
 	 * @return
 	 */
 	private double finalUtility() {
-		double utility = 1;
+		double utility = 0;
 		int winnerID = this.logicClone.getWinnerID();
 		if(winnerID != -1) {
 			if(winnerID == this.activePlayer) {
-				utility = 99999;
+				utility = 800;
 			} else {
-				utility = -99999;
+				utility = -800;
 			}
 		}
 		return utility;

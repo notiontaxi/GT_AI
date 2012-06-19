@@ -298,7 +298,7 @@ private int getNumberOfWinningLines(long possible) { //2.5s
 	if((possible&15) == 15) result++; possible>>>=1;
 	if((possible&15) == 15) result++; possible>>>=1;
 	if((possible&15) == 15) result++; possible>>>=1;
-
+	
 	return result;
 }
 
@@ -658,16 +658,7 @@ private void printArrayRepresentation(int [][] _board){
 	
 }
 
-
-
-
-
-
-
 }
-
-
-
 
 
 //EXPLANATIONS |/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\
