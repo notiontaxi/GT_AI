@@ -13,6 +13,7 @@ public class AlphaBeta {
 	private boolean isDone = false;
 	private int maxDepth = 0;
 	private int iteration = 0;
+	private double depthModFactor = 1;
 
 	/**
 	 * Constructor - init AlphaBeta with logic
@@ -23,6 +24,7 @@ public class AlphaBeta {
 		this.heuristic = new BoardHeuristic();
 		activePlayer = logic.getActivePlayer();
 		maxDepth = logic.getConfig().getDepth();
+		depthModFactor = 0.9 / maxDepth;
 	}
 	
 	public Coordinate smallAlphaBetaSearch(int[] topFields) {
@@ -48,7 +50,7 @@ public class AlphaBeta {
 		for (int x = 0; x < topFields.length; ++x){
 			if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
 				this.iteration++;
-				double utility = minValue(this.logicClone.getTopFields(), this.logicClone.getConfig().getDepth(), bestUtility, 9999999);
+				double utility = minValue(this.logicClone.getTopFields(), this.logicClone.getConfig().getDepth() + 1, bestUtility, 9999999);
 				System.out.println("utility(" + x + ")" + utility);
 				if(utility > bestUtility) {
 					bestUtility = utility;
@@ -75,9 +77,9 @@ public class AlphaBeta {
 		double utility = -999999;
 		
 		if (this.logicClone.isGameOver()){
-			utility = finalUtility() * (1 - ((maxDepth - depth) * 0.1));
-		} else if (depth < 0){
-			utility = (double) this.heuristic.getBoardUtility(this.logicClone.getBoard(), this.activePlayer) * (1 - ((maxDepth - depth) * 0.1));
+			utility = finalUtility() * (1 - ((maxDepth - depth) * depthModFactor));
+		} else if (depth == 0){	
+			utility = (double) this.heuristic.getBoardUtility(this.logicClone.getBoard(), this.activePlayer) * (1 - ((maxDepth - depth) * depthModFactor));
 		} else {
 			for(int x = 0; x < topFields.length; x++) {
 				if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
@@ -107,9 +109,9 @@ public class AlphaBeta {
 		double utility = 999999;
 
 		if (this.logicClone.isGameOver()){
-			utility = finalUtility() * (1 - ((maxDepth - depth) * 0.1));
-		} else if (depth < 0){
-			utility = (double) this.heuristic.getBoardUtility(this.logicClone.getBoard(), this.activePlayer) * (1 - ((maxDepth - depth) * 0.1));
+			utility = finalUtility() * (1 - ((maxDepth - depth) * depthModFactor));
+		} else if (depth == 0){
+			utility = (double) this.heuristic.getBoardUtility(this.logicClone.getBoard(), this.activePlayer) * (1 - ((maxDepth - depth) * depthModFactor));
 		} else {
 			for(int x = 0; x < topFields.length; x++) {
 				if(topFields[x] >= 0 && this.logicClone.performMove(x)) {
@@ -132,7 +134,7 @@ public class AlphaBeta {
 	 * @return
 	 */
 	private double finalUtility() {
-		double utility = 0;
+		double utility = 25;
 		int winnerID = this.logicClone.getWinnerID();
 		if(winnerID != -1) {
 			if(winnerID == this.activePlayer) {
@@ -142,15 +144,6 @@ public class AlphaBeta {
 			}
 		}
 		return utility;
-	}
-
-	/**
-	 * checks if game is over (or max depth is reached)	
-	 * @param depth
-	 * @return
-	 */
-	private boolean isFinal(int depth) {
-		return this.logicClone.isGameOver() || depth < 0;
 	}
 	
 	/**
