@@ -16,22 +16,22 @@ public class ExampleBlocks : IExample
         /* Specify the default parameters for agents that are subsequently added. */
         Simulator.Instance.setAgentDefaults(15.0f, 10, 5.0f, 5.0f, 2.0f, 2.0f, new Vector2());
 
-        for (int i = 0; i < 4; ++i)
+        for (int i = 0; i < 3; ++i)
         {
-            for (int j = 0; j < 3; ++j)
+            for (int j = 0; j < 2; ++j)
             {
                 Simulator.Instance.addAgent(new Vector2(55.0f + i * 10.0f, 55.0f + j * 10.0f));
                 goals.Add(new Vector2(-75.0f, -75.0f));
 
-                Simulator.Instance.addAgent(new Vector2(-55.0f - j * 10.0f, 55.0f + j * 10.0f));
+                Simulator.Instance.addAgent(new Vector2(-55.0f - i * 10.0f, 55.0f + j * 10.0f));
                 goals.Add(new Vector2(75.0f, -75.0f));
-				/*
+				
                 Simulator.Instance.addAgent(new Vector2(55.0f + i * 10.0f, -55.0f - j * 10.0f));
                 goals.Add(new Vector2(-75.0f, 75.0f));
 
                 Simulator.Instance.addAgent(new Vector2(-55.0f - i * 10.0f, -55.0f - j * 10.0f));
                 goals.Add(new Vector2(75.0f, 75.0f));
-                */
+                
             }
         }
 		

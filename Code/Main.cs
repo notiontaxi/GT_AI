@@ -35,7 +35,7 @@ public class Main : MonoBehaviour
     {
         _camera = Camera.main;
         _camera.gameObject.AddComponent<GizmoDrawer>();
-		_camera.gameObject.transform.rotation = Quaternion.Euler(38f, 0.0f, 0.0f);
+		_camera.gameObject.transform.rotation = Quaternion.Euler(35f, 0.0f, 0.0f);
         _agentsRoot = new GameObject("Agents root");
         _agentsRoot.AddComponent<MeshFilter>();
         _agentsRoot.AddComponent<MeshRenderer>();
@@ -48,8 +48,11 @@ public class Main : MonoBehaviour
             }
         }
         _selectedType = _allTypes[_allTypes.Count - 1];
-
+		
+	
+		
         reset();
+		
     }
 
     void Update()
@@ -58,7 +61,16 @@ public class Main : MonoBehaviour
         {
             _example.setPreferredVelocities();
             Simulator.Instance.doStep();
-        }
+			for (int i = 0; i < _gameObjects.Length; ++i){
+				_gameObjects[i].animation.Play();
+			}
+			
+        }else
+		{
+			for (int i = 0; i < _gameObjects.Length; ++i){
+				_gameObjects[i].animation.Stop();
+			}
+		}
 
 #if !NO_RENDER
 
@@ -68,11 +80,11 @@ public class Main : MonoBehaviour
         for (int i = 0; i < _gameObjects.Length; ++i)
         {
             RVO.Vector2 p = Simulator.Instance.getAgentPosition(i);
-            float radius = Simulator.Instance.getAgentRadius(i);
+            //float radius = Simulator.Instance.getAgentRadius(i);
             _gameObjects[i].transform.position = new Vector3(p.x(), 2.4f, p.y());
             RVO.Vector2 v = Simulator.Instance.getAgentVelocity(i);
             //_gameObjects[i].transform.localRotation = Quaternion.AngleAxis((Mathf.Rad2Deg * Mathf.Atan2(v.x(), -v.y())) , Vector3.down);
-			_gameObjects[i].transform.rotation = Quaternion.Euler(270.0f, (Mathf.Rad2Deg * Mathf.Atan2(v.x(), v.y())), 0.0f);
+			_gameObjects[i].transform.rotation = Quaternion.Euler(0.0f, (Mathf.Rad2Deg * Mathf.Atan2(v.x(), v.y())), 0.0f);
             yMin = Math.Min(yMin, p.y() );
             yMax = Math.Max(yMax, p.y() );
         }
@@ -92,8 +104,8 @@ public class Main : MonoBehaviour
         if (_cameraDirty || _autoFocus)
         {
             _camera.transform.position = new Vector3(_camera.transform.position.x,
-                50.0f,
-                (.5f  * yMin / Mathf.Tan(_camera.fov * Mathf.Deg2Rad / 2)) - 60.0f);
+                150.0f,
+                (.5f  * yMin / Mathf.Tan(_camera.fov * Mathf.Deg2Rad / 2)) - 130.0f);
 			
             _cameraDirty = false;
         }
@@ -183,18 +195,37 @@ public class Main : MonoBehaviour
         }
         _gameObjects = new GameObject[Simulator.Instance.getNumAgents()];
 
-        Vector3 bounds = AssetHolder.Instance.AgentPrefab.renderer.bounds.extents;
-        float extent = Math.Max(Math.Abs(bounds.x), Math.Abs(bounds.z));
+        //Vector3 bounds = AssetHolder.Instance.Knight.renderer.bounds.extents;
+        //float extent = Math.Max(Math.Abs(bounds.x), Math.Abs(bounds.z));
         for (int i = 0; i < _gameObjects.Length; ++i)
         {
-            _gameObjects[i] = GameObject.Instantiate(AssetHolder.Instance.AgentPrefab) as GameObject;
-            _gameObjects[i].name = "Agent #" + i.ToString();
+			
+			RVO.Vector2 v = Simulator.Instance.getAgentPrefVelocity(i);
+			float vx = v.x();
+			float vy = v.y();
+			
+			print(AssetHolder.Instance);
+			
+			if((vx <= 0.0f) && (vy <= 0.0f))
+				_gameObjects[i] = GameObject.Instantiate(AssetHolder.Instance.Knight) as GameObject;
+			else if(vx > 0.0f && vy < 0.0f)
+				_gameObjects[i] = GameObject.Instantiate(AssetHolder.Instance.Archer) as GameObject;
+           	else if(vx < 0.0f && vy > 0.0f)
+				_gameObjects[i] = GameObject.Instantiate(AssetHolder.Instance.Mage) as GameObject;
+            else
+				_gameObjects[i] = GameObject.Instantiate(AssetHolder.Instance.Berzerker) as GameObject;	
+			
+			_gameObjects[i].name = "Agent #" + i.ToString();
             _gameObjects[i].transform.parent = _agentsRoot.transform;
-            float s = Simulator.Instance.getAgentRadius(i) / extent;
-            _gameObjects[i].transform.localScale *= s;
-
-            RVO.Vector2 v = Simulator.Instance.getAgentPrefVelocity(i);
-            //_gameObjects[i].renderer.material.color = ColorFromHSV(Mathf.Rad2Deg * Mathf.Atan2(v.x(), -v.y()), 1, 1);
+            //float s = Simulator.Instance.getAgentRadius(i) / extent;
+            //_gameObjects[i].transform.localScale *= s;
+			
+            
+			//_gameObjects[i].renderer.materials;
+			
+			//print(_gameObjects[i].renderer.materials[0].mainTexture);
+           // _gameObjects[i].renderer.material. = ColorFromHSV(Mathf.Rad2Deg * Mathf.Atan2(v.x(), -v.y()), 1, 1);
+			
         }
 #else
         _mesh = new Mesh();
